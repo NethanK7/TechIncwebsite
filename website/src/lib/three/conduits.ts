@@ -15,6 +15,7 @@
 import {
   CatmullRomCurve3,
   CircleGeometry,
+  Color,
   Group,
   InstancedMesh,
   InstancedBufferAttribute,
@@ -30,7 +31,9 @@ import { conduitLevel } from './layout'
 import { rng } from './rng'
 
 export interface Conduit {
-  key: string
+  /** The camera stage that lights this route, not the district name — both
+   *  districts of a pair light together. */
+  stage: string
   material: ShaderMaterial
   dotMaterial: ShaderMaterial | null
 }
@@ -145,7 +148,7 @@ function buildDots(
 
 export function buildConduits(
   coreAnchor: Vector3,
-  districts: { key: string; anchor: Vector3 }[],
+  districts: { key: string; stage: string; anchor: Vector3; accent: number }[],
   withDots = true,
 ): BuiltConduits {
   const group = new Group()
@@ -166,22 +169,28 @@ export function buildConduits(
     group.add(mesh)
     owned.push({ dispose: () => geo.dispose() })
 
+    // Each route carries its district's accent, pushed toward white so it still
+    // reads as light rather than as a coloured pipe.
+    const tint = new Color(d.accent).lerp(new Color(0xffffff), 0.35)
+    material.uniforms.uTint!.value.copy(tint)
+
     let dotMaterial: ShaderMaterial | null = null
     if (withDots) {
       dotMaterial = makeDotMaterial()
+      dotMaterial.uniforms.uColor!.value.copy(new Color(d.accent).lerp(new Color(0x4aa8d8), 0.55))
       const dots = buildDots(curve, dotMaterial)
       group.add(dots.mesh)
       owned.push(dots)
     }
 
-    conduits.push({ key: d.key, material, dotMaterial })
+    conduits.push({ stage: d.stage, material, dotMaterial })
   })
 
   return {
     group,
     update(progress) {
       for (const c of conduits) {
-        const level = conduitLevel(c.key, progress)
+        const level = conduitLevel(c.stage, progress)
         c.material.uniforms.uFill!.value = level
         if (c.dotMaterial) c.dotMaterial.uniforms.uFill!.value = level
       }

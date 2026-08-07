@@ -17,6 +17,7 @@ import {
   BoxGeometry,
   BufferGeometry,
   CircleGeometry,
+  Color,
   CylinderGeometry,
   Euler,
   Group,
@@ -35,6 +36,12 @@ import { ASCENT, CORE, DERELICT, GROUND_SIZE, type District } from './layout'
 import {
   bake,
   cabinetRow,
+  conveyor,
+  gantryCrane,
+  palletYard,
+  pipeRack,
+  scaffoldFrame,
+  solarField,
   campusBlock,
   chimney,
   containerStack,
@@ -77,7 +84,7 @@ const LIBRARY: Record<string, Prop> = {
   sawtoothFactory,
   coolingTower,
   siloCluster,
-  windTurbine,
+  windTurbine: windTurbine(),
   containerStack,
   rackRow,
   tank,
@@ -90,6 +97,12 @@ const LIBRARY: Record<string, Prop> = {
   figure,
   truck,
   cabinetRow,
+  pipeRack,
+  conveyor,
+  gantryCrane,
+  palletYard,
+  solarField,
+  scaffoldFrame,
 }
 
 const MATERIALS: Record<MatKey, typeof matShell> = {
@@ -131,6 +144,12 @@ const FOOTPRINT: Record<string, number> = {
   figure: 1,
   truck: 8,
   cabinetRow: 9,
+  pipeRack: 18,
+  conveyor: 18,
+  gantryCrane: 16,
+  palletYard: 12,
+  solarField: 18,
+  scaffoldFrame: 12,
 }
 
 /** Props that may sit inside another prop's footprint (scale/detail dressing). */
@@ -251,9 +270,13 @@ export function buildDistrict(d: District): BuiltDistrict {
   const built = meshesFromBuckets(buckets, d.key)
   built.meshes.forEach((m) => group.add(m))
 
-  // Ground apron: a very slightly lighter disc so each district reads as a
-  // developed plot rather than structures floating on open ground.
-  const apron = new Mesh(new CircleGeometry(d.radius * 1.12, 64), matPlate)
+  // Ground apron, tinted with the district's accent. This is where nearly all
+  // of the scene's colour lives: a large, very desaturated field under each
+  // district, which the eye reads as "these are different places" long before it
+  // could name the colours. The structures themselves stay white.
+  const apronMat = matPlate.clone()
+  apronMat.color = new Color(d.accent)
+  const apron = new Mesh(new CircleGeometry(d.radius * 1.12, 64), apronMat)
   apron.rotation.x = -Math.PI / 2
   apron.position.set(d.at.x, 0.06, d.at.z)
   apron.receiveShadow = true
@@ -266,6 +289,7 @@ export function buildDistrict(d: District): BuiltDistrict {
     dispose() {
       built.dispose()
       apron.geometry.dispose()
+      apronMat.dispose()
     },
   }
 }
@@ -559,7 +583,7 @@ export function buildGround(): { mesh: Mesh; dispose(): void } {
  */
 export function buildScatter(
   districts: { at: Vector3; radius: number }[],
-): { group: Group; dispose(): void } {
+): { group: Group; hubs: { at: Vector3; yaw: number; length: number }[]; dispose(): void } {
   const r = rng(9901)
   const group = new Group()
   group.name = 'scatter'
@@ -570,21 +594,37 @@ export function buildScatter(
     Math.hypot(x - DERELICT.at.x, z - DERELICT.at.z) > DERELICT.radius + pad &&
     districts.every((d) => Math.hypot(x - d.at.x, z - d.at.z) > d.radius + pad)
 
-  // Wind turbines in a loose line, reading as a far-field utility.
+  // Wind turbines in a loose line, reading as a far-field utility. Masts and
+  // nacelles bake into the static mesh; the hub position and facing of each are
+  // handed back so buildRotors can hang a turning rotor on it.
+  const hubs: { at: Vector3; yaw: number; length: number }[] = []
   let placed = 0
   for (let i = 0; i < 300 && placed < 9; i++) {
     const x = r.range(-420, 420)
     const z = r.range(-420, 420)
     if (!clear(x, z, 46)) continue
+
+    const yaw = r.range(0, Math.PI * 2)
+    const height = r.range(24, 38)
+
     bake(
-      windTurbine(r),
+      windTurbine(height)(r),
       new Matrix4().compose(
         new Vector3(x, 0, z),
-        new Quaternion().setFromEuler(new Euler(0, r.range(0, Math.PI * 2), 0)),
+        new Quaternion().setFromEuler(new Euler(0, yaw, 0)),
         new Vector3(1, 1, 1),
       ),
       buckets,
     )
+
+    // The nacelle sits at (0, h, -1.6) in the prop's local space; rotate that
+    // offset by the same yaw so the rotor lands on the nacelle, not beside it.
+    const off = new Vector3(0, height, -1.6).applyAxisAngle(new Vector3(0, 1, 0), yaw)
+    hubs.push({
+      at: new Vector3(x + off.x, off.y, z + off.z),
+      yaw,
+      length: height * 0.38,
+    })
     placed++
   }
 
@@ -607,8 +647,9 @@ export function buildScatter(
 
   const built = meshesFromBuckets(buckets, 'scatter')
   built.meshes.forEach((m) => group.add(m))
-  return { group, dispose: built.dispose }
+  return { group, hubs, dispose: built.dispose }
 }
+
 
 /* -------------------------------------------------------------------------- */
 /*  Roads — hairline connectors on the ground between core and districts        */

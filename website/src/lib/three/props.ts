@@ -31,6 +31,8 @@ import {
   Vector2,
 } from 'three'
 
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+
 import type { Rng } from './rng'
 
 export type MatKey = 'shell' | 'light' | 'mid' | 'dark' | 'glass' | 'ink' | 'plate'
@@ -380,10 +382,18 @@ export const siloCluster: Prop = (r) => {
 }
 
 /** Wind turbine. Three blades, tapered mast, on a footing. */
-export const windTurbine: Prop = (r) => {
+/**
+ * Wind turbine mast, footing and nacelle.
+ *
+ * `height` is optional and, when given, overrides the random draw — the scatter
+ * needs to know where the nacelle ended up so it can hang a turning rotor on it,
+ * and inferring that from the RNG stream afterwards is not possible.
+ */
+export const windTurbine =
+  (height?: number): Prop =>
+  (r) => {
   const out: Piece[] = []
-  const h = r.range(24, 38)
-  const bladeLen = h * r.range(0.34, 0.42)
+  const h = height ?? r.range(24, 38)
 
   out.push(cyl(1.5, 2.4, 0.8, 0, 0.4, 0, 'light', 16))
   out.push(cyl(0.52, 1.1, h, 0, h / 2, 0, 'shell', 14))
@@ -395,27 +405,15 @@ export const windTurbine: Prop = (r) => {
   out.push({ geo: nac, mat: 'light' })
   out.push(sphere(0.75, 0, h, -1.2, 'light', 10))
 
-  // Blades: long thin tapered boxes, splayed 120° apart, all in one plane.
-  const spin = r.range(0, Math.PI * 2)
-  for (let i = 0; i < 3; i++) {
-    const a = spin + (i * Math.PI * 2) / 3
-    const blade = new BoxGeometry(0.55, bladeLen, 0.16)
-    // Taper by pulling the tip vertices in.
-    const pos = blade.attributes.position!
-    for (let v = 0; v < pos.count; v++) {
-      if (pos.getY(v) > 0) {
-        pos.setX(v, pos.getX(v) * 0.28)
-        pos.setZ(v, pos.getZ(v) * 0.5)
-      }
-    }
-    pos.needsUpdate = true
-    blade.translate(0, bladeLen / 2, 0)
-    blade.applyMatrix4(rotZ(a))
-    blade.translate(0, h, -1.6)
-    out.push({ geo: blade, mat: 'light' })
-  }
+  // Blades are deliberately absent here — they are drawn by the animated layer
+  // in city.ts as an InstancedMesh so they can actually turn. `buildScatter`
+  // records each turbine's hub position for that.
   return out
 }
+
+/** Where a turbine's blades attach, given its mast height. Used by the animated
+ *  layer to place the rotating assembly. */
+export const turbineHub = (h: number): [number, number, number] => [0, h, -1.6]
 
 /** Stacked shipping containers. */
 export const containerStack: Prop = (r) => {
@@ -678,6 +676,267 @@ export const cabinetRow: Prop = (r) => {
     out.push(box(w, 0.3, d, x, h + 0.15, 0, 'light'))
   }
   return out
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Industrial dressing                                                        */
+/* -------------------------------------------------------------------------- */
+
+/** Elevated pipe rack — the thing that makes a plant look like a plant. */
+export const pipeRack: Prop = (r) => {
+  const out: Piece[] = []
+  const len = r.range(24, 44)
+  const h = r.range(5, 8)
+  const bays = Math.max(3, Math.round(len / 8))
+
+  // Portal frames.
+  for (let i = 0; i <= bays; i++) {
+    const x = -len / 2 + (len / bays) * i
+    out.push(box(0.7, h, 0.7, x, h / 2, -2.2, 'mid'))
+    out.push(box(0.7, h, 0.7, x, h / 2, 2.2, 'mid'))
+    out.push(box(0.7, 0.6, 5.1, x, h, 0, 'mid'))
+  }
+  // Pipe runs at two levels, different diameters so it reads as plant rather
+  // than as a fence.
+  for (const [y, radius, offsets] of [
+    [h + 0.9, 0.5, [-1.6, -0.4, 0.8, 1.9]],
+    [h - 1.6, 0.34, [-1.2, 0.2, 1.5]],
+  ] as [number, number, number[]][]) {
+    for (const z of offsets) {
+      const g = new CylinderGeometry(radius, radius, len, 10)
+      g.applyMatrix4(rotZ(Math.PI / 2))
+      g.translate(0, y, z)
+      out.push({ geo: g, mat: 'light' })
+    }
+  }
+  return out
+}
+
+/** Covered belt conveyor on trestles, running at a slight incline. */
+export const conveyor: Prop = (r) => {
+  const out: Piece[] = []
+  const len = r.range(26, 42)
+  const lo = 2.5
+  const hi = r.range(9, 14)
+  const rise = Math.atan2(hi - lo, len)
+
+  // The belt housing, tilted.
+  const housing = new BoxGeometry(Math.hypot(len, hi - lo), 1.9, 2.6)
+  housing.applyMatrix4(rotZ(rise))
+  housing.translate(0, (lo + hi) / 2, 0)
+  out.push({ geo: housing, mat: 'light' })
+
+  const hood = new BoxGeometry(Math.hypot(len, hi - lo) * 0.98, 0.4, 3.1)
+  hood.applyMatrix4(rotZ(rise))
+  hood.translate(0, (lo + hi) / 2 + 1.1, 0)
+  out.push({ geo: hood, mat: 'shell' })
+
+  // Trestles stepping up under it.
+  const legs = 4
+  for (let i = 0; i <= legs; i++) {
+    const t = i / legs
+    const x = -len / 2 + len * t
+    const y = lo + (hi - lo) * t
+    out.push(box(0.6, y, 0.6, x, y / 2, -1.0, 'mid'))
+    out.push(box(0.6, y, 0.6, x, y / 2, 1.0, 'mid'))
+  }
+  // Discharge hopper at the high end.
+  out.push(cone(2.4, 3.4, len / 2 + 1.2, hi - 1.2, 0, 'shell', 10))
+  return out
+}
+
+/** Rail-mounted gantry crane straddling a container lane. */
+export const gantryCrane: Prop = (r) => {
+  const out: Piece[] = []
+  const span = r.range(22, 30)
+  const h = r.range(14, 19)
+
+  for (const s of [-1, 1]) {
+    // A-frame legs.
+    out.push(box(1.1, h, 1.1, (s * span) / 2, h / 2, -3, 'mid'))
+    out.push(box(1.1, h, 1.1, (s * span) / 2, h / 2, 3, 'mid'))
+    out.push(box(2.6, 0.8, 8, (s * span) / 2, 0.4, 0, 'light'))
+    // Cross-brace.
+    out.push(box(1.4, 0.5, 6, (s * span) / 2, h * 0.55, 0, 'mid'))
+  }
+  // Bridge beam and trolley.
+  out.push(box(span + 3, 1.8, 2.4, 0, h + 0.9, 0, 'light'))
+  out.push(box(span + 3, 0.5, 3.4, 0, h + 1.9, 0, 'shell'))
+  const trolley = r.range(-span * 0.3, span * 0.3)
+  out.push(box(3, 1.6, 3, trolley, h - 0.6, 0, 'mid'))
+  // Spreader on its ropes.
+  const drop = r.range(4, 9)
+  out.push(box(0.16, drop, 0.16, trolley - 1, h - 1.4 - drop / 2, 0, 'mid'))
+  out.push(box(0.16, drop, 0.16, trolley + 1, h - 1.4 - drop / 2, 0, 'mid'))
+  out.push(box(6.4, 0.8, 2.6, trolley, h - 1.4 - drop, 0, 'dark'))
+  return out
+}
+
+/** Pallet yard: low stacks with a wrapped-load look. */
+export const palletYard: Prop = (r) => {
+  const out: Piece[] = []
+  const cols = r.int(3, 5)
+  const rows = r.int(2, 4)
+  for (let x = 0; x < cols; x++) {
+    for (let z = 0; z < rows; z++) {
+      if (r.chance(0.18)) continue
+      const px = (x - (cols - 1) / 2) * 4.4
+      const pz = (z - (rows - 1) / 2) * 4.0
+      const stack = r.int(1, 3)
+      for (let i = 0; i < stack; i++) {
+        // Pallet, then the load sitting on it.
+        out.push(box(3.4, 0.3, 3.0, px, 0.15 + i * 1.9, pz, 'mid'))
+        out.push(box(3.1, 1.4, 2.7, px, 1.0 + i * 1.9, pz, i % 2 ? 'light' : 'shell'))
+      }
+    }
+  }
+  return out
+}
+
+/** Rooftop-style solar array on a low frame. */
+export const solarField: Prop = (r) => {
+  const out: Piece[] = []
+  const cols = r.int(4, 7)
+  const rows = r.int(2, 3)
+  const tilt = -0.42
+  for (let x = 0; x < cols; x++) {
+    for (let z = 0; z < rows; z++) {
+      const px = (x - (cols - 1) / 2) * 5.2
+      const pz = (z - (rows - 1) / 2) * 6.4
+      const panel = new BoxGeometry(4.6, 0.18, 4.4)
+      panel.applyMatrix4(rotX(tilt))
+      panel.translate(px, 2.0, pz)
+      out.push({ geo: panel, mat: 'glass' })
+      out.push(box(0.3, 1.5, 0.3, px - 1.8, 0.75, pz + 1.4, 'mid'))
+      out.push(box(0.3, 2.4, 0.3, px + 1.8, 1.2, pz - 1.4, 'mid'))
+    }
+  }
+  return out
+}
+
+/** Scaffolded frame — a building mid-construction. */
+export const scaffoldFrame: Prop = (r) => {
+  const out: Piece[] = []
+  const w = r.range(12, 18)
+  const d = w * r.range(0.7, 1.1)
+  const floors = r.int(3, 6)
+  const fh = 3.4
+
+  // Slabs and columns: a structure with no cladding yet.
+  for (let f = 0; f <= floors; f++) {
+    out.push(box(w, 0.5, d, 0, f * fh, 0, 'light'))
+  }
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) {
+      out.push(box(0.8, floors * fh, 0.8, (sx * w) / 2.4, (floors * fh) / 2, (sz * d) / 2.4, 'shell'))
+    }
+  }
+  // Scaffold poles and boards around two faces.
+  const bays = Math.round(w / 3)
+  for (let i = 0; i <= bays; i++) {
+    const x = -w / 2 + (w / bays) * i
+    out.push(box(0.22, floors * fh + 2, 0.22, x, (floors * fh) / 2, d / 2 + 1.4, 'mid'))
+  }
+  for (let f = 1; f <= floors; f++) {
+    out.push(box(w, 0.16, 1.2, 0, f * fh - 0.4, d / 2 + 1.4, 'mid'))
+  }
+  return out
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Geometry for the animated layers                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A single walking person, as one merged geometry centred on the origin with
+ * feet at y = 0.
+ *
+ * Returned separately from the `figure` prop because the crowd is drawn as an
+ * InstancedMesh whose vertex shader moves each person along a path — so it needs
+ * one geometry, not a list of pieces to bake into the static city.
+ */
+export function figureGeometry(): BufferGeometry {
+  const h = 1.75
+  const parts: BufferGeometry[] = []
+
+  const body = new CapsuleGeometry(h * 0.13, h * 0.4, 4, 8)
+  body.translate(0, h * 0.49, 0)
+  parts.push(body)
+
+  const head = new SphereGeometry(h * 0.115, 8, 6)
+  head.translate(0, h * 0.88, 0)
+  parts.push(head)
+
+  // Two legs, offset along local +Z (the walking direction) so the shader can
+  // swing them by sign.
+  for (const s of [-1, 1]) {
+    const leg = new BoxGeometry(h * 0.075, h * 0.34, h * 0.09)
+    leg.translate(s * h * 0.055, h * 0.17, 0)
+    parts.push(leg)
+  }
+
+  const merged = mergeGeometries(parts, false)!
+  parts.forEach((g) => g.dispose())
+  merged.deleteAttribute('uv')
+  return merged
+}
+
+/** Turbine blade assembly, pivoting about the origin in its own XY plane. */
+export function bladeGeometry(length: number): BufferGeometry {
+  const parts: BufferGeometry[] = []
+  for (let i = 0; i < 3; i++) {
+    const blade = new BoxGeometry(0.55, length, 0.16)
+    const pos = blade.attributes.position!
+    for (let v = 0; v < pos.count; v++) {
+      if (pos.getY(v) > 0) {
+        pos.setX(v, pos.getX(v) * 0.28)
+        pos.setZ(v, pos.getZ(v) * 0.5)
+      }
+    }
+    pos.needsUpdate = true
+    blade.translate(0, length / 2, 0)
+    blade.applyMatrix4(rotZ((i * Math.PI * 2) / 3))
+    parts.push(blade)
+  }
+  const hub = new SphereGeometry(0.75, 10, 6)
+  parts.push(hub)
+
+  const merged = mergeGeometries(parts, false)!
+  parts.forEach((g) => g.dispose())
+  merged.deleteAttribute('uv')
+  return merged
+}
+
+/** A delivery van, merged, pointing along +X with its base at y = 0. */
+export function vanGeometry(): BufferGeometry {
+  const parts: BufferGeometry[] = []
+  const bodyLen = 8
+
+  const box1 = new BoxGeometry(bodyLen, 2.8, 2.5)
+  box1.translate(0, 2.1, 0)
+  parts.push(box1)
+
+  const cab = new BoxGeometry(2.8, 2.2, 2.4)
+  cab.translate(-bodyLen / 2 - 1.4, 1.9, 0)
+  parts.push(cab)
+
+  const chassis = new BoxGeometry(bodyLen + 3.6, 0.5, 2.2)
+  chassis.translate(-1, 0.8, 0)
+  parts.push(chassis)
+
+  for (const x of [-bodyLen / 2 - 1, bodyLen * 0.1, bodyLen * 0.34]) {
+    for (const z of [-1.25, 1.25]) {
+      const w = new CylinderGeometry(0.66, 0.66, 0.42, 10)
+      w.applyMatrix4(rotX(Math.PI / 2))
+      w.translate(x, 0.66, z)
+      parts.push(w)
+    }
+  }
+
+  const merged = mergeGeometries(parts, false)!
+  parts.forEach((g) => g.dispose())
+  merged.deleteAttribute('uv')
+  return merged
 }
 
 /* -------------------------------------------------------------------------- */

@@ -1,19 +1,30 @@
 ---
 /**
- * The TECHINCGLOBAL wordmark, inlined so it inherits `currentColor` and can be
- * animated. Path data comes from the supplied logo.svg via lib/data/logo.ts.
+ * The TECHINCGLOBAL wordmark.
+ *
+ * Two paths rather than one: the letterforms inherit `currentColor` so the mark
+ * works on any background, and the terminal full stop takes the accent. That
+ * single coloured square is the only chromatic mark in the interface, which is
+ * what makes it read as deliberate rather than decorative.
  */
-import { LOGO_PATH, LOGO_VIEWBOX } from '@/lib/data/logo'
+import { LOGO_BODY_PATH, LOGO_DOT_PATH, LOGO_VIEWBOX } from '@/lib/data/logo'
 
 interface Props {
   /** Rendered height; width follows the intrinsic 1277:257 ratio. */
   height?: string
   class?: string
-  /** Decorative when the mark sits next to a text label that already names us. */
+  /** Decorative when the mark sits next to text that already names us. */
   decorative?: boolean
+  /** Render the full stop in `currentColor` too — for print and one-colour use. */
+  mono?: boolean
 }
 
-const { height = '1.5rem', class: className = '', decorative = false } = Astro.props
+const {
+  height = '1.5rem',
+  class: className = '',
+  decorative = false,
+  mono = false,
+} = Astro.props
 ---
 
 <svg
@@ -26,7 +37,12 @@ const { height = '1.5rem', class: className = '', decorative = false } = Astro.p
   aria-label={decorative ? undefined : 'TECHINCGLOBAL'}
 >
   {!decorative && <title>TECHINCGLOBAL</title>}
-  <path fill-rule="evenodd" d={LOGO_PATH} />
+  <path fill-rule="evenodd" d={LOGO_BODY_PATH} />
+  <path
+    class:list={['logo__dot', mono && 'logo__dot--mono']}
+    fill-rule="evenodd"
+    d={LOGO_DOT_PATH}
+  />
 </svg>
 
 <style>
@@ -35,5 +51,14 @@ const { height = '1.5rem', class: className = '', decorative = false } = Astro.p
     display: block;
     /* The mark's own shapes carry the weight; never let it get blurry. */
     shape-rendering: geometricPrecision;
+  }
+
+  .logo__dot {
+    fill: var(--accent);
+    transition: fill var(--dur) var(--ease-out);
+  }
+
+  .logo__dot--mono {
+    fill: currentColor;
   }
 </style>

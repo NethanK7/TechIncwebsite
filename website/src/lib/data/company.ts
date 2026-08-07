@@ -109,9 +109,14 @@ export interface Stage {
 /**
  * The pinned scroll journey.
  *
+ * Five stages, grouped the way ERPNext itself is grouped — by document flow
+ * rather than by department. Each one names the real doctypes a Frappe
+ * implementation actually creates, because "Purchase Order becomes Purchase
+ * Receipt becomes Stock Ledger Entry" is a concrete claim a buyer can check,
+ * and "unified visibility" is not.
+ *
  * Order and `key` values must match KEYFRAMES in lib/three/layout.ts exactly —
- * minus the leading `origin` keyframe, which is the hero. The engine reports the
- * active stage by key, and the stepper highlights the matching entry.
+ * minus the leading `origin` keyframe, which is the hero.
  */
 export const JOURNEY: Stage[] = [
   {
@@ -119,70 +124,35 @@ export const JOURNEY: Stage[] = [
     index: '01',
     eyebrow: 'The problem',
     title: 'Your departments are islands',
-    body: 'Finance closes the books from one spreadsheet. Production plans from another. Sales keeps its pipeline somewhere else entirely. Nothing reconciles, every number needs a phone call to confirm, and month-end takes five days it should not take.',
+    body: 'Finance closes from one spreadsheet, production plans from another, sales keeps its pipeline somewhere else. The same item has three different names and three different stock figures, so every number needs a phone call before anyone will act on it.',
   },
   {
     key: 'core',
     index: '02',
     eyebrow: 'The Frappe core',
-    title: 'One open platform underneath',
-    body: 'Frappe is full-stack and open-source — no licence fees, no vendor lock-in. Every module writes to one database, so a goods receipt updates stock, costing and the general ledger in the same transaction. This is the foundation under every implementation we deliver.',
+    title: 'One database underneath',
+    body: 'Frappe is one framework and one database. An Item, a Customer, a Warehouse — each exists once. When a Stock Entry posts, it writes the Stock Ledger Entry and the GL Entry in the same transaction, so inventory and the books can never disagree. That is the whole idea, and everything below is a consequence of it.',
   },
   {
-    key: 'finance',
+    key: 'supply',
     index: '03',
-    eyebrow: 'Finance & accounting',
-    title: 'Month-end in a day, not a week',
-    body: 'Double-entry accounting, multi-currency, cost centres, budgets, and statutory compliance for Sri Lankan reporting. Because every transaction posts itself, closing stops being a reconciliation exercise and becomes a review.',
+    eyebrow: 'Buying · Manufacturing · Stock',
+    title: 'Source it, make it, move it',
+    body: 'A Material Request becomes a Purchase Order, a Purchase Receipt lands the stock and its landed cost. A Production Plan explodes the BOM into Work Orders and Job Cards on real Workstations. Every issue and receipt moves the Bin and the ledger together — so your quoted margin and your earned margin are the same number.',
   },
   {
-    key: 'manufacturing',
+    key: 'commerce',
     index: '04',
-    eyebrow: 'Manufacturing',
-    title: 'The shopfloor, wired to the ledger',
-    body: 'Multi-level BOMs, routing, work orders, capacity planning and real job costing. Material issued on the floor moves inventory and cost in the same moment — so what you quoted is what you actually earn.',
-  },
-  {
-    key: 'inventory',
-    index: '05',
-    eyebrow: 'Inventory & distribution',
-    title: 'Know what you have, everywhere',
-    body: 'Multi-warehouse stock with batch and serial traceability, reorder automation, landed-cost tracking and delivery routing. Our distribution clients run at 99.2% inventory accuracy.',
-  },
-  {
-    key: 'crm',
-    index: '06',
-    eyebrow: 'CRM & sales',
-    title: 'Pipeline that ends in a real invoice',
-    body: 'Leads, deals, quotations and orders in one funnel — wired directly to stock availability and credit limits. Your sales team stops promising what the warehouse cannot ship.',
-  },
-  {
-    key: 'hr',
-    index: '07',
-    eyebrow: 'HRMS & payroll',
-    title: 'People and payroll on one spine',
-    body: 'Employee lifecycle, shift and attendance capture, leave, appraisals, and payroll with EPF and ETF handled correctly for Sri Lanka. Payroll posts straight to the general ledger — no re-entry, no reconciliation.',
-  },
-  {
-    key: 'projects',
-    index: '08',
-    eyebrow: 'Projects & services',
-    title: 'Every hour costed against the job',
-    body: 'Project structures, tasks, timesheets and billing flowing into revenue recognition and profitability per project. You find out a job is losing money while you can still do something about it.',
+    eyebrow: 'CRM · Selling · Accounts',
+    title: 'Sell it, bill it, get paid',
+    body: 'A Lead becomes a Quotation, a Sales Order, a Delivery Note and a Sales Invoice, each carrying the last one forward. Credit limits and live Bin quantities are checked before the order is confirmed, so sales stops promising what the warehouse cannot ship. The Payment Entry closes the loop against the invoice.',
   },
   {
     key: 'unified',
-    index: '09',
-    eyebrow: 'Unified',
-    title: 'One platform. Every department.',
-    body: 'This is what an implementation actually delivers: not eight tools that talk to each other, but one system where finance, production, stock, sales, people and projects are the same data seen from different angles.',
-  },
-  {
-    key: 'methodology',
-    index: '10',
-    eyebrow: 'The NXTGEN methodology',
-    title: 'Five phases, then a gate',
-    body: 'Design, Segregate, Cyclic Mapping, Training, Go-Live Authorization. Segregating scope into independently deliverable modules is what removes big-bang risk — and why our implementations land up to 40% faster.',
+    index: '05',
+    eyebrow: 'People · Projects · The whole picture',
+    title: 'One system. Every department.',
+    body: 'Employees, Attendance and Salary Slips post payroll straight to the general ledger, EPF and ETF included. Timesheets cost hours against the Project. Assets depreciate on schedule. Nothing is re-keyed, nothing is reconciled — because it was all one system from the first transaction.',
   },
 ]
 

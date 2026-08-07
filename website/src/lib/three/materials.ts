@@ -190,6 +190,8 @@ export function makeConduitMaterial(): ShaderMaterial {
       uFill: new Uniform(0),
       uPulses: new Uniform(2.5),
       uGain: new Uniform(1),
+      /** District accent, pushed toward white. Set per route in conduits.ts. */
+      uTint: new Uniform(new Color(0xdcf0ff)),
     },
     vertexShader: /* glsl */ `
       varying vec2 vUv;
@@ -208,6 +210,7 @@ export function makeConduitMaterial(): ShaderMaterial {
       uniform float uFill;
       uniform float uPulses;
       uniform float uGain;
+      uniform vec3 uTint;
 
       varying vec2 vUv;
       varying float vFresnel;
@@ -230,10 +233,9 @@ export function makeConduitMaterial(): ShaderMaterial {
         float v = filled * (0.34 * spine + 0.20 * vFresnel);
         v += filled * pulse * 1.5 * uGain;
 
-        // Very slightly cool, which is what makes it read as light rather than
-        // as white paint. Everything else in the scene is achromatic.
-        vec3 tint = vec3(0.86, 0.95, 1.0);
-        gl_FragColor = vec4(tint * v * 1.25, clamp(v * 1.4, 0.0, 1.0));
+        // Carries the district's accent so each route is identifiable, but
+        // heavily desaturated — it has to read as light, not as a coloured pipe.
+        gl_FragColor = vec4(uTint * v * 1.25, clamp(v * 1.4, 0.0, 1.0));
       }
     `,
   })

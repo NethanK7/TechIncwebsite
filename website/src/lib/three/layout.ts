@@ -1,17 +1,23 @@
 /**
  * World layout and camera flight path.
  *
- * The world is a white architectural model of a working site, seen from above
- * at a consistent 28–34° downward angle — the "table-top model" framing the
- * reference uses, and the reason its 3D reads as a designed object rather than
- * as a game level.
+ * The world is a white architectural model of a working site, seen from above at
+ * a consistent downward angle — the "table-top model" framing that makes the 3D
+ * read as a designed object rather than a game level.
  *
- * The narrative the layout encodes:
+ * The layout follows ERPNext's own shape. Districts are grouped into three
+ * *pairs*, because that is how the product actually groups: Buying feeds
+ * Manufacturing feeds Stock; CRM feeds Selling feeds Accounts; HR and Projects
+ * both consume people. Each pair shares one camera stop, which is what let the
+ * journey drop from ten stops to five without losing any of the city — you see
+ * more per stop, not less overall.
  *
- *   · a DERELICT YARD out to the north-west — disconnected systems, unwired
- *   · the CORE at world origin — the Frappe platform
- *   · six DISTRICTS ringing the core, one per ERP module, each wired to it
- *   · an ASCENT to the south-east — the five NXTGEN phases, climbing
+ *   · a DERELICT YARD to the north-west — disconnected systems, unwired
+ *   · the CORE at world origin — the Frappe platform, one database
+ *   · SUPPLY   (manufacturing + inventory) — north
+ *   · COMMERCE (finance + crm)             — east
+ *   · PEOPLE   (hr + projects)             — south-west, revealed at the overhead
+ *   · an ASCENT beyond the ring — the five NXTGEN phases
  *
  * KEYFRAMES is the single source of truth for the flight. Its length and order
  * must match the stage list rendered by components/sections/Journey.astro.
@@ -26,133 +32,156 @@ import { CatmullRomCurve3, Vector3 } from 'three'
 export interface District {
   key: string
   label: string
+  /** Which camera stage frames this district. Two districts share each stage. */
+  stage: string
   at: Vector3
   /** Footprint radius for prop scatter. */
   radius: number
   seed: number
-  /** Prop mix, by name. Resolved against the prop library in city.ts. */
+  /** Prop mix, resolved against the library in city.ts. */
   mix: { prop: string; count: number }[]
   /** Height the conduit terminates at. */
   anchorHeight: number
+  /**
+   * Faint district tint, applied to the ground apron and the conduit.
+   *
+   * Deliberately barely-there, around 10% saturation. Enough that the eye reads
+   * the districts as distinct places, not enough to break the white-model look.
+   */
+  accent: number
+  /** How many people walk this district. */
+  crowd: number
 }
 
 export const CORE = { at: new Vector3(0, 0, 0), height: 46 }
 
-/**
- * Six districts on an irregular ring at radius ~160. Irregular on purpose: an
- * even hexagon reads as a diagram, and the whole point is that this looks like
- * a place.
- *
- * Each mix is chosen so the district is identifiable from the air — you should
- * be able to tell the factory from the distribution yard without reading a word.
- */
 export const DISTRICTS: District[] = [
-  {
-    key: 'finance',
-    label: 'Finance & Accounting',
-    at: new Vector3(-128, 0, -48),
-    radius: 42,
-    seed: 1041,
-    anchorHeight: 16,
-    mix: [
-      { prop: 'vaultBlock', count: 1 },
-      { prop: 'landmarkTower', count: 1 },
-      { prop: 'officeTower', count: 9 },
-      { prop: 'plaza', count: 1 },
-      { prop: 'tree', count: 16 },
-      { prop: 'figure', count: 11 },
-    ],
-  },
+  // ---- SUPPLY: source it, make it, move it ----
   {
     key: 'manufacturing',
     label: 'Manufacturing',
-    at: new Vector3(24, 0, -150),
-    radius: 50,
+    stage: 'supply',
+    at: new Vector3(-78, 0, -168),
+    radius: 52,
     seed: 2087,
     anchorHeight: 14,
+    accent: 0xe6d9c2, // warm sand — heat and process
+    crowd: 22,
     mix: [
       { prop: 'sawtoothFactory', count: 3 },
       { prop: 'coolingTower', count: 2 },
       { prop: 'chimney', count: 3 },
       { prop: 'siloCluster', count: 2 },
-      { prop: 'tank', count: 4 },
-      { prop: 'truck', count: 3 },
-      { prop: 'figure', count: 14 },
+      { prop: 'tank', count: 3 },
+      { prop: 'pipeRack', count: 3 },
+      { prop: 'conveyor', count: 2 },
     ],
   },
   {
     key: 'inventory',
     label: 'Inventory & Distribution',
-    at: new Vector3(158, 0, -37),
-    radius: 48,
+    stage: 'supply',
+    at: new Vector3(96, 0, -150),
+    radius: 50,
     seed: 3163,
     anchorHeight: 13,
+    accent: 0xd2e2ca, // pale sage — movement and flow
+    crowd: 20,
     mix: [
       { prop: 'warehouse', count: 3 },
       { prop: 'containerStack', count: 5 },
-      { prop: 'rackRow', count: 5 },
-      { prop: 'truck', count: 5 },
-      { prop: 'figure', count: 14 },
+      { prop: 'rackRow', count: 4 },
+      { prop: 'gantryCrane', count: 2 },
+      { prop: 'palletYard', count: 3 },
+    ],
+  },
+
+  // ---- COMMERCE: sell it, bill it, get paid ----
+  {
+    key: 'finance',
+    label: 'Finance & Accounting',
+    stage: 'commerce',
+    at: new Vector3(188, 0, 18),
+    radius: 44,
+    seed: 1041,
+    anchorHeight: 16,
+    accent: 0xcfdfeb, // cool blue — the ledger
+    crowd: 18,
+    mix: [
+      { prop: 'vaultBlock', count: 1 },
+      { prop: 'landmarkTower', count: 1 },
+      { prop: 'officeTower', count: 8 },
+      { prop: 'plaza', count: 1 },
+      { prop: 'tree', count: 16 },
     ],
   },
   {
     key: 'crm',
     label: 'CRM & Sales',
-    at: new Vector3(126, 0, 103),
-    radius: 40,
+    stage: 'commerce',
+    at: new Vector3(152, 0, 168),
+    radius: 42,
     seed: 4271,
     anchorHeight: 17,
+    accent: 0xdfd7ec, // pale violet — the pipeline
+    crowd: 24,
     mix: [
       { prop: 'landmarkTower', count: 2 },
-      { prop: 'officeTower', count: 9 },
+      { prop: 'officeTower', count: 8 },
       { prop: 'cabinetRow', count: 2 },
       { prop: 'plaza', count: 1 },
+      { prop: 'solarField', count: 1 },
       { prop: 'tree', count: 14 },
-      { prop: 'figure', count: 15 },
     ],
   },
+
+  // ---- PEOPLE: who does the work, and what it costs ----
+  // Both sit under the final overhead rather than getting their own stop.
   {
     key: 'hr',
     label: 'HRMS & Payroll',
-    at: new Vector3(-24, 0, 158),
-    radius: 44,
+    stage: 'unified',
+    at: new Vector3(-58, 0, 182),
+    radius: 46,
     seed: 5393,
     anchorHeight: 12,
+    accent: 0xcde5e2, // pale teal — people
+    crowd: 34,
     mix: [
       { prop: 'campusBlock', count: 2 },
-      { prop: 'officeTower', count: 5 },
+      { prop: 'officeTower', count: 4 },
       { prop: 'plaza', count: 2 },
+      { prop: 'solarField', count: 1 },
       { prop: 'tree', count: 26 },
-      { prop: 'figure', count: 22 },
     ],
   },
   {
     key: 'projects',
     label: 'Projects & Services',
-    at: new Vector3(-145, 0, 82),
-    radius: 42,
+    stage: 'unified',
+    at: new Vector3(-196, 0, 48),
+    radius: 44,
     seed: 6449,
     anchorHeight: 15,
+    accent: 0xecdcc9, // pale terracotta — work in progress
+    crowd: 20,
     mix: [
       { prop: 'crane', count: 2 },
       { prop: 'siteHuts', count: 4 },
-      { prop: 'officeTower', count: 5 },
+      { prop: 'officeTower', count: 3 },
+      { prop: 'scaffoldFrame', count: 3 },
       { prop: 'containerStack', count: 2 },
-      { prop: 'truck', count: 2 },
-      { prop: 'figure', count: 14 },
     ],
   },
 ]
 
 /**
- * The derelict yard: the same kinds of structures as the city, but scattered,
- * rotated off-axis, unlit and unwired. Deliberately built from the *same* prop
- * library so the contrast is organisational rather than stylistic — the point is
- * that these are the same departments, just not connected.
+ * The derelict yard: the same prop library, deliberately mis-organised.
+ * Scattered off-grid, unwired, and — pointedly — nobody walking in it.
  */
 export const DERELICT = {
-  at: new Vector3(-300, 0, -260),
-  radius: 60,
+  at: new Vector3(-306, 0, -268),
+  radius: 62,
   seed: 7717,
   mix: [
     { prop: 'warehouse', count: 2 },
@@ -160,19 +189,21 @@ export const DERELICT = {
     { prop: 'siloCluster', count: 1 },
     { prop: 'containerStack', count: 2 },
     { prop: 'siteHuts', count: 2 },
-    { prop: 'figure', count: 5 },
   ],
 }
 
 /** Five platforms climbing away to the south-east — the NXTGEN phases. */
 export const ASCENT = {
-  start: new Vector3(250, 3, 190),
+  start: new Vector3(258, 3, 200),
   step: new Vector3(26, 19, 46),
   count: 5,
   size: 38,
 }
 
 export const GROUND_SIZE = 3000
+
+/** Unique stage keys that own at least one district, in flight order. */
+export const DISTRICT_STAGES = [...new Set(DISTRICTS.map((d) => d.stage))]
 
 /* -------------------------------------------------------------------------- */
 /*  Camera keyframes                                                           */
@@ -186,48 +217,34 @@ export interface Keyframe {
 }
 
 /**
- * One keyframe per scroll stage.
+ * One keyframe per scroll stage: six frames, being the hero plus five stages.
  *
- * Every district shot places the camera between the core and that district,
- * looking outward — so its conduit runs away from the viewer into the buildings
- * and leads the eye where the copy is pointing.
- *
- * The hero shot aims *above* the city centre on purpose: that pushes the model
- * into the lower half of the frame and leaves the upper half clear for the
- * headline, which is exactly how the reference composes its hero.
+ * The two district stops each sit back far enough to hold *both* districts of
+ * their pair in frame, aimed at the midpoint between them. Each is offset
+ * perpendicular to the conduit routes — a camera sitting on a route flies
+ * through the tube and fills the frame with a white bar.
  */
 export const KEYFRAMES: Keyframe[] = [
-  // 00 — establishing. Aimed well above the site so the model settles into the
-  // lower half of the frame and the headline owns the upper half.
-  { key: 'origin', pos: [250, 285, 400], look: [0, 90, 0], fov: 38 },
+  // 00 — establishing. Whole site, model low in frame so the headline owns the
+  // upper half.
+  { key: 'origin', pos: [262, 300, 412], look: [0, 96, 0], fov: 38 },
 
   // 01 — the derelict yard.
-  { key: 'problem', pos: [-218, 82, -168], look: [-300, 12, -260], fov: 44 },
+  { key: 'problem', pos: [-224, 88, -172], look: [-306, 12, -268], fov: 44 },
 
-  // 02 — the core.
-  { key: 'core', pos: [82, 84, 92], look: [0, 18, 0], fov: 40 },
+  // 02 — the core, close enough that the monolith has scale.
+  { key: 'core', pos: [86, 80, 96], look: [0, 22, 0], fov: 40 },
 
-  // 03..08 — one pass per district.
-  //
-  // All six sit 108 units out and 76 up, giving a steady ~31 degree look-down
-  // across the whole sequence. That consistency is what makes the flight read as
-  // authored rather than wandering.
-  //
-  // Each is offset *perpendicular* to the core-to-district axis, never on it:
-  // the conduit runs along that axis, so a camera on the line flies through the
-  // tube and fills the frame with a white bar.
-  { key: 'finance', pos: [-21, 76, -63], look: [-128, 12, -48], fov: 42 },
-  { key: 'manufacturing', pos: [60, 76, -48], look: [24, 12, -150], fov: 44 },
-  { key: 'inventory', pos: [78, 76, 35], look: [158, 12, -37], fov: 42 },
-  { key: 'crm', pos: [20, 76, 83], look: [126, 14, 103], fov: 42 },
-  { key: 'hr', pos: [-61, 76, 56], look: [-24, 10, 158], fov: 44 },
-  { key: 'projects', pos: [-88, 76, -10], look: [-145, 14, 82], fov: 42 },
+  // 03 — SUPPLY. Factory to the left, distribution yard to the right, from the
+  // south so the pair reads as one flow across the frame.
+  { key: 'supply', pos: [10, 138, 42], look: [8, 12, -158], fov: 48 },
 
-  // 09 — a true overhead: the whole wired network at once.
-  { key: 'unified', pos: [95, 360, 340], look: [0, 0, 0], fov: 34 },
+  // 04 — COMMERCE. Finance and CRM together, from the west.
+  { key: 'commerce', pos: [22, 132, 96], look: [170, 14, 94], fov: 48 },
 
-  // 10 — down onto the ascent, looking along the climb.
-  { key: 'methodology', pos: [242, 137, 400], look: [302, 40, 282], fov: 42 },
+  // 05 — UNIFIED. A true overhead: every conduit lit at once, with the people
+  // and projects districts directly below.
+  { key: 'unified', pos: [96, 392, 356], look: [-8, 0, 24], fov: 34 },
 ]
 
 export const STAGE_KEYS = KEYFRAMES.map((k) => k.key)
@@ -238,10 +255,10 @@ export const STAGE_COUNT = KEYFRAMES.length
 /* -------------------------------------------------------------------------- */
 
 /**
- * `centripetal` parameterisation matters here. Our keyframes are very unevenly
- * spaced — the climb from a district shot up to the 336-unit overhead is many
- * times a district-to-district hop — and uniform Catmull-Rom overshoots badly on
- * uneven spacing, which would swing the camera through the ground.
+ * `centripetal` parameterisation matters here. The keyframes are unevenly
+ * spaced — the climb to the 392-unit overhead is several times a district hop —
+ * and uniform Catmull-Rom overshoots badly on uneven spacing, which would swing
+ * the camera through the ground.
  */
 export function buildCameraCurves(): { path: CatmullRomCurve3; lookAt: CatmullRomCurve3 } {
   return {
@@ -263,12 +280,12 @@ export function buildCameraCurves(): { path: CatmullRomCurve3; lookAt: CatmullRo
 /**
  * Which stage a progress value sits in, and how far through it.
  *
- * We sample the curve with `getPoint(u)`, not `getPointAt(u)`. `getPointAt`
+ * The curve is sampled with `getPoint(u)`, not `getPointAt(u)`. `getPointAt`
  * normalises by arc length, giving constant camera *speed* — which would mean
  * each stage of copy covered a different amount of the story. `getPoint` gives
- * every keyframe segment an equal share of u, so one stage of scroll is always
- * exactly one stage of narrative, and speed varies instead. The varying speed is
- * what makes the long moves feel like flight.
+ * every segment an equal share of u, so one stage of scroll is always exactly
+ * one stage of narrative, and speed varies instead. That varying speed is what
+ * makes the long moves feel like flight.
  */
 export function stageAt(progress: number): { index: number; local: number } {
   const span = 1 / (STAGE_COUNT - 1)
@@ -287,12 +304,16 @@ export function fovAt(progress: number): number {
 /**
  * How lit a district's conduit should be at this progress, 0→1.
  *
- * Lighting starts slightly *before* the camera arrives so the pulse leads the
- * viewer in, and once lit a conduit stays lit — so by the overhead stage the
- * entire network is glowing at once, which is the payoff the copy promises.
+ * Keyed on the district's *stage*, not its own name, so both districts in a pair
+ * light together — which is exactly the point being made: Buying, Manufacturing
+ * and Stock are one flow, not three separate features.
+ *
+ * Lighting starts slightly before arrival so the pulse leads the viewer in, and
+ * once lit a conduit stays lit — so by the overhead the whole network is glowing
+ * at once, which is the payoff the copy promises.
  */
-export function conduitLevel(districtKey: string, progress: number): number {
-  const i = STAGE_KEYS.indexOf(districtKey)
+export function conduitLevel(stage: string, progress: number): number {
+  const i = STAGE_KEYS.indexOf(stage)
   if (i < 0) return 0
   const span = 1 / (STAGE_COUNT - 1)
   const from = (i - 0.9) * span

@@ -61,9 +61,11 @@ import {
   buildRoads,
   buildScatter,
 } from './city'
+import { buildCrowd, buildRotors, buildTraffic } from './animated'
 import { buildAscentRamps, buildConduits } from './conduits'
 import { PALETTE, SHARED_MATERIALS, makeSkyMaterial, tickMaterials } from './materials'
 import {
+  CORE,
   DISTRICTS,
   KEYFRAMES,
   STAGE_COUNT,
@@ -91,6 +93,8 @@ interface Capability {
   bloom: boolean
   dots: boolean
   scatter: boolean
+  crowd: boolean
+  traffic: boolean
   maxDpr: number
   msaa: number
 }
@@ -103,6 +107,8 @@ function detect(): Capability {
     bloom: false,
     dots: false,
     scatter: false,
+    crowd: false,
+    traffic: false,
     maxDpr: 1,
     msaa: 0,
   }
@@ -131,6 +137,10 @@ function detect(): Capability {
       bloom: !weak,
       dots: !weak,
       scatter: !weak,
+      // The crowd is the single most valuable animated layer and the cheapest
+      // (one draw call), so it survives on weak hardware; traffic does not.
+      crowd: true,
+      traffic: !weak,
       // Above 2 costs 2.25x the fill for a difference nobody can see.
       maxDpr: weak ? 1.25 : coarse ? 1.75 : 2,
       msaa: weak ? 0 : 4,
@@ -212,19 +222,22 @@ export function startJourney(mount: HTMLElement): Journey | null {
 
   /* ---- Lighting ---- */
 
-  // Sky-to-ground fill, deliberately restrained. An over-bright hemisphere is
-  // the classic mistake on a white-on-white palette: it lifts every face to the
-  // same value and the model goes completely flat. Keep it low enough that the
-  // key light and the shadows are what describe the form.
-  scene.add(new HemisphereLight(0xf4f9ff, 0xc2d3e6, 0.62))
-  // Just enough flat ambient to stop shadow interiors going muddy.
-  scene.add(new AmbientLight(0xffffff, 0.17))
+  // Sky-to-ground fill. An over-bright hemisphere flattens a white-on-white
+  // palette completely, but too little leaves shadow interiors muddy — and with
+  // tinted district aprons underneath, a muddy shadow reads as a stain rather
+  // than as shade. This sits where form still reads and shadows stay clean.
+  scene.add(new HemisphereLight(0xf6faff, 0xccdcec, 0.78))
+  scene.add(new AmbientLight(0xffffff, 0.26))
 
-  const key = new DirectionalLight(0xffffff, 2.65)
-  // A single fixed sun. The whole inhabited world fits one shadow frustum, so
-  // there is no reason to move it — and moving a shadow-casting light forces a
-  // full re-render of every casting mesh into the shadow map.
-  key.position.set(-420, 480, 330)
+  const key = new DirectionalLight(0xffffff, 2.35)
+  // A single fixed sun, high. At 42 degrees the shadows were longer than the
+  // buildings and swept across neighbouring plots as dark smears; near 60 they
+  // read as contact shadows and the massing stays legible.
+  //
+  // Fixed rather than moving because the whole inhabited world fits one shadow
+  // frustum, and moving a shadow-casting light forces a full re-render of every
+  // casting mesh into the map.
+  key.position.set(-300, 640, 250)
   key.castShadow = cap.shadows
   if (cap.shadows) {
     key.shadow.mapSize.set(cap.shadowSize, cap.shadowSize)
@@ -286,7 +299,12 @@ export function startJourney(mount: HTMLElement): Journey | null {
 
   const conduits = buildConduits(
     core.anchor,
-    districts.map((d) => ({ key: d.key, anchor: d.anchor })),
+    DISTRICTS.map((d, i) => ({
+      key: d.key,
+      stage: d.stage,
+      anchor: districts[i]!.anchor,
+      accent: d.accent,
+    })),
     cap.dots,
   )
   world.add(conduits.group)
@@ -298,6 +316,32 @@ export function startJourney(mount: HTMLElement): Journey | null {
 
   const scatter = cap.scatter ? buildScatter(DISTRICTS) : null
   if (scatter) world.add(scatter.group)
+
+  /* ---- Animated layers ---- */
+  //
+  // A still model reads as a diagram. These three systems are what make it read
+  // as a working site, and together they cost three draw calls and (apart from
+  // the handful of rotors) no per-frame CPU work — the motion is computed in the
+  // vertex shaders from one shared clock.
+  const crowd = cap.crowd
+    ? buildCrowd(
+        DISTRICTS.map((d) => ({
+          at: d.at,
+          radius: d.radius,
+          count: d.crowd,
+          seed: d.seed,
+        })),
+      )
+    : null
+  if (crowd) world.add(crowd.group)
+
+  const traffic = cap.traffic
+    ? buildTraffic(DISTRICTS.map((d) => ({ from: CORE.at, to: d.at })), 2)
+    : null
+  if (traffic) world.add(traffic.group)
+
+  const rotors = scatter && cap.scatter ? buildRotors(scatter.hubs) : null
+  if (rotors) world.add(rotors.group)
 
   /* ---- Post chain ---- */
 
@@ -487,10 +531,15 @@ export function startJourney(mount: HTMLElement): Journey | null {
     tickMaterials(elapsed, speed, progress)
     conduits.update(progress)
     core.update(elapsed)
+    // Crowd and traffic advance from the shared uTime in their vertex shaders;
+    // only the rotors need a per-frame matrix.
+    rotors?.update(elapsed)
 
-    const methodologyIndex = STAGE_KEYS.indexOf('methodology')
+    // The ascent no longer has its own stop; it is revealed in the final overhead,
+    // so its ramps fill across the approach to that stage.
+    const unifiedIndex = STAGE_KEYS.indexOf('unified')
     ramps.update(
-      gsap.utils.clamp(0, 1, progress * (STAGE_COUNT - 1) - (methodologyIndex - 0.7)),
+      gsap.utils.clamp(0, 1, progress * (STAGE_COUNT - 1) - (unifiedIndex - 1.1)),
     )
 
     if (debugCamera) {
@@ -598,6 +647,9 @@ export function startJourney(mount: HTMLElement): Journey | null {
     ramps.dispose()
     ascent.dispose()
     scatter?.dispose()
+    crowd?.dispose()
+    traffic?.dispose()
+    rotors?.dispose()
     core.dispose()
     roads.dispose()
     ground.dispose()

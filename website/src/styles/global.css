@@ -49,6 +49,13 @@
   --hair: var(--n-300);
   --hair-strong: var(--n-400);
 
+  /* Accent. Exactly one hue, used in exactly three places: the full stop in the
+     wordmark, focus and selection, and the live indicator. Anything more and the
+     restraint that makes the palette work stops reading as a choice. */
+  --accent: #2f7fd6;
+  --accent-ink: #1e5da0;
+  --accent-wash: #eaf2fb;
+
   /* Elevation. Two steps only: resting surfaces and things that lift on hover.
      Kept very soft — on a near-white palette a heavy shadow reads as dirt. */
   --lift-1: 0 1px 2px rgb(11 13 24 / 0.04), 0 2px 8px -2px rgb(11 13 24 / 0.05);
@@ -203,12 +210,12 @@ hr {
 }
 
 ::selection {
-  background: var(--ink);
+  background: var(--accent);
   color: var(--paper-pure);
 }
 
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
 }

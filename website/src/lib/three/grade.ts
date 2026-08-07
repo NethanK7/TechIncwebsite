@@ -72,11 +72,13 @@ export const GradeShader = {
     void main() {
       vec3 c = texture2D(tDiffuse, vUv).rgb;
 
-      // --- 1. Cap saturation ---
-      // Pull most of the way to luma, keeping just enough of the cool cast to
-      // read as a white model under a blue sky.
+      // --- 1. Rein in saturation ---
+      // Not a hard cap any more: the districts carry faint accents that need to
+      // survive, and the conduits are tinted. Still pulled toward luma enough
+      // that nothing can shout — the scene is a white model with colour on the
+      // ground, not a coloured scene.
       float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));
-      c = mix(vec3(lum), c, 0.55);
+      c = mix(vec3(lum), c, 0.82);
 
       // --- 2. Lift and shoulder ---
       // Contrast in the mids only. A straight contrast multiply would clip the
