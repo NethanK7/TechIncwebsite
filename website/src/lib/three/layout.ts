@@ -5,19 +5,19 @@
  * a consistent downward angle — the "table-top model" framing that makes the 3D
  * read as a designed object rather than a game level.
  *
- * The layout follows ERPNext's own shape. Districts are grouped into three
- * *pairs*, because that is how the product actually groups: Buying feeds
- * Manufacturing feeds Stock; CRM feeds Selling feeds Accounts; HR and Projects
- * both consume people. Each pair shares one camera stop, which is what let the
- * journey drop from ten stops to five without losing any of the city — you see
- * more per stop, not less overall.
+ * The world tells the story in five beats:
  *
- *   · a DERELICT YARD to the north-west — disconnected systems, unwired
- *   · the CORE at world origin — the Frappe platform, one database
- *   · SUPPLY   (manufacturing + inventory) — north
- *   · COMMERCE (finance + crm)             — east
- *   · PEOPLE   (hr + projects)             — south-west, revealed at the overhead
- *   · an ASCENT beyond the ring — the five NXTGEN phases
+ *   01 BEFORE       a DERELICT YARD to the north-west — a business with no
+ *                   system at all: off-grid, unlit, unwired, nobody walking
+ *   02 DEPARTMENTS  six DISTRICTS ringing the core, each a recognisable kind of
+ *                   company — construction, warehousing, manufacturing,
+ *                   accounts, sales, people — each tinted, each still separate
+ *   03 THE CORE     the monolith at world origin: Frappe, one database
+ *   04 WIRING       the conduits light in sequence, one department at a time
+ *   05 AFTER        the same city as beat 02, seen from above, fully connected
+ *
+ * An ASCENT beyond the ring carries the five NXTGEN phases, visible from the
+ * final overhead.
  *
  * KEYFRAMES is the single source of truth for the flight. Its length and order
  * must match the stage list rendered by components/sections/Journey.astro.
@@ -56,17 +56,52 @@ export interface District {
 export const CORE = { at: new Vector3(0, 0, 0), height: 46 }
 
 export const DISTRICTS: District[] = [
-  // ---- SUPPLY: source it, make it, move it ----
+  {
+    key: 'construction',
+    label: 'Construction & Projects',
+    stage: 'departments',
+    at: new Vector3(-196, 0, 52),
+    radius: 46,
+    seed: 6449,
+    anchorHeight: 15,
+    accent: 0xecdcc9, // terracotta — work in progress
+    crowd: 22,
+    mix: [
+      { prop: 'crane', count: 3 },
+      { prop: 'scaffoldFrame', count: 3 },
+      { prop: 'siteHuts', count: 4 },
+      { prop: 'containerStack', count: 2 },
+      { prop: 'palletYard', count: 2 },
+    ],
+  },
+  {
+    key: 'warehousing',
+    label: 'Warehousing & Distribution',
+    stage: 'departments',
+    at: new Vector3(96, 0, -150),
+    radius: 50,
+    seed: 3163,
+    anchorHeight: 13,
+    accent: 0xd2e2ca, // sage — movement and flow
+    crowd: 20,
+    mix: [
+      { prop: 'warehouse', count: 3 },
+      { prop: 'containerStack', count: 5 },
+      { prop: 'rackRow', count: 4 },
+      { prop: 'gantryCrane', count: 2 },
+      { prop: 'palletYard', count: 3 },
+    ],
+  },
   {
     key: 'manufacturing',
     label: 'Manufacturing',
-    stage: 'supply',
+    stage: 'departments',
     at: new Vector3(-78, 0, -168),
     radius: 52,
     seed: 2087,
     anchorHeight: 14,
     accent: 0xe6d9c2, // warm sand — heat and process
-    crowd: 22,
+    crowd: 24,
     mix: [
       { prop: 'sawtoothFactory', count: 3 },
       { prop: 'coolingTower', count: 2 },
@@ -78,29 +113,9 @@ export const DISTRICTS: District[] = [
     ],
   },
   {
-    key: 'inventory',
-    label: 'Inventory & Distribution',
-    stage: 'supply',
-    at: new Vector3(96, 0, -150),
-    radius: 50,
-    seed: 3163,
-    anchorHeight: 13,
-    accent: 0xd2e2ca, // pale sage — movement and flow
-    crowd: 20,
-    mix: [
-      { prop: 'warehouse', count: 3 },
-      { prop: 'containerStack', count: 5 },
-      { prop: 'rackRow', count: 4 },
-      { prop: 'gantryCrane', count: 2 },
-      { prop: 'palletYard', count: 3 },
-    ],
-  },
-
-  // ---- COMMERCE: sell it, bill it, get paid ----
-  {
-    key: 'finance',
-    label: 'Finance & Accounting',
-    stage: 'commerce',
+    key: 'accounts',
+    label: 'Finance & Accounts',
+    stage: 'departments',
     at: new Vector3(188, 0, 18),
     radius: 44,
     seed: 1041,
@@ -116,14 +131,14 @@ export const DISTRICTS: District[] = [
     ],
   },
   {
-    key: 'crm',
-    label: 'CRM & Sales',
-    stage: 'commerce',
+    key: 'sales',
+    label: 'Sales & CRM',
+    stage: 'departments',
     at: new Vector3(152, 0, 168),
     radius: 42,
     seed: 4271,
     anchorHeight: 17,
-    accent: 0xdfd7ec, // pale violet — the pipeline
+    accent: 0xdfd7ec, // violet — the pipeline
     crowd: 24,
     mix: [
       { prop: 'landmarkTower', count: 2 },
@@ -134,18 +149,15 @@ export const DISTRICTS: District[] = [
       { prop: 'tree', count: 14 },
     ],
   },
-
-  // ---- PEOPLE: who does the work, and what it costs ----
-  // Both sit under the final overhead rather than getting their own stop.
   {
-    key: 'hr',
-    label: 'HRMS & Payroll',
-    stage: 'unified',
+    key: 'people',
+    label: 'HR & Payroll',
+    stage: 'departments',
     at: new Vector3(-58, 0, 182),
     radius: 46,
     seed: 5393,
     anchorHeight: 12,
-    accent: 0xcde5e2, // pale teal — people
+    accent: 0xcde5e2, // teal — people
     crowd: 34,
     mix: [
       { prop: 'campusBlock', count: 2 },
@@ -153,24 +165,6 @@ export const DISTRICTS: District[] = [
       { prop: 'plaza', count: 2 },
       { prop: 'solarField', count: 1 },
       { prop: 'tree', count: 26 },
-    ],
-  },
-  {
-    key: 'projects',
-    label: 'Projects & Services',
-    stage: 'unified',
-    at: new Vector3(-196, 0, 48),
-    radius: 44,
-    seed: 6449,
-    anchorHeight: 15,
-    accent: 0xecdcc9, // pale terracotta — work in progress
-    crowd: 20,
-    mix: [
-      { prop: 'crane', count: 2 },
-      { prop: 'siteHuts', count: 4 },
-      { prop: 'officeTower', count: 3 },
-      { prop: 'scaffoldFrame', count: 3 },
-      { prop: 'containerStack', count: 2 },
     ],
   },
 ]
@@ -229,21 +223,22 @@ export const KEYFRAMES: Keyframe[] = [
   // upper half.
   { key: 'origin', pos: [262, 300, 412], look: [0, 96, 0], fov: 38 },
 
-  // 01 — the derelict yard.
-  { key: 'problem', pos: [-224, 88, -172], look: [-306, 12, -268], fov: 44 },
+  // 01 — BEFORE. Down among the derelict yard: off-grid, unlit, unwired.
+  { key: 'problem', pos: [-222, 74, -178], look: [-306, 10, -268], fov: 44 },
 
-  // 02 — the core, close enough that the monolith has scale.
-  { key: 'core', pos: [86, 80, 96], look: [0, 22, 0], fov: 40 },
+  // 02 — DEPARTMENTS. High and wide over the whole ring, so all six read at
+  // once as separate, tinted, unconnected places. The core is deliberately not
+  // the subject yet.
+  { key: 'departments', pos: [-16, 330, 396], look: [-4, 6, 6], fov: 40 },
 
-  // 03 — SUPPLY. Factory to the left, distribution yard to the right, from the
-  // south so the pair reads as one flow across the frame.
-  { key: 'supply', pos: [10, 138, 42], look: [8, 12, -158], fov: 48 },
+  // 03 — THE CORE. Drop onto the monolith at close range.
+  { key: 'core', pos: [84, 76, 94], look: [0, 22, 0], fov: 40 },
 
-  // 04 — COMMERCE. Finance and CRM together, from the west.
-  { key: 'commerce', pos: [22, 132, 96], look: [170, 14, 94], fov: 48 },
+  // 04 — WIRING. Pull back to mid-height on the opposite side, where the
+  // conduits leaving the core are the dominant shape in frame.
+  { key: 'connected', pos: [-104, 158, -66], look: [40, 10, 40], fov: 46 },
 
-  // 05 — UNIFIED. A true overhead: every conduit lit at once, with the people
-  // and projects districts directly below.
+  // 05 — AFTER. A true overhead: the same city as stage 02, now fully lit.
   { key: 'unified', pos: [96, 392, 356], look: [-8, 0, 24], fov: 34 },
 ]
 
@@ -312,12 +307,35 @@ export function fovAt(progress: number): number {
  * once lit a conduit stays lit — so by the overhead the whole network is glowing
  * at once, which is the payoff the copy promises.
  */
-export function conduitLevel(stage: string, progress: number): number {
-  const i = STAGE_KEYS.indexOf(stage)
-  if (i < 0) return 0
+export const WIRING_STAGE = 'connected'
+
+/**
+ * How lit district `index` of `total` should be at this progress, 0→1.
+ *
+ * All six conduits belong to the wiring stage, but they light *in sequence*
+ * across it rather than together — you watch the departments join one at a time,
+ * which is the beat the copy is describing. Each gets its own slice of the stage
+ * with a slight overlap, so the wiring reads as a continuous sweep rather than
+ * six separate switches.
+ *
+ * Lighting begins a little before the camera arrives, so the first pulse leads
+ * the viewer in; and once lit a conduit stays lit, so by the final overhead the
+ * whole network is glowing at once. That is the payoff the last stage promises.
+ */
+export function conduitLevel(index: number, total: number, progress: number): number {
+  const stageIndex = STAGE_KEYS.indexOf(WIRING_STAGE)
+  if (stageIndex < 0) return 0
+
   const span = 1 / (STAGE_COUNT - 1)
-  const from = (i - 0.9) * span
-  const to = (i - 0.05) * span
+  // Begin just before the stage starts; finish just before it ends.
+  const stageStart = (stageIndex - 0.85) * span
+  const stageEnd = (stageIndex - 0.05) * span
+
+  const slice = (stageEnd - stageStart) / total
+  const from = stageStart + slice * index
+  // 1.9 slices each, so consecutive districts overlap and the sweep is smooth.
+  const to = from + slice * 1.9
+
   if (progress <= from) return 0
   if (progress >= to) return 1
   return (progress - from) / (to - from)

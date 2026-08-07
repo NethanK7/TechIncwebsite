@@ -13,6 +13,9 @@ import { track } from './analytics'
 
 let revealObserver: IntersectionObserver | null = null
 
+/** Whether this page started the journey, so unboot knows to tear it down. */
+let journeyStarted = false
+
 /** Progressive reveal for [data-reveal]. Degrades to always-visible via CSS. */
 function initReveal(): void {
   revealObserver?.disconnect()
@@ -41,7 +44,17 @@ function initReveal(): void {
         obs.unobserve(el)
       }
     },
-    { rootMargin: '0px 0px -12% 0px', threshold: 0.1 },
+    // `threshold: 0` and a fixed pixel margin, not `0.1` and `-12%`.
+    //
+    // A ratio threshold is a trap here: an element taller than the viewport can
+    // never reach 10% intersection while it is entering, and a `-12%` bottom
+    // margin meant anything sitting in the lower eighth of the screen stayed at
+    // opacity 0 while plainly visible. Both produced sections that were on
+    // screen and blank — which reads as the page having failed to load.
+    //
+    // Any pixel of overlap now reveals, with a small bottom margin so the
+    // animation still has somewhere to play.
+    { rootMargin: '0px 0px -64px 0px', threshold: 0 },
   )
 
   targets.forEach((el) => revealObserver!.observe(el))
@@ -78,8 +91,14 @@ function initJourney(): void {
       : setTimeout(fn, 400)
 
   idle(() => {
+    // The mount can be swapped out between scheduling and running this.
+    if (!mount.isConnected) return
     import('./three/journey')
-      .then(({ startJourney }) => startJourney(mount))
+      .then(({ startJourney }) => {
+        if (!mount.isConnected) return
+        journeyStarted = true
+        startJourney(mount)
+      })
       .catch((err) => {
         console.warn('[journey] WebGL unavailable, using static fallback', err)
         mount.setAttribute('data-journey-state', 'failed')
@@ -110,4 +129,19 @@ export function unboot(): void {
   revealObserver?.disconnect()
   revealObserver = null
   teardownTriggers()
+
+  // Destroy the WebGL journey before the document is swapped.
+  //
+  // Without this the engine's module-level `active` handle survives the swap
+  // while its canvas is thrown away with the old DOM. Returning to the home page
+  // then hits the `if (active) return active` guard and never builds a new
+  // canvas, so the entire 3D scene is silently missing until a full reload —
+  // which is exactly the "reload twice or everything disappears" symptom.
+  //
+  // Imported lazily so navigating between pages that never had a journey does
+  // not pull in the three.js chunk.
+  if (journeyStarted) {
+    journeyStarted = false
+    void import('./three/journey').then(({ stopJourney }) => stopJourney())
+  }
 }

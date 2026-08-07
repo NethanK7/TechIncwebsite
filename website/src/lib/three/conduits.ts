@@ -31,9 +31,8 @@ import { conduitLevel } from './layout'
 import { rng } from './rng'
 
 export interface Conduit {
-  /** The camera stage that lights this route, not the district name — both
-   *  districts of a pair light together. */
-  stage: string
+  /** Position in the wiring sequence — routes light one after another. */
+  index: number
   material: ShaderMaterial
   dotMaterial: ShaderMaterial | null
 }
@@ -148,7 +147,7 @@ function buildDots(
 
 export function buildConduits(
   coreAnchor: Vector3,
-  districts: { key: string; stage: string; anchor: Vector3; accent: number }[],
+  districts: { key: string; anchor: Vector3; accent: number }[],
   withDots = true,
 ): BuiltConduits {
   const group = new Group()
@@ -183,14 +182,14 @@ export function buildConduits(
       owned.push(dots)
     }
 
-    conduits.push({ stage: d.stage, material, dotMaterial })
+    conduits.push({ index: i, material, dotMaterial })
   })
 
   return {
     group,
     update(progress) {
       for (const c of conduits) {
-        const level = conduitLevel(c.stage, progress)
+        const level = conduitLevel(c.index, conduits.length, progress)
         c.material.uniforms.uFill!.value = level
         if (c.dotMaterial) c.dotMaterial.uniforms.uFill!.value = level
       }

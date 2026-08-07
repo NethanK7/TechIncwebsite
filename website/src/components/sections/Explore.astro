@@ -1,0 +1,259 @@
+---
+/**
+ * Explore mode overlay — the easter egg's user interface.
+ *
+ * Unlocked by clicking the header wordmark five times, which registers a hint
+ * once you are most of the way there so the discovery is findable rather than
+ * arbitrary. The mode itself is driven by lib/three/explore.ts, which borrows
+ * the journey engine's camera.
+ *
+ * Only rendered on the home page, since it needs the journey's world.
+ */
+---
+
+<!-- Hint, shown after a few clicks so the last one or two feel deliberate. -->
+<div class="egg-hint" data-egg-hint hidden aria-hidden="true">
+  <span class="mono" data-egg-hint-text></span>
+</div>
+
+<!-- The overlay proper. `hidden` until entered; not focus-trapped because
+     pointer lock already owns input while it is active. -->
+<div class="explore" data-explore hidden>
+  <div class="explore__scrim" aria-hidden="true"></div>
+
+  <!-- Pre-lock prompt. Pointer lock must be requested from a user gesture, so
+       this click is doing real work, not just being decorative. -->
+  <div class="explore__gate" data-explore-gate>
+    <p class="eyebrow">You found it</p>
+    <h2 class="explore__title">Walk the ERP city.</h2>
+    <p class="explore__lead">
+      The same model the page just flew you through — but this time you have the
+      controls. Six departments, one core, and about half a kilometre of ground
+      between them.
+    </p>
+    <ul class="explore__keys">
+      <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Move</span></li>
+      <li><kbd>Mouse</kbd><span>Look</span></li>
+      <li><kbd>Shift</kbd><span>Run</span></li>
+      <li><kbd>Space</kbd><span>Jump</span></li>
+      <li><kbd>Esc</kbd><span>Back to the site</span></li>
+    </ul>
+    <button class="btn btn--solid" type="button" data-explore-start>Click to enter</button>
+    <button class="explore__leave" type="button" data-explore-cancel>Never mind</button>
+  </div>
+
+  <!-- In-session heads-up display. -->
+  <div class="explore__hud" data-explore-hud hidden aria-hidden="true">
+    <div class="explore__where">
+      <span class="mono explore__whereLabel" data-explore-place></span>
+      <span class="mono explore__whereDist" data-explore-dist></span>
+    </div>
+    <div class="mono explore__hint">
+      <kbd>WASD</kbd> move · <kbd>Shift</kbd> run · <kbd>Esc</kbd> exit
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ---- Hint ---- */
+
+  .egg-hint {
+    position: fixed;
+    left: 50%;
+    top: calc(var(--header-h) + var(--s-2));
+    transform: translateX(-50%);
+    z-index: calc(var(--z-header) + 1);
+    padding: 0.45em 0.9em;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper-pure);
+    pointer-events: none;
+    animation: egg-pop 260ms var(--ease-out);
+  }
+
+  .egg-hint[hidden] {
+    display: none;
+  }
+
+  @keyframes egg-pop {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-6px);
+    }
+  }
+
+  /* ---- Overlay ---- */
+
+  .explore {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-header) + 10);
+    display: grid;
+    place-items: center;
+  }
+
+  .explore[hidden] {
+    display: none;
+  }
+
+  .explore__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgb(11 13 24 / 0.55);
+    backdrop-filter: blur(6px);
+  }
+
+  /* While walking, the overlay must not eat the pointer or dim the view. */
+  .explore.is-active .explore__scrim {
+    display: none;
+  }
+
+  .explore.is-active {
+    pointer-events: none;
+    place-items: stretch;
+  }
+
+  /* ---- Gate ---- */
+
+  .explore__gate {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: var(--s-5);
+    max-width: 34rem;
+    margin: var(--gutter);
+    padding: clamp(var(--s-6), 4vw, var(--s-10));
+    background: var(--paper-pure);
+    border-radius: 1.25rem;
+    box-shadow: var(--lift-2);
+  }
+
+  .explore.is-active .explore__gate {
+    display: none;
+  }
+
+  .explore__title {
+    font-size: var(--t-h3);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .explore__lead {
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+  }
+
+  .explore__keys {
+    display: grid;
+    gap: var(--s-2);
+    width: 100%;
+    padding: var(--s-4) 0;
+    border-block: 1px solid var(--hair);
+  }
+
+  .explore__keys li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .explore__keys span {
+    margin-left: var(--s-2);
+  }
+
+  kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.85rem;
+    padding: 0.2em 0.45em;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    color: var(--ink);
+    background: var(--n-100);
+    border: 1px solid var(--hair-strong);
+    border-bottom-width: 2px;
+    border-radius: 0.35rem;
+  }
+
+  .explore__leave {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+
+  .explore__leave:hover {
+    color: var(--ink);
+  }
+
+  /* ---- HUD ---- */
+
+  .explore__hud {
+    position: absolute;
+    inset: auto var(--gutter) var(--s-8) var(--gutter);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-6);
+    pointer-events: none;
+  }
+
+  .explore__hud[hidden] {
+    display: none;
+  }
+
+  .explore__where {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3) var(--s-4);
+    background: rgb(255 255 255 / 0.82);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+  }
+
+  .explore__whereLabel {
+    font-size: var(--t-sm);
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+
+  .explore__whereDist,
+  .explore__hint {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .explore__hint {
+    padding: var(--s-3) var(--s-4);
+    background: rgb(255 255 255 / 0.82);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+  }
+
+  @media (max-width: 780px) {
+    /* Pointer lock and WASD are meaningless on touch, so the gate says so
+       rather than dropping someone into controls they cannot use. */
+    .explore__keys,
+    .explore__hud {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { CLICKS_TO_UNLOCK, wireEasterEgg } from '@/lib/egg'
+
+  function initExplore() {
+    const overlay = document.querySelector<HTMLElement>('[data-explore]')
+    if (!overlay || overlay.dataset.bound) return
+    overlay.dataset.bound = '1'
+    wireEasterEgg(overlay, CLICKS_TO_UNLOCK)
+  }
+
+  initExplore()
+  document.addEventListener('astro:page-load', initExplore)
+</script>

@@ -109,11 +109,13 @@ export interface Stage {
 /**
  * The pinned scroll journey.
  *
- * Five stages, grouped the way ERPNext itself is grouped — by document flow
- * rather than by department. Each one names the real doctypes a Frappe
- * implementation actually creates, because "Purchase Order becomes Purchase
- * Receipt becomes Stock Ledger Entry" is a concrete claim a buyer can check,
- * and "unified visibility" is not.
+ * The arc is deliberately a story, not a feature list: a business that has
+ * fallen apart, then each department shown as its own place, then all of them
+ * wired into one core.
+ *
+ * Every stage names the real ERPNext doctypes an implementation creates, because
+ * "a Purchase Receipt writes the Stock Ledger Entry and the GL Entry in one
+ * transaction" is a claim a buyer can check, and "unified visibility" is not.
  *
  * Order and `key` values must match KEYFRAMES in lib/three/layout.ts exactly —
  * minus the leading `origin` keyframe, which is the hero.
@@ -122,37 +124,40 @@ export const JOURNEY: Stage[] = [
   {
     key: 'problem',
     index: '01',
-    eyebrow: 'The problem',
-    title: 'Your departments are islands',
-    body: 'Finance closes from one spreadsheet, production plans from another, sales keeps its pipeline somewhere else. The same item has three different names and three different stock figures, so every number needs a phone call before anyone will act on it.',
+    eyebrow: 'Before',
+    title: 'A business running on nothing',
+    body: 'No system underneath. Finance closes from one spreadsheet, the store keeps a book, the site foreman keeps another. The same item carries three names and three quantities, so every figure needs a phone call before anyone dares act on it. Nothing here talks to anything else — and none of it is anybody’s fault.',
+    note: 'DISCONNECTED · UNCOSTED · UNRECONCILED',
+  },
+  {
+    key: 'departments',
+    index: '02',
+    eyebrow: 'Your departments',
+    title: 'Six places, six versions of the truth',
+    body: 'Construction on site. Warehousing and distribution. The factory floor. Finance and accounts. Sales and the pipeline. People and payroll. Each one works — each one keeps its own records, in its own format, on its own schedule. The gaps between them are where the margin quietly goes.',
+    note: 'CONSTRUCTION · WAREHOUSING · MANUFACTURING · ACCOUNTS · SALES · HR',
   },
   {
     key: 'core',
-    index: '02',
-    eyebrow: 'The Frappe core',
-    title: 'One database underneath',
-    body: 'Frappe is one framework and one database. An Item, a Customer, a Warehouse — each exists once. When a Stock Entry posts, it writes the Stock Ledger Entry and the GL Entry in the same transaction, so inventory and the books can never disagree. That is the whole idea, and everything below is a consequence of it.',
-  },
-  {
-    key: 'supply',
     index: '03',
-    eyebrow: 'Buying · Manufacturing · Stock',
-    title: 'Source it, make it, move it',
-    body: 'A Material Request becomes a Purchase Order, a Purchase Receipt lands the stock and its landed cost. A Production Plan explodes the BOM into Work Orders and Job Cards on real Workstations. Every issue and receipt moves the Bin and the ledger together — so your quoted margin and your earned margin are the same number.',
+    eyebrow: 'The Frappe core',
+    title: 'One database underneath all of it',
+    body: 'Frappe is one framework and one database. An Item, a Customer, a Warehouse, a Cost Center — each exists exactly once, and every department reads the same row. A Stock Entry writes its Stock Ledger Entry and its GL Entry in the same transaction, so stock and the books physically cannot disagree.',
   },
   {
-    key: 'commerce',
+    key: 'connected',
     index: '04',
-    eyebrow: 'CRM · Selling · Accounts',
-    title: 'Sell it, bill it, get paid',
-    body: 'A Lead becomes a Quotation, a Sales Order, a Delivery Note and a Sales Invoice, each carrying the last one forward. Credit limits and live Bin quantities are checked before the order is confirmed, so sales stops promising what the warehouse cannot ship. The Payment Entry closes the loop against the invoice.',
+    eyebrow: 'Wiring it up',
+    title: 'Every department, into the core',
+    body: 'A Material Request becomes a Purchase Order and a Purchase Receipt that lands stock at landed cost. A Production Plan explodes the BOM into Work Orders and Job Cards. A Lead becomes a Quotation, a Sales Order, a Delivery Note, a Sales Invoice. Timesheets cost hours to the Project. Salary Slips post to the ledger with EPF and ETF handled.',
+    note: 'ONE TRANSACTION · ONE LEDGER · ONE TRUTH',
   },
   {
     key: 'unified',
     index: '05',
-    eyebrow: 'People · Projects · The whole picture',
-    title: 'One system. Every department.',
-    body: 'Employees, Attendance and Salary Slips post payroll straight to the general ledger, EPF and ETF included. Timesheets cost hours against the Project. Assets depreciate on schedule. Nothing is re-keyed, nothing is reconciled — because it was all one system from the first transaction.',
+    eyebrow: 'After',
+    title: 'The same company, running',
+    body: 'Nothing is re-keyed and nothing is reconciled, because it was all one system from the first transaction. Month-end becomes a review instead of a reconstruction. You find out a job is losing money while you can still do something about it. That is the whole difference — and it is what we have built more than 150 times.',
   },
 ]
 

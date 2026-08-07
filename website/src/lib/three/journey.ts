@@ -78,6 +78,21 @@ import {
 export interface Journey {
   destroy(): void
   progress(): number
+  /** The canvas this instance owns, so a stale instance can be detected. */
+  canvas: HTMLCanvasElement
+  /**
+   * Hand the camera to something else — used by explore mode.
+   *
+   * Suspends the scroll-driven camera and returns the live camera plus a
+   * release function. The engine keeps rendering, so there is still exactly one
+   * renderer, one scene and one frame loop; only who decides where the camera
+   * points changes.
+   */
+  takeControl(onFrame: (dt: number) => void): {
+    camera: PerspectiveCamera
+    canvas: HTMLCanvasElement
+    release: () => void
+  }
 }
 
 let active: Journey | null = null
@@ -155,7 +170,19 @@ function detect(): Capability {
 /* -------------------------------------------------------------------------- */
 
 export function startJourney(mount: HTMLElement): Journey | null {
-  if (active) return active
+  // A live instance whose canvas is still in the document is a genuine
+  // double-start; return it. But after an Astro view transition the old canvas
+  // has been discarded with the previous document while this module-level handle
+  // survives — and returning that stale object means no new canvas is ever
+  // built, so the scene is silently missing until a full reload.
+  //
+  // boot.ts calls stopJourney() on `astro:before-preparation`, which is the
+  // primary fix; this is the backstop for any path that does not.
+  if (active) {
+    if (active.canvas.isConnected) return active
+    active.destroy()
+    active = null
+  }
 
   const cap = detect()
   if (!cap.ok) {
@@ -301,7 +328,6 @@ export function startJourney(mount: HTMLElement): Journey | null {
     core.anchor,
     DISTRICTS.map((d, i) => ({
       key: d.key,
-      stage: d.stage,
       anchor: districts[i]!.anchor,
       accent: d.accent,
     })),
@@ -419,6 +445,13 @@ export function startJourney(mount: HTMLElement): Journey | null {
   let fade = 0
   let destroyed = false
 
+  /**
+   * When set, an external controller owns the camera and the scroll-driven
+   * flight is suspended. Everything else in the frame — materials, conduits,
+   * crowds, rotors, the post chain — keeps running exactly as before.
+   */
+  let externalCamera: ((dt: number) => void) | null = null
+
   const frameTimes: number[] = []
   let degradeLevel = 0
   let watchdog = false
@@ -480,6 +513,24 @@ export function startJourney(mount: HTMLElement): Journey | null {
     // sample, position/target/FOV filters — at a constant 1/120s removes the
     // variable from the system entirely. Frame time then affects only how many
     // identical sub-steps run, never how far each one moves.
+    if (externalCamera) {
+      // Explore mode drives the camera. Skip the spline entirely — but keep the
+      // world's own animation and the post chain running below.
+      externalCamera(dt)
+      tickMaterials(elapsed, 0, driver.current)
+      conduits.update(1) // everything lit while exploring: it is the finished city
+      core.update(elapsed)
+      ramps.update(1)
+      rotors?.update(elapsed)
+      fade = Math.min(1, fade + dt * 0.9)
+      grade.uniforms.uTime!.value = elapsed
+      grade.uniforms.uSpeed!.value = 0
+      grade.uniforms.uFade!.value = fade
+      composer.render()
+      checkPerf(dt)
+      return
+    }
+
     accumulator = Math.min(accumulator + dt, MAX_ACCUM)
     while (accumulator >= FIXED_STEP) {
       const p = driver.update(FIXED_STEP)
@@ -669,7 +720,35 @@ export function startJourney(mount: HTMLElement): Journey | null {
     }
   }
 
-  const journey: Journey = { destroy, progress: () => driver.current }
+  const journey: Journey = {
+    destroy,
+    progress: () => driver.current,
+    canvas,
+    takeControl(onFrame) {
+      externalCamera = onFrame
+      // Explore mode has its own near plane needs: the scroll camera never gets
+      // within 100 units of anything, a walking one is constantly beside walls.
+      camera.near = 0.5
+      camera.updateProjectionMatrix()
+      return {
+        camera,
+        canvas,
+        release() {
+          externalCamera = null
+          camera.near = 1
+          camera.fov = fovCurrent
+          camera.updateProjectionMatrix()
+          // Re-seed the filters at the current scroll position so handing back
+          // does not fly the camera across the map.
+          driver.snap()
+          path.getPoint(driver.current, rawPos)
+          lookAt.getPoint(driver.current, rawLook)
+          camPos.copy(rawPos)
+          camLook.copy(rawLook)
+        },
+      }
+    },
+  }
   active = journey
   return journey
 }
