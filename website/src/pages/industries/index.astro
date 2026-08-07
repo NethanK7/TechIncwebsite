@@ -1,0 +1,119 @@
+---
+import Page from '@/layouts/Page.astro'
+import { INDUSTRIES, FAQ_GENERAL } from '@/lib/data/company'
+---
+
+<Page
+  title="Industries We Serve"
+  heading="Eight industries. Manufacturing most of all."
+  eyebrow="Where we work"
+  intro="More than 20 Sri Lankan manufacturers run on implementations we delivered. We also work across distribution, retail, professional services, construction, healthcare, education and trading."
+  description="Frappe ERP implementations for manufacturing, distribution, retail, professional services, construction, healthcare, education and trading in Sri Lanka."
+  path="/industries"
+  breadcrumb="Industries"
+  faq={FAQ_GENERAL.slice(0, 4)}
+  ctaSource="industries"
+>
+  <section class="section">
+    <div class="shell">
+      <ul class="rows" data-reveal-group>
+        {
+          INDUSTRIES.map((ind, i) => (
+            <li data-reveal>
+              <a class="row" href={`/industries/${ind.slug}`}>
+                <span class="row__n mono">{String(i + 1).padStart(2, '0')}</span>
+                <div class="row__main">
+                  <h2 class="h3">{ind.name}</h2>
+                  <p class="row__summary">{ind.summary}</p>
+                </div>
+                <ul class="row__challenges">
+                  {ind.challenges.slice(0, 2).map((c) => <li>{c}</li>)}
+                </ul>
+                <svg class="row__arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M1 7h12M9 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" />
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .rows {
+    border-top: 1px solid var(--hair);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1fr) 1.5rem;
+    gap: var(--s-6);
+    align-items: start;
+    padding: clamp(var(--s-6), 3vw, var(--s-10)) 0;
+    border-bottom: 1px solid var(--hair);
+    transition:
+      padding-left var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+
+  .row:hover {
+    padding-left: var(--s-5);
+    background: var(--paper-pure);
+  }
+
+  .row__n {
+    color: var(--ink-faint);
+    padding-top: 0.5em;
+  }
+
+  .row__summary {
+    margin-top: var(--s-3);
+    color: var(--ink-dim);
+    font-size: var(--t-sm);
+    max-width: 34ch;
+  }
+
+  .row__challenges {
+    display: grid;
+    gap: var(--s-3);
+    padding-top: 0.4em;
+  }
+
+  .row__challenges li {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    font-size: var(--t-sm);
+    color: var(--ink-faint);
+  }
+
+  .row__challenges li::before {
+    content: '×';
+    color: var(--n-400);
+  }
+
+  .row__arrow {
+    width: 0.9rem;
+    margin-top: 0.7em;
+    color: var(--ink-faint);
+    transition:
+      transform var(--dur) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .row:hover .row__arrow {
+    transform: translateX(5px);
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .row {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 1.25rem;
+    }
+    .row__challenges {
+      grid-column: 2 / -1;
+      padding-top: var(--s-4);
+    }
+  }
+</style>

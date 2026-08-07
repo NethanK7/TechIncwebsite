@@ -1,0 +1,183 @@
+/* ==========================================================================
+   Form styling.
+   Kept in a plain stylesheet rather than in the React island so the markup the
+   island renders and the static markup around it share exactly one source of
+   truth — and so the styles are in the critical CSS rather than arriving with
+   the hydration bundle.
+   ========================================================================== */
+
+.fm {
+  display: grid;
+  gap: var(--s-6);
+}
+
+/* Honeypot: off-screen rather than display:none, because some bots skip
+   anything that is not rendered. aria-hidden keeps it out of the a11y tree. */
+.fm__pot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.fm__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+}
+
+.fm__row {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.fm__row--wide {
+  grid-column: 1 / -1;
+}
+
+.fm__label {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+}
+
+.fm input,
+.fm textarea,
+.fm select {
+  width: 100%;
+  padding: 0.85em 1em;
+  background: var(--paper-pure);
+  border: 1px solid var(--hair-strong);
+  border-radius: 0.625rem;
+  font-size: var(--t-body);
+  color: var(--ink);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.fm textarea {
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.55;
+}
+
+.fm input::placeholder,
+.fm textarea::placeholder {
+  color: var(--n-400);
+}
+
+.fm input:focus,
+.fm textarea:focus,
+.fm select:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgb(11 13 24 / 0.08);
+}
+
+.fm [aria-invalid='true'] {
+  border-color: var(--n-800);
+  box-shadow: 0 0 0 3px rgb(35 40 58 / 0.1);
+}
+
+/* Native select arrow varies wildly across platforms; suppress it and draw one. */
+.fm__selectWrap {
+  position: relative;
+  display: block;
+}
+
+.fm__selectWrap select {
+  appearance: none;
+  padding-right: 2.5em;
+}
+
+.fm__selectWrap svg {
+  position: absolute;
+  right: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.75rem;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+
+.fm__help {
+  font-size: var(--t-sm);
+  color: var(--ink-faint);
+}
+
+.fm__error {
+  padding: var(--s-4);
+  background: var(--n-150);
+  border-left: 2px solid var(--ink);
+  border-radius: 0.375rem;
+  font-size: var(--t-sm);
+  color: var(--ink);
+}
+
+.fm__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+}
+
+.fm__note {
+  font-size: var(--t-sm);
+  color: var(--ink-faint);
+  max-width: 34ch;
+}
+
+.fm button[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---- Success state ---- */
+
+.fm--done {
+  justify-items: start;
+  gap: var(--s-4);
+  padding: clamp(var(--s-6), 4vw, var(--s-10));
+  background: var(--paper-pure);
+  border: 1px solid var(--hair);
+  border-radius: 1rem;
+  box-shadow: var(--lift-1);
+}
+
+.fm__tick {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--ink);
+}
+
+.fm__title {
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.fm__body {
+  color: var(--ink-dim);
+  max-width: 46ch;
+}
+
+.fm__ref {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.fm__ref strong {
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .fm__grid {
+    grid-template-columns: 1fr;
+  }
+}

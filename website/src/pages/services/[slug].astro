@@ -1,0 +1,270 @@
+---
+import Page from '@/layouts/Page.astro'
+import { SERVICES, INDUSTRIES, FAQ_GENERAL, COMPANY } from '@/lib/data/company'
+import { serviceSchema } from '@/lib/seo'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  SERVICES.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }))) satisfies GetStaticPaths
+
+const { service } = Astro.props
+const others = SERVICES.filter((s) => s.slug !== service.slug).slice(0, 4)
+
+/**
+ * A service-specific FAQ, built from the general set plus one question that
+ * names this service directly. Generative engines match on the specific
+ * phrasing, so every service page needs at least one answer that uses its own
+ * name in a full sentence.
+ */
+const faq = [
+  {
+    q: `Who provides ${service.name.toLowerCase()} in Sri Lanka?`,
+    a: `${COMPANY.name} provides ${service.name} in Sri Lanka. It is the country's first and only authorized ${COMPANY.partnerOf} partner, holding ${COMPANY.partnerStatus} status, with more than 150 Frappe ERP implementations delivered since 2018.`,
+  },
+  ...FAQ_GENERAL.slice(0, 4),
+]
+---
+
+<Page
+  title={`${service.name} in Sri Lanka`}
+  heading={service.name}
+  eyebrow="Service"
+  intro={service.summary}
+  description={`${service.summary} Delivered by TECHINCGLOBAL, Sri Lanka's #1 Frappe Partner.`}
+  path={`/services/${service.slug}`}
+  breadcrumb={service.name}
+  parents={[{ label: 'Services', href: '/services' }]}
+  schema={[serviceSchema(service)]}
+  faq={faq}
+  ctaSource={`service:${service.slug}`}
+>
+  <section class="section">
+    <div class="shell split">
+      <div class="split__main" data-reveal>
+        <h2 class="h3">What this involves</h2>
+        <p class="prose split__body">{service.body}</p>
+
+        <h3 class="h4 split__sub">What you get</h3>
+        <ul class="deliverables">
+          {service.deliverables.map((d) => <li>{d}</li>)}
+        </ul>
+      </div>
+
+      <aside class="split__aside" data-reveal>
+        <div class="panel">
+          <p class="eyebrow">Why us</p>
+          <p class="panel__text">{COMPANY.positioning}</p>
+          <dl class="panel__facts">
+            <div>
+              <dt>Delivery</dt>
+              <dd>12-week standard programme</dd>
+            </div>
+            <div>
+              <dt>Methodology</dt>
+              <dd>NXTGEN Agile — up to 40% faster</dd>
+            </div>
+            <div>
+              <dt>Track record</dt>
+              <dd>150+ implementations, 98% satisfaction</dd>
+            </div>
+          </dl>
+          <a class="btn btn--solid" href="/contact" data-cta={`service:${service.slug}:consultation`}>
+            Discuss this service
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section--tight related">
+    <div class="shell">
+      <h2 class="h3" data-reveal>Industries we deliver this for</h2>
+      <ul class="chips" data-reveal>
+        {
+          INDUSTRIES.map((i) => (
+            <li>
+              <a class="chip" href={`/industries/${i.slug}`}>{i.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2 class="h3 related__next" data-reveal>Related services</h2>
+      <ul class="rel-list" data-reveal-group>
+        {
+          others.map((s) => (
+            <li data-reveal>
+              <a class="rel" href={`/services/${s.slug}`}>
+                <span class="h4">{s.name}</span>
+                <span class="rel__body">{s.summary}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+
+  .split__body {
+    margin-top: var(--s-5);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 52ch;
+  }
+
+  .split__sub {
+    margin-top: clamp(var(--s-10), 5vw, var(--s-16));
+  }
+
+  .deliverables {
+    display: grid;
+    gap: 0;
+    margin-top: var(--s-6);
+    border-top: 1px solid var(--hair);
+  }
+
+  .deliverables li {
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--hair);
+    color: var(--ink-2);
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+  }
+
+  .deliverables li::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.55em;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+
+  /* Sticky sidebar: the proof panel should stay with the reader through a long
+     deliverables list. */
+  .split__aside {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-6));
+  }
+
+  .panel {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+    padding: clamp(var(--s-6), 3vw, var(--s-8));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    box-shadow: var(--lift-1);
+  }
+
+  .panel__text {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .panel__facts {
+    display: grid;
+    gap: var(--s-4);
+    width: 100%;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--hair);
+  }
+
+  .panel__facts dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+  }
+
+  .panel__facts dd {
+    margin-top: var(--s-1);
+    font-size: var(--t-sm);
+    font-weight: 500;
+  }
+
+  .related {
+    border-top: 1px solid var(--hair);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-6);
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 0.5em 1em;
+    border-radius: 999px;
+    border: 1px solid var(--hair-strong);
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .chip:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper-pure);
+  }
+
+  .related__next {
+    margin-top: clamp(var(--s-12), 6vw, var(--s-20));
+  }
+
+  .rel-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border-block: 1px solid var(--hair);
+    margin-top: var(--s-6);
+  }
+
+  .rel {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    height: 100%;
+    padding: var(--s-6);
+    background: var(--paper);
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .rel:hover {
+    background: var(--paper-pure);
+  }
+
+  .rel__body {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  @media (max-width: 900px) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+    .split__aside {
+      position: static;
+    }
+  }
+</style>

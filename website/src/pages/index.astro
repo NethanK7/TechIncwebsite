@@ -1,0 +1,433 @@
+---
+import Base from '@/layouts/Base.astro'
+import Journey from '@/components/sections/Journey.astro'
+import Faq from '@/components/ui/Faq.astro'
+import Cta from '@/components/ui/Cta.astro'
+import Icon from '@/components/ui/Icon.astro'
+import {
+  CASE_STUDIES,
+  COMPANY,
+  FAQ_GENERAL,
+  INDUSTRIES,
+  SERVICES,
+} from '@/lib/data/company'
+import { organizationSchema, serviceSchema } from '@/lib/seo'
+
+/** The four differentiators, mirroring the reference's feature grid. */
+const features = [
+  {
+    icon: 'partner' as const,
+    title: 'The only authorized Frappe partner in Sri Lanka',
+    body: 'We were first, and we remain the country’s certified partner. That means local platform localizations, direct escalation to Frappe Technologies, and Highly Skilled Certified Bronze credentials behind every engagement.',
+  },
+  {
+    icon: 'method' as const,
+    title: 'NXTGEN Agile methodology',
+    body: 'Our own five-phase method. Scope is segregated into independently deliverable modules with their own acceptance gates — which is what cuts deployment time by up to 40% and removes big-bang go-live risk.',
+  },
+  {
+    icon: 'compliance' as const,
+    title: 'Built for Sri Lankan compliance',
+    body: 'VAT and local tax reporting, EPF and ETF payroll handling, and regional business practice configured natively in the platform — not bolted on afterwards by a partner learning as they go.',
+  },
+  {
+    icon: 'adoption' as const,
+    title: 'Adoption, not just deployment',
+    body: 'Role-based training on your own data, documented workflows, and internal champions who can answer questions without calling us. An ERP nobody uses is not an implementation, it is an expense.',
+  },
+]
+---
+
+<Base
+  title="Frappe ERP Implementation — Sri Lanka's #1 Frappe Partner"
+  description="Sri Lanka's first and only authorized Frappe Technologies partner. 150+ Frappe ERP implementations, delivered up to 40% faster on the NXTGEN Agile methodology."
+  path="/"
+  faq={FAQ_GENERAL}
+  schema={[organizationSchema(), ...SERVICES.slice(0, 4).map(serviceSchema)]}
+  bodyClass="page-home"
+>
+  <Journey />
+
+  <!-- Everything below sits on the near-white paper, which is also what stops
+       the fixed journey canvas showing through. -->
+  <div class="after">
+    <!-- ---------------- Feature grid ---------------- -->
+    <section class="section" aria-labelledby="why-title">
+      <div class="shell">
+        <h2 class="h2 section__title" id="why-title" data-reveal>
+          Designed for how Sri Lankan<br />business actually runs.
+        </h2>
+
+        <div class="hgrid features" data-reveal-group>
+          {
+            features.map((f) => (
+              <article class="feature" data-reveal>
+                <Icon name={f.icon} />
+                <h3 class="h4 feature__title">{f.title}</h3>
+                <p class="feature__body">{f.body}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- Services ---------------- -->
+    <section class="section section--tight" aria-labelledby="svc-title">
+      <div class="shell">
+        <header class="section__head" data-reveal>
+          <h2 class="h2 section__title" id="svc-title">
+            Eight services.<br />One platform underneath.
+          </h2>
+          <a class="btn btn--soft" href="/services">All services</a>
+        </header>
+
+        <ul class="svc" data-reveal-group>
+          {
+            SERVICES.map((s, i) => (
+              <li data-reveal>
+                <a class="svc__row" href={`/services/${s.slug}`}>
+                  <span class="svc__n mono">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="svc__name h4">{s.name}</span>
+                  <span class="svc__body">{s.summary}</span>
+                  <svg class="svc__arrow" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M1 7h12M9 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" />
+                  </svg>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- ---------------- Statement ---------------- -->
+    <section class="statement" aria-label={`About ${COMPANY.name}`}>
+      <div class="shell statement__inner">
+        <h2 class="h2 statement__title" data-reveal>
+          Sri Lanka's<br />#1 Frappe Partner.
+        </h2>
+        <div class="statement__side" data-reveal>
+          <p class="lead" data-speakable>{COMPANY.positioning}</p>
+          <p class="dim statement__note">
+            Founded 2018 · part of the {COMPANY.group} · {COMPANY.partnerStatus} with {
+              COMPANY.partnerOf
+            }
+          </p>
+          <a class="btn btn--solid" href="/about">Read our story</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- Case studies ---------------- -->
+    <section class="section" aria-labelledby="cases-title">
+      <div class="shell">
+        <header class="section__head" data-reveal>
+          <h2 class="h2 section__title" id="cases-title">What changed for them.</h2>
+          <a class="btn btn--soft" href="/case-studies">All case studies</a>
+        </header>
+
+        <ul class="cases" data-reveal-group>
+          {
+            CASE_STUDIES.map((c) => (
+              <li data-reveal>
+                <a class="case" href={`/case-studies/${c.slug}`}>
+                  <p class="eyebrow">{c.sector}</p>
+                  <h3 class="h3 case__title">{c.title}</h3>
+                  <blockquote class="case__quote">“{c.quote}”</blockquote>
+                  <ul class="case__results">
+                    {c.results.map((r) => (
+                      <li>
+                        <span class="case__v num">{r.value}</span>
+                        <span class="case__l">{r.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <span class="case__go mono">Read the case study →</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- ---------------- Industries ---------------- -->
+    <section class="section section--tight" aria-labelledby="ind-title">
+      <div class="shell">
+        <header class="section__head" data-reveal>
+          <h2 class="h2 section__title" id="ind-title">
+            Eight industries.<br />Manufacturing most of all.
+          </h2>
+          <a class="btn btn--soft" href="/industries">All industries</a>
+        </header>
+
+        <ul class="inds" data-reveal-group>
+          {
+            INDUSTRIES.map((ind) => (
+              <li data-reveal>
+                <a class="ind" href={`/industries/${ind.slug}`}>
+                  <span class="h4">{ind.name}</span>
+                  <span class="ind__body">{ind.summary}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <Faq items={FAQ_GENERAL} title="Frappe ERP in Sri Lanka, answered" />
+
+    <Cta source="home" />
+  </div>
+</Base>
+
+<style>
+  .after {
+    position: relative;
+    z-index: var(--z-content);
+    background: var(--paper);
+  }
+
+  /* ---- Shared section furniture ---- */
+
+  .section__title {
+    max-width: 26ch;
+  }
+
+  .section__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-8);
+    flex-wrap: wrap;
+    margin-bottom: clamp(var(--s-10), 5vw, var(--s-16));
+  }
+
+  /* ---- Feature grid ---- */
+
+  .features {
+    margin-top: clamp(var(--s-12), 6vw, var(--s-20));
+  }
+
+  .feature {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+  }
+
+  .feature__title {
+    margin-top: var(--s-6);
+    max-width: 20ch;
+  }
+
+  .feature__body {
+    font-size: var(--t-sm);
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+
+  /* ---- Services list ---- */
+
+  .svc {
+    border-top: 1px solid var(--hair);
+  }
+
+  .svc__row {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 16rem) minmax(0, 1fr) 1.5rem;
+    align-items: center;
+    gap: var(--s-6);
+    padding: clamp(var(--s-4), 1.8vw, var(--s-6)) 0;
+    border-bottom: 1px solid var(--hair);
+    transition:
+      padding-left var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+
+  .svc__row:hover {
+    padding-left: var(--s-4);
+    background: var(--n-100);
+  }
+
+  .svc__n {
+    color: var(--ink-faint);
+  }
+
+  .svc__body {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .svc__arrow {
+    width: 0.9rem;
+    color: var(--ink-faint);
+    transition:
+      transform var(--dur) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .svc__row:hover .svc__arrow {
+    transform: translateX(5px);
+    color: var(--ink);
+  }
+
+  /* ---- Statement ---- */
+
+  .statement {
+    background: var(--ink);
+    color: var(--paper-pure);
+    padding-block: clamp(var(--s-20), 10vw, var(--s-32));
+    border-radius: var(--sheet-radius);
+  }
+
+  .statement__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 6vw, var(--s-24));
+    align-items: start;
+  }
+
+  .statement__title {
+    color: var(--paper-pure);
+  }
+
+  .statement__side {
+    display: grid;
+    gap: var(--s-6);
+    justify-items: start;
+  }
+
+  .statement__side .lead {
+    color: rgb(255 255 255 / 0.78);
+  }
+
+  .statement__note {
+    font-size: var(--t-sm);
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .statement :global(.btn--solid) {
+    background: var(--paper-pure);
+    color: var(--ink);
+  }
+
+  .statement :global(.btn--solid:hover) {
+    background: var(--n-200);
+  }
+
+  /* ---- Cases ---- */
+
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(23rem, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .case {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    height: 100%;
+    padding: clamp(var(--s-6), 3vw, var(--s-10));
+    background: var(--paper-pure);
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .case:hover {
+    background: var(--n-100);
+  }
+
+  .case__title {
+    max-width: 22ch;
+  }
+
+  .case__quote {
+    color: var(--ink-2);
+    font-size: var(--t-lead);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--ink);
+  }
+
+  .case__results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--hair);
+  }
+
+  .case__results li {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .case__v {
+    font-size: var(--t-h4);
+    font-weight: 700;
+  }
+
+  .case__l {
+    font-size: var(--t-mono);
+    color: var(--ink-faint);
+  }
+
+  .case__go {
+    color: var(--ink-faint);
+    margin-top: var(--s-2);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .case:hover .case__go {
+    color: var(--ink);
+  }
+
+  /* ---- Industries ---- */
+
+  .inds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border-block: 1px solid var(--hair);
+  }
+
+  .ind {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    height: 100%;
+    padding: clamp(var(--s-5), 2.2vw, var(--s-8));
+    background: var(--paper);
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .ind:hover {
+    background: var(--paper-pure);
+  }
+
+  .ind__body {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  @media (max-width: 860px) {
+    .statement__inner {
+      grid-template-columns: 1fr;
+    }
+    .svc__row {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 1.25rem;
+      gap: var(--s-3) var(--s-4);
+    }
+    .svc__body {
+      grid-column: 2 / -1;
+    }
+  }
+</style>

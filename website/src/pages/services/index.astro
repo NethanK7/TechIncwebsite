@@ -1,0 +1,113 @@
+---
+import Page from '@/layouts/Page.astro'
+import { SERVICES, FAQ_GENERAL } from '@/lib/data/company'
+import { serviceSchema } from '@/lib/seo'
+---
+
+<Page
+  title="Frappe ERP Services"
+  heading="Eight services. One platform underneath."
+  eyebrow="What we do"
+  intro="From a first honest assessment through to implementation, integration and long-term support — every engagement delivered by Sri Lanka's only authorized Frappe Technologies partner."
+  description="Frappe ERP implementation, customization, automation, legacy modernization, integration, consulting, support and training from Sri Lanka's #1 Frappe Partner."
+  path="/services"
+  breadcrumb="Services"
+  schema={SERVICES.map(serviceSchema)}
+  faq={FAQ_GENERAL.slice(0, 4)}
+  ctaSource="services"
+>
+  <section class="section">
+    <div class="shell">
+      <ul class="cards" data-reveal-group>
+        {
+          SERVICES.map((s, i) => (
+            <li data-reveal>
+              <a class="card" href={`/services/${s.slug}`}>
+                <span class="card__n mono">{String(i + 1).padStart(2, '0')}</span>
+                <h2 class="h3 card__title">{s.name}</h2>
+                <p class="card__summary">{s.summary}</p>
+                <ul class="card__list">
+                  {s.deliverables.slice(0, 3).map((d) => (
+                    <li>{d}</li>
+                  ))}
+                </ul>
+                <span class="card__go mono">Explore →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .card {
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+    height: 100%;
+    padding: clamp(var(--s-6), 3vw, var(--s-10));
+    background: var(--paper-pure);
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .card:hover {
+    background: var(--n-100);
+  }
+
+  .card__n {
+    color: var(--ink-faint);
+  }
+
+  .card__title {
+    margin-top: var(--s-2);
+    max-width: 18ch;
+  }
+
+  .card__summary {
+    color: var(--ink-dim);
+    font-size: var(--t-sm);
+  }
+
+  .card__list {
+    display: grid;
+    gap: var(--s-2);
+    margin-top: var(--s-4);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--hair);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .card__list li {
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    gap: var(--s-2);
+  }
+
+  .card__list li::before {
+    content: '—';
+    color: var(--n-400);
+  }
+
+  .card__go {
+    margin-top: var(--s-6);
+    color: var(--ink-faint);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .card:hover .card__go {
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,236 @@
+---
+import Page from '@/layouts/Page.astro'
+import { NXTGEN_PHASES, TIMELINE, STATS } from '@/lib/data/company'
+
+const faq = [
+  {
+    q: 'What is the NXTGEN methodology?',
+    a: 'NXTGEN is TECHINCGLOBAL’s proprietary Agile ERP implementation methodology with five phases: Design, Segregate, Cyclic Mapping, Training, and Go-Live Authorization. Segregating scope into independently deliverable modules, each with its own acceptance gate, is what removes the risk of a big-bang go-live.',
+  },
+  {
+    q: 'How much faster is NXTGEN than a conventional ERP implementation?',
+    a: 'The NXTGEN Agile methodology reduces ERP deployment time by up to 40% compared with conventional implementation approaches. TECHINCGLOBAL delivers a 12-week standard programme, with most projects completing in 10 to 16 weeks depending on scope.',
+  },
+  {
+    q: 'What is Go-Live Authorization?',
+    a: 'Go-Live Authorization is a formal readiness gate at the end of a NXTGEN implementation. Data migration must be verified, parallel runs reconciled, and every process owner signed off. TECHINCGLOBAL does not go live on a date — it goes live when the gate is genuinely clear.',
+  },
+]
+---
+
+<Page
+  title="The NXTGEN Methodology"
+  heading="Five phases, then a gate."
+  eyebrow="How we deliver"
+  intro="NXTGEN is our own Agile implementation methodology. It segregates scope into independently deliverable modules with their own acceptance gates — which is what cuts deployment time by up to 40% and removes big-bang go-live risk."
+  description="NXTGEN is TECHINCGLOBAL's proprietary Agile ERP methodology: Design, Segregate, Cyclic Mapping, Training, Go-Live Authorization. Up to 40% faster delivery."
+  path="/methodology"
+  breadcrumb="Methodology"
+  faq={faq}
+  ctaSource="methodology"
+>
+  <!-- Phases -->
+  <section class="section">
+    <div class="shell">
+      <ol class="phases" data-reveal-group>
+        {
+          NXTGEN_PHASES.map((p) => (
+            <li class="phase" data-reveal>
+              <span class="phase__n mono">{p.n}</span>
+              <div>
+                <h2 class="h3">{p.name}</h2>
+                <p class="phase__body">{p.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="section band" aria-labelledby="tl-title">
+    <div class="shell">
+      <header class="band__head" data-reveal>
+        <p class="eyebrow">Implementation timeline</p>
+        <h2 class="h2" id="tl-title">Twelve weeks, standard.</h2>
+        <p class="lead">
+          Most projects complete in 10 to 16 weeks depending on scope. This is the shape of
+          a standard programme.
+        </p>
+      </header>
+
+      <ol class="timeline" data-reveal-group>
+        {
+          TIMELINE.map((t, i) => (
+            <li class="step" data-reveal>
+              <div class="step__bar" aria-hidden="true">
+                <span style={`--i:${i}`}></span>
+              </div>
+              <span class="step__weeks mono">{t.weeks}</span>
+              <h3 class="h4 step__name">{t.name}</h3>
+              <p class="step__body">{t.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section class="section" aria-label="Results">
+    <div class="shell">
+      <ul class="proof" data-reveal-group>
+        {
+          STATS.map((s) => (
+            <li data-reveal>
+              <span class="proof__v num">{s.value}</span>
+              <span class="proof__l">{s.label}</span>
+              <p class="proof__s" data-speakable>{s.sentence}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .phases {
+    border-top: 1px solid var(--hair);
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: var(--s-6);
+    padding: clamp(var(--s-6), 3vw, var(--s-10)) 0;
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .phase__n {
+    font-size: var(--t-h4);
+    letter-spacing: 0;
+    color: var(--ink-faint);
+    padding-top: 0.2em;
+  }
+
+  .phase__body {
+    margin-top: var(--s-4);
+    color: var(--ink-2);
+    max-width: 64ch;
+  }
+
+  .band {
+    background: var(--paper-pure);
+    border-block: 1px solid var(--hair);
+  }
+
+  .band__head {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 42rem;
+    margin-bottom: clamp(var(--s-10), 5vw, var(--s-16));
+  }
+
+  /* ---- Timeline: a horizontal run of five columns on desktop ---- */
+
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--s-6);
+  }
+
+  .step {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+  }
+
+  /* Progress bar per step, filling proportionally so the visual weight matches
+     how long each phase actually takes. */
+  .step__bar {
+    height: 3px;
+    background: var(--n-200);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: var(--s-4);
+  }
+
+  .step__bar span {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 900ms var(--ease-out);
+    transition-delay: calc(var(--i) * 140ms);
+  }
+
+  .step.is-in .step__bar span {
+    transform: scaleX(1);
+  }
+
+  .step__weeks {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .step__name {
+    margin-top: var(--s-1);
+  }
+
+  .step__body {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  /* ---- Proof ---- */
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: clamp(var(--s-6), 3vw, var(--s-10));
+  }
+
+  .proof li {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding-top: var(--s-5);
+    border-top: 2px solid var(--ink);
+  }
+
+  .proof__v {
+    font-size: var(--t-h2);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .proof__l {
+    font-weight: 500;
+  }
+
+  .proof__s {
+    margin-top: var(--s-2);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  @media (max-width: 1000px) {
+    .timeline {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .timeline {
+      grid-template-columns: 1fr;
+    }
+    .phase {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: var(--s-4);
+    }
+  }
+</style>

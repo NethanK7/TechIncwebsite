@@ -1,0 +1,331 @@
+---
+import Page from '@/layouts/Page.astro'
+import {
+  COMPANY,
+  MILESTONES,
+  PARTNERSHIPS,
+  STATS,
+  STORY,
+  TEAM,
+  VALUES,
+} from '@/lib/data/company'
+import { personSchema } from '@/lib/seo'
+
+const faq = [
+  {
+    q: 'When was TECHINCGLOBAL founded?',
+    a: 'TECHINCGLOBAL was founded in 2018 as a digital transformation consultancy in Sri Lanka. It became the first authorized Frappe Technologies partner in the country in 2023 and achieved Highly Skilled Certified Bronze Partner status in 2025.',
+  },
+  {
+    q: 'Is TECHINCGLOBAL part of a larger group?',
+    a: 'Yes. TECHINCGLOBAL joined the SEBSA Group in 2022, which gives it an expanded global ERP delivery network, shared knowledge frameworks, and the backing of an established enterprise technology group.',
+  },
+  {
+    q: 'Who leads TECHINCGLOBAL?',
+    a: 'TECHINCGLOBAL is chaired by Herschel Gunawardena, with Sean Fernando as Director of Solutions and Lahiru Pathirana as Head of Technical Solutions. The consulting team covers manufacturing and supply chain, finance and payroll, and techno-functional delivery.',
+  },
+]
+---
+
+<Page
+  title="About TECHINCGLOBAL"
+  heading="Transforming businesses with expertise."
+  eyebrow={STORY.eyebrow}
+  intro={STORY.intro}
+  description="TECHINCGLOBAL is Sri Lanka's first authorized Frappe Technologies partner. Founded 2018, part of the SEBSA Group, 150+ implementations delivered."
+  path="/about"
+  breadcrumb="About"
+  faq={faq}
+  schema={TEAM.map(personSchema)}
+  ctaSource="about"
+>
+  <!-- Story + stats -->
+  <section class="section">
+    <div class="shell story">
+      <div class="story__text" data-reveal>
+        <h2 class="h3">Built on deep expertise and local understanding</h2>
+        {STORY.paragraphs.map((p) => <p class="story__p">{p}</p>)}
+      </div>
+      <ul class="story__stats" data-reveal-group>
+        {
+          STATS.map((s) => (
+            <li data-reveal>
+              <span class="story__v num">{s.value}</span>
+              <span class="story__l">{s.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Milestones -->
+  <section class="section band" aria-labelledby="ms-title">
+    <div class="shell">
+      <header class="band__head" data-reveal>
+        <p class="eyebrow">Milestones</p>
+        <h2 class="h2" id="ms-title">Our journey of excellence.</h2>
+      </header>
+
+      <ol class="timeline" data-reveal-group>
+        {
+          MILESTONES.map((m) => (
+            <li class="ms" data-reveal>
+              <span class="ms__year mono">{m.year}</span>
+              <div class="ms__body">
+                <h3 class="h4">{m.name}</h3>
+                <p class="ms__text">{m.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="section" aria-labelledby="val-title">
+    <div class="shell">
+      <header class="band__head" data-reveal>
+        <p class="eyebrow">What we stand for</p>
+        <h2 class="h2" id="val-title">Our values.</h2>
+      </header>
+      <div class="hgrid" style="--cols:3" data-reveal-group>
+        {
+          VALUES.map((v) => (
+            <article data-reveal>
+              <h3 class="h4">{v.name}</h3>
+              <p class="val__body">{v.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="section band" aria-labelledby="team-title">
+    <div class="shell">
+      <header class="band__head" data-reveal>
+        <p class="eyebrow">The people behind the work</p>
+        <h2 class="h2" id="team-title">Meet the team.</h2>
+        <p class="lead">
+          Our consultants combine technical depth with business domain expertise — and a
+          genuine commitment to your success.
+        </p>
+      </header>
+
+      <ul class="team" data-reveal-group>
+        {
+          TEAM.map((m) => (
+            <li class="member" data-reveal>
+              {/* Monogram plate. Swaps for a photograph the moment one is supplied. */}
+              <div class="member__plate" aria-hidden="true">
+                <span>{m.initials}</span>
+              </div>
+              <h3 class="h4 member__name">{m.name}</h3>
+              <p class="member__role mono">{m.role}</p>
+              <p class="member__bio">{m.bio}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Partnerships -->
+  <section class="section" aria-labelledby="part-title">
+    <div class="shell">
+      <header class="band__head" data-reveal>
+        <p class="eyebrow">Partnerships & certifications</p>
+        <h2 class="h2" id="part-title">Backed by world-class technology partners.</h2>
+      </header>
+      <ul class="partners" data-reveal-group>
+        {
+          PARTNERSHIPS.map((p) => (
+            <li class="partner" data-reveal>
+              <p class="eyebrow">{p.status}</p>
+              <h3 class="h3 partner__name">{p.name}</h3>
+              <p class="partner__body">{p.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="closing" data-reveal data-speakable>{COMPANY.positioning}</p>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .story {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+
+  .story__p {
+    margin-top: var(--s-5);
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+
+  .story__stats {
+    display: grid;
+    gap: var(--s-6);
+    padding: clamp(var(--s-6), 3vw, var(--s-8));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    box-shadow: var(--lift-1);
+  }
+
+  .story__stats li {
+    display: grid;
+    gap: var(--s-1);
+    padding-bottom: var(--s-6);
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .story__stats li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .story__v {
+    font-size: var(--t-h3);
+    font-weight: 700;
+  }
+
+  .story__l {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .band {
+    background: var(--paper-pure);
+    border-block: 1px solid var(--hair);
+  }
+
+  .band__head {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 42rem;
+    margin-bottom: clamp(var(--s-10), 5vw, var(--s-16));
+  }
+
+  /* ---- Timeline ---- */
+
+  .timeline {
+    border-top: 1px solid var(--hair);
+  }
+
+  .ms {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--s-6);
+    padding: clamp(var(--s-5), 2.5vw, var(--s-8)) 0;
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .ms__year {
+    color: var(--ink-faint);
+    padding-top: 0.35em;
+  }
+
+  .ms__text {
+    margin-top: var(--s-2);
+    color: var(--ink-dim);
+    font-size: var(--t-sm);
+    max-width: 62ch;
+  }
+
+  .val__body {
+    margin-top: var(--s-3);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  /* ---- Team ---- */
+
+  .team {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: clamp(var(--s-6), 3vw, var(--s-10));
+  }
+
+  .member__plate {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, var(--sky-100), var(--sky-300));
+    border: 1px solid var(--hair);
+    border-radius: 0.875rem;
+    margin-bottom: var(--s-4);
+  }
+
+  .member__plate span {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    opacity: 0.32;
+  }
+
+  .member__role {
+    margin-top: var(--s-2);
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .member__bio {
+    margin-top: var(--s-3);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  /* ---- Partners ---- */
+
+  .partners {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .partner {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    padding: clamp(var(--s-6), 3vw, var(--s-10));
+    background: var(--paper-pure);
+  }
+
+  .partner__body {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .closing {
+    margin-top: clamp(var(--s-12), 6vw, var(--s-20));
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    max-width: 44ch;
+  }
+
+  @media (max-width: 900px) {
+    .story {
+      grid-template-columns: 1fr;
+    }
+    .ms {
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+      gap: var(--s-4);
+    }
+  }
+</style>

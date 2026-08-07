@@ -1,0 +1,54 @@
+---
+import Page from '@/layouts/Page.astro'
+import { COMPANY } from '@/lib/data/company'
+import '@/styles/legal.css'
+const updated = '7 August 2026'
+---
+<Page
+  title="Terms of Service"
+  heading="Terms of service"
+  eyebrow="Legal"
+  intro={`The terms on which this website is provided. Last updated ${updated}.`}
+  description={`Terms of service for the ${COMPANY.name} website — scope, content accuracy, intellectual property, liability and governing law.`}
+  path="/terms"
+  breadcrumb="Terms"
+  cta={false}
+>
+  <section class="section">
+    <div class="shell legal">
+      <h2>Scope</h2>
+      <p>These terms cover use of this website. They do not govern paid engagements — those are covered by the signed statement of work and master services agreement for your project, which take precedence over anything on this page.</p>
+
+      <h2>Using the site</h2>
+      <p>You may read, print and share this site's content freely. You may not attempt to disrupt it, probe it for vulnerabilities without written authorisation, scrape it in a way that degrades service for others, or submit the forms for any purpose other than genuinely contacting us.</p>
+
+      <h2>Content accuracy</h2>
+      <p>We keep this site accurate and current, and the statistics on it reflect our delivery record at the time of publication. Nothing here is a warranty of a specific outcome for your business, and nothing here is a quotation. Scope, timeline and price come from a signed proposal.</p>
+
+      <h2>Advice</h2>
+      <p>Articles and the readiness assessment are general guidance, not tailored professional advice on your particular situation. If you want that, talk to us — the first conversation is free and we will give you an honest view.</p>
+
+      <h2>Intellectual property</h2>
+      <p>The content, design and code of this site belong to {COMPANY.legalName}. The NXTGEN methodology is our proprietary implementation methodology. Frappe and ERPNext are the property of Frappe Technologies; we reference them as that company's authorized partner in Sri Lanka.</p>
+
+      <h2>Third-party links</h2>
+      <p>Where we link out, we are not responsible for what is on the other end.</p>
+
+      <h2>Liability</h2>
+      <p>To the extent the law permits, we are not liable for loss arising from your use of this website or reliance on its general content. This does not limit any liability that cannot lawfully be limited, and it does not affect the terms of a signed engagement.</p>
+
+      <h2>Support submissions</h2>
+      <p>The support form is for clients with an active support agreement. Tickets raised without one may not be actioned, and priority levels are honoured according to the SLA in your agreement.</p>
+
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of Sri Lanka, and the courts of Sri Lanka have jurisdiction.</p>
+
+      <h2>Contact</h2>
+      <p>
+        {COMPANY.legalName}<br />
+        {COMPANY.contact.address.full}<br />
+        <a href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a>
+      </p>
+    </div>
+  </section>
+</Page>

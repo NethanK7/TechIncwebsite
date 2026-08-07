@@ -1,0 +1,156 @@
+---
+/**
+ * Inner-page shell.
+ *
+ * Every page except the home page uses this. It supplies the pale-field header
+ * band (so inner pages share the hero language without needing the 3D engine),
+ * the breadcrumb, and the closing CTA — leaving each page to render only its
+ * own content.
+ */
+import Base from './Base.astro'
+import Cta from '@/components/ui/Cta.astro'
+import type { SeoInput } from '@/lib/seo'
+
+interface Props extends SeoInput {
+  /** Small label above the h1. */
+  eyebrow?: string
+  /** Defaults to `title` with the site suffix stripped. */
+  heading?: string
+  /** Sub-headline under the h1. */
+  intro?: string
+  breadcrumb?: string
+  /** Crumb trail, excluding Home and the current page. */
+  parents?: { label: string; href: string }[]
+  /** Set false on pages that own their own closing section (e.g. contact). */
+  cta?: boolean
+  ctaSource?: string
+}
+
+const {
+  title,
+  description,
+  path,
+  image,
+  type,
+  publishedAt,
+  updatedAt,
+  noindex,
+  schema,
+  faq,
+  eyebrow,
+  heading,
+  intro,
+  breadcrumb,
+  parents = [],
+  cta = true,
+  ctaSource = 'page',
+} = Astro.props
+---
+
+<Base
+  title={title}
+  description={description}
+  path={path}
+  image={image}
+  type={type}
+  publishedAt={publishedAt}
+  updatedAt={updatedAt}
+  noindex={noindex}
+  schema={schema}
+  faq={faq}
+  breadcrumb={breadcrumb ?? heading ?? title}
+>
+  <header class="page-head">
+    <div class="shell">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          {
+            parents.map((p) => (
+              <li>
+                <a href={p.href}>{p.label}</a>
+              </li>
+            ))
+          }
+          <li aria-current="page">{breadcrumb ?? heading ?? title}</li>
+        </ol>
+      </nav>
+
+      {eyebrow && <p class="eyebrow page-head__eyebrow">{eyebrow}</p>}
+      <h1 class="display page-head__title" data-speakable>{heading ?? title}</h1>
+      {intro && <p class="lead page-head__intro" data-speakable>{intro}</p>}
+
+      <slot name="head-extra" />
+    </div>
+  </header>
+
+  <div class="page-body">
+    <slot />
+  </div>
+
+  {cta && <Cta source={ctaSource} />}
+</Base>
+
+<style>
+  /* The pale field, reused from the home hero so inner pages feel continuous
+     with it without needing the WebGL engine. */
+  .page-head {
+    background: linear-gradient(180deg, var(--sky-100) 0%, var(--sky-200) 100%);
+    padding-top: calc(var(--header-h) + clamp(var(--s-10), 7vw, var(--s-24)));
+    padding-bottom: clamp(var(--s-12), 7vw, var(--s-24));
+  }
+
+  .crumbs {
+    margin-bottom: clamp(var(--s-8), 4vw, var(--s-16));
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: var(--s-2);
+    color: var(--n-400);
+  }
+
+  /* Padded to the WCAG 2.2 minimum target size. */
+  .crumbs a,
+  .crumbs [aria-current='page'] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+  }
+
+  .crumbs [aria-current='page'] {
+    color: var(--ink-2);
+  }
+
+  .page-head__eyebrow {
+    margin-bottom: var(--s-4);
+  }
+
+  .page-head__title {
+    max-width: 26ch;
+  }
+
+  .page-head__intro {
+    margin-top: var(--s-6);
+    max-width: 52ch;
+  }
+
+  .page-body {
+    background: var(--paper);
+  }
+</style>

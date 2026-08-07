@@ -1,0 +1,201 @@
+---
+import Logo from './Logo.astro'
+import { COMPANY, SERVICES, INDUSTRIES } from '@/lib/data/company'
+
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="shell">
+    <div class="site-footer__cols">
+      <div class="site-footer__brand">
+        <Logo height="1.5rem" decorative />
+        <p class="site-footer__motto" data-speakable>{COMPANY.motto}</p>
+        <p class="site-footer__about">
+          The first and only authorized {COMPANY.partnerOf} partner in Sri Lanka, holding
+          {COMPANY.partnerStatus} status. 150+ Frappe ERP implementations delivered on our
+          NXTGEN Agile methodology.
+        </p>
+        <ul class="site-footer__social">
+          <li>
+            <a class="link" href={COMPANY.social.linkedin} rel="me noopener" target="_blank">
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="link" href={COMPANY.social.facebook} rel="me noopener" target="_blank">
+              Facebook
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer">
+        <div>
+          <p class="eyebrow">Services</p>
+          <ul>
+            {SERVICES.map((s) => (
+              <li><a href={`/services/${s.slug}`}>{s.navName}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">Industries</p>
+          <ul>
+            {INDUSTRIES.map((i) => (
+              <li><a href={`/industries/${i.slug}`}>{i.name}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">Company</p>
+          <ul>
+            <li><a href="/about">About us</a></li>
+            <li><a href="/methodology">NXTGEN methodology</a></li>
+            <li><a href="/case-studies">Case studies</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/assessment">Readiness assessment</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/support">Raise a ticket</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">Get in touch</p>
+          <ul>
+            <li><a href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a></li>
+            <li><a href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a></li>
+          </ul>
+          <address class="site-footer__addr">{COMPANY.contact.address.full}</address>
+        </div>
+      </nav>
+    </div>
+
+    <div class="site-footer__base">
+      <p class="mono faint">© {year} {COMPANY.name}. All rights reserved.</p>
+      <ul class="site-footer__legal">
+        <li><a href="/privacy-policy">Privacy policy</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="/llms.txt">llms.txt</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: var(--z-content);
+    background: var(--paper);
+    border-top: 1px solid var(--hair);
+    padding-block: clamp(var(--s-16), 7vw, var(--s-24)) var(--s-8);
+  }
+
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+    gap: clamp(var(--s-10), 6vw, var(--s-20));
+  }
+
+  .site-footer__brand {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+
+  .site-footer__motto {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.022em;
+  }
+
+  .site-footer__about {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+    max-width: 34ch;
+  }
+
+  .site-footer__social {
+    display: flex;
+    gap: var(--s-5);
+    margin-top: var(--s-2);
+    font-size: var(--t-sm);
+  }
+
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-8);
+  }
+
+  .site-footer__nav ul {
+    margin-top: var(--s-3);
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  /* Padded to the WCAG 2.2 minimum target size. The list gap shrinks by the
+     same amount so the footer's density is unchanged. */
+  .site-footer__nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--ink);
+  }
+
+  .site-footer__addr {
+    margin-top: var(--s-4);
+    font-style: normal;
+    font-size: var(--t-sm);
+    color: var(--ink-faint);
+    max-width: 22ch;
+  }
+
+  .site-footer__base {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-6);
+    flex-wrap: wrap;
+    margin-top: clamp(var(--s-12), 6vw, var(--s-20));
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--hair);
+  }
+
+  .site-footer__legal {
+    display: flex;
+    gap: var(--s-6);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .site-footer__legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+
+  .site-footer__legal a:hover {
+    color: var(--ink);
+  }
+
+  @media (max-width: 1000px) {
+    .site-footer__cols {
+      grid-template-columns: 1fr;
+    }
+    .site-footer__nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .site-footer__nav {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

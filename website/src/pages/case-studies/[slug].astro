@@ -1,0 +1,180 @@
+---
+import Page from '@/layouts/Page.astro'
+import { CASE_STUDIES } from '@/lib/data/company'
+import { caseStudySchema } from '@/lib/seo'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  CASE_STUDIES.map((study) => ({
+    params: { slug: study.slug },
+    props: { study },
+  }))) satisfies GetStaticPaths
+
+const { study } = Astro.props
+const other = CASE_STUDIES.find((c) => c.slug !== study.slug)
+---
+
+<Page
+  title={study.title}
+  heading={study.title}
+  eyebrow={`Case study · ${study.sector}`}
+  intro={study.summary}
+  description={`${study.summary} A Frappe ERP implementation by TECHINCGLOBAL.`}
+  path={`/case-studies/${study.slug}`}
+  breadcrumb={study.sector}
+  parents={[{ label: 'Case studies', href: '/case-studies' }]}
+  type="article"
+  schema={[caseStudySchema(study)]}
+  ctaSource={`case:${study.slug}`}
+>
+  <div slot="head-extra">
+    <ul class="results">
+      {
+        study.results.map((r) => (
+          <li>
+            <span class="results__v num">{r.value}</span>
+            <span class="results__l">{r.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <section class="section">
+    <div class="shell narrative">
+      <article data-reveal>
+        <h2 class="h3">The challenge</h2>
+        <p class="body">{study.challenge}</p>
+
+        <h2 class="h3 next">What we did</h2>
+        <p class="body">{study.approach}</p>
+
+        <h2 class="h3 next">The outcome</h2>
+        <p class="body" data-speakable>{study.outcome}</p>
+      </article>
+
+      <aside data-reveal>
+        <blockquote class="pull">
+          <p>“{study.quote}”</p>
+          <footer class="mono">{study.sector} client</footer>
+        </blockquote>
+
+        {
+          other && (
+            <a class="other" href={`/case-studies/${other.slug}`}>
+              <p class="eyebrow">Next case study</p>
+              <h3 class="h4 other__title">{other.title}</h3>
+              <span class="mono other__go">Read it →</span>
+            </a>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(var(--s-8), 5vw, var(--s-16));
+    margin-top: clamp(var(--s-8), 4vw, var(--s-12));
+    padding-top: var(--s-8);
+    border-top: 1px solid rgb(11 13 24 / 0.12);
+  }
+
+  .results li {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .results__v {
+    font-size: var(--t-h3);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .results__l {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .narrative {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+
+  .body {
+    margin-top: var(--s-5);
+    color: var(--ink-2);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+    max-width: 56ch;
+  }
+
+  .next {
+    margin-top: clamp(var(--s-10), 5vw, var(--s-16));
+  }
+
+  aside {
+    display: grid;
+    gap: var(--s-6);
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-6));
+  }
+
+  .pull {
+    padding: clamp(var(--s-6), 3vw, var(--s-8));
+    background: var(--ink);
+    color: var(--paper-pure);
+    border-radius: 1rem;
+  }
+
+  .pull p {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .pull footer {
+    margin-top: var(--s-5);
+    color: rgb(255 255 255 / 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .other {
+    display: grid;
+    gap: var(--s-3);
+    padding: clamp(var(--s-5), 3vw, var(--s-8));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    box-shadow: var(--lift-1);
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .other:hover {
+    background: var(--n-100);
+  }
+
+  .other__go {
+    color: var(--ink-faint);
+  }
+
+  .other:hover .other__go {
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .narrative {
+      grid-template-columns: 1fr;
+    }
+    aside {
+      position: static;
+    }
+  }
+</style>

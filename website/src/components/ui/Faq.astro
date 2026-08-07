@@ -1,0 +1,157 @@
+---
+/**
+ * Q→A block.
+ *
+ * Built on <details>/<summary> so it is keyboard-accessible, screen-reader
+ * correct, and fully functional with no JavaScript. That matters twice over: it
+ * is the single most-quoted format for generative engines, so the answers must
+ * exist in the static HTML rather than being revealed by script.
+ */
+import type { Faq } from '@/lib/data/company'
+
+interface Props {
+  items: Faq[]
+  title?: string
+  class?: string
+}
+
+const { items, title = 'Questions, answered', class: className = '' } = Astro.props
+---
+
+<section class:list={['section faq', className]} aria-labelledby="faq-title">
+  <div class="shell faq__inner">
+    <h2 class="h2 faq__head" id="faq-title" data-reveal>{title}</h2>
+
+    <div class="faq__list" data-reveal-group>
+      {
+        items.map((item) => (
+          <details class="faq__item" data-reveal>
+            <summary class="faq__q">
+              <span class="faq__qt">{item.q}</span>
+              <span class="faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq__a">
+              <p data-speakable>{item.a}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(var(--s-8), 6vw, var(--s-20));
+    align-items: start;
+  }
+
+  .faq__head {
+    max-width: 16ch;
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-8));
+  }
+
+  .faq__list {
+    border-top: 1px solid var(--hair);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s-6);
+    padding: clamp(var(--s-4), 2vw, var(--s-6)) 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__qt {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    line-height: 1.25;
+    color: var(--ink-2);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .faq__q:hover .faq__qt,
+  [open] .faq__qt {
+    color: var(--ink);
+  }
+
+  /* Plus becoming a minus. Two pseudo-elements, no icon asset. */
+  .faq__icon {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.4em;
+    flex: none;
+  }
+
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1.5px;
+    background: var(--ink-faint);
+    transition:
+      transform var(--dur) var(--ease-in-out),
+      background var(--dur-fast) var(--ease-out);
+  }
+
+  .faq__icon::after {
+    transform: rotate(90deg);
+  }
+
+  [open] .faq__icon::after {
+    transform: rotate(0deg);
+  }
+
+  [open] .faq__icon::before,
+  [open] .faq__icon::after {
+    background: var(--ink);
+  }
+
+  .faq__a {
+    padding: 0 0 var(--s-6);
+    max-width: var(--measure);
+  }
+
+  .faq__a p {
+    color: var(--ink-dim);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [open] .faq__a {
+      animation: faq-in var(--dur) var(--ease-out);
+    }
+  }
+
+  @keyframes faq-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .faq__inner {
+      grid-template-columns: 1fr;
+    }
+    .faq__head {
+      position: static;
+    }
+  }
+</style>

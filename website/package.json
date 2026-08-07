@@ -1,0 +1,37 @@
+{
+  "name": "techincglobal-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TECHINCGLOBAL \u2014 Sri Lanka's #1 Frappe Partner. WebGL scroll journey.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro",
+    "og": "node scripts/make-og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.0.0",
+    "@astrojs/react": "^4.1.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "@fontsource-variable/inter-tight": "^5.1.1",
+    "@fontsource-variable/jetbrains-mono": "^5.1.2",
+    "astro": "^5.1.0",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.18",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.171.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/three": "^0.171.0",
+    "typescript": "^5.7.2"
+  }
+}

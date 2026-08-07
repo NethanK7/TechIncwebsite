@@ -1,0 +1,131 @@
+---
+import Base from '@/layouts/Base.astro'
+import { SERVICES, INDUSTRIES, COMPANY } from '@/lib/data/company'
+
+/**
+ * 404.
+ *
+ * Astro serves this for any unmatched route. Rather than a dead end it offers
+ * the three things someone who mistyped a URL is most likely to be after, plus
+ * the full service and industry lists — which also means a crawler that lands
+ * here still finds its way back into the site.
+ */
+const popular = [
+  { label: 'Frappe ERP services', href: '/services', hint: 'Implementation, customization, support' },
+  { label: 'ERP readiness assessment', href: '/assessment', hint: 'Ten questions, an honest score' },
+  { label: 'Book a consultation', href: '/contact', hint: 'A reply within one business day' },
+  { label: 'Raise a support ticket', href: '/support', hint: 'For existing clients' },
+]
+---
+
+<Base
+  title="Page not found"
+  description="That page does not exist. Find Frappe ERP services, the readiness assessment, or get in touch with TECHINCGLOBAL."
+  path="/404"
+  noindex
+>
+  <header class="nf-head">
+    <div class="shell">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="display nf-head__title">This page does not exist.</h1>
+      <p class="lead nf-head__intro">
+        The link may be out of date, or the address slightly off. Here is where most people
+        are heading.
+      </p>
+      <a class="btn btn--solid nf-head__cta" href="/">Back to the home page</a>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="shell">
+      <ul class="nf-popular">
+        {
+          popular.map((item) => (
+            <li>
+              <a class="nf-card" href={item.href}>
+                <span class="h4">{item.label}</span>
+                <span class="nf-card__hint">{item.hint}</span>
+                <span class="nf-card__go mono">Go →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="nf-lists">
+        <div>
+          <p class="eyebrow">All services</p>
+          <ul>
+            {SERVICES.map((s) => <li><a href={`/services/${s.slug}`}>{s.navName}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">All industries</p>
+          <ul>
+            {INDUSTRIES.map((i) => <li><a href={`/industries/${i.slug}`}>{i.name}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">Still stuck?</p>
+          <ul>
+            <li><a href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a></li>
+            <li><a href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf-head {
+    background: linear-gradient(180deg, var(--sky-100) 0%, var(--sky-200) 100%);
+    padding-top: calc(var(--header-h) + clamp(var(--s-12), 9vw, var(--s-24)));
+    padding-bottom: clamp(var(--s-12), 7vw, var(--s-24));
+  }
+  .nf-head__title { max-width: 16ch; margin-top: var(--s-4); }
+  .nf-head__intro { margin-top: var(--s-6); max-width: 46ch; }
+  .nf-head__cta { margin-top: var(--s-8); }
+
+  .nf-popular {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .nf-card {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    height: 100%;
+    padding: clamp(var(--s-5), 2.5vw, var(--s-8));
+    background: var(--paper-pure);
+    transition: background var(--dur) var(--ease-out);
+  }
+  .nf-card:hover { background: var(--n-100); }
+  .nf-card__hint { font-size: var(--t-sm); color: var(--ink-dim); }
+  .nf-card__go { margin-top: var(--s-3); color: var(--ink-faint); }
+  .nf-card:hover .nf-card__go { color: var(--ink); }
+
+  .nf-lists {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--s-8);
+    margin-top: clamp(var(--s-12), 6vw, var(--s-20));
+    padding-top: var(--s-8);
+    border-top: 1px solid var(--hair);
+  }
+  .nf-lists ul { margin-top: var(--s-3); display: grid; gap: var(--s-1); }
+  .nf-lists a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .nf-lists a:hover { color: var(--ink); }
+</style>

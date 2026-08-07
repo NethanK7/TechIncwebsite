@@ -1,0 +1,103 @@
+---
+import { COMPANY } from '@/lib/data/company'
+
+interface Props {
+  title?: string
+  body?: string
+  /** Analytics label prefix, so we can tell which page's CTA converted. */
+  source?: string
+}
+
+const {
+  title = 'Ready to run on one platform?',
+  body = `Talk to Sri Lanka's #1 Frappe Partner. We will tell you honestly whether an ERP change is the right move — and if it is not, we will say so.`,
+  source = 'page',
+} = Astro.props
+---
+
+<section class="cta" aria-labelledby="cta-title">
+  <div class="shell cta__inner">
+    <div class="cta__lead" data-reveal>
+      <h2 class="h2" id="cta-title">{title}</h2>
+      <p class="lead cta__body">{body}</p>
+      <div class="cta__actions">
+        <a class="btn btn--solid" href="/contact" data-cta={`${source}:consultation`}>
+          Book a consultation
+        </a>
+        <a class="btn btn--soft" href="/assessment" data-cta={`${source}:assessment`}>
+          Free readiness assessment
+        </a>
+      </div>
+    </div>
+
+    <ul class="cta__direct" data-reveal>
+      <li>
+        <span class="eyebrow">Email</span>
+        <a class="link" href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a>
+      </li>
+      <li>
+        <span class="eyebrow">Phone</span>
+        <a class="link" href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a>
+      </li>
+      <li>
+        <span class="eyebrow">Existing client</span>
+        <a class="link" href="/support" data-cta={`${source}:ticket`}>Raise a support ticket</a>
+      </li>
+      <li>
+        <span class="eyebrow">Office</span>
+        <span class="dim">{COMPANY.contact.address.full}</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cta {
+    background: var(--paper-pure);
+    border-top: 1px solid var(--hair);
+    padding-block: clamp(var(--s-20), 9vw, var(--s-32));
+  }
+
+  .cta__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(var(--s-10), 6vw, var(--s-20));
+    align-items: start;
+  }
+
+  .cta__lead h2 {
+    max-width: 18ch;
+  }
+
+  .cta__body {
+    margin-top: var(--s-5);
+    max-width: 44ch;
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-8);
+  }
+
+  .cta__direct {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--s-8);
+    padding-top: var(--s-4);
+  }
+
+  .cta__direct li {
+    display: grid;
+    gap: var(--s-2);
+    justify-items: start;
+    font-size: var(--t-sm);
+  }
+
+  @media (max-width: 900px) {
+    .cta__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

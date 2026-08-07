@@ -1,0 +1,218 @@
+---
+import Page from '@/layouts/Page.astro'
+import { INDUSTRIES, SERVICES, CASE_STUDIES, COMPANY } from '@/lib/data/company'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  INDUSTRIES.map((industry) => ({
+    params: { slug: industry.slug },
+    props: { industry },
+  }))) satisfies GetStaticPaths
+
+const { industry } = Astro.props
+
+/** Surface the matching case study when this sector has one. */
+const study = CASE_STUDIES.find((c) =>
+  c.sector.toLowerCase().startsWith(industry.name.split(' ')[0]!.toLowerCase()),
+)
+
+const faq = [
+  {
+    q: `Does TECHINCGLOBAL implement Frappe ERP for ${industry.name.toLowerCase()} companies in Sri Lanka?`,
+    a: `Yes. ${COMPANY.name} implements Frappe ERP for ${industry.name.toLowerCase()} businesses in Sri Lanka. ${industry.body}`,
+  },
+  {
+    q: `What does a ${industry.name.toLowerCase()} ERP implementation typically cover?`,
+    a: `A ${industry.name.toLowerCase()} implementation from ${COMPANY.name} typically addresses ${industry.challenges
+      .map((c) => c.charAt(0).toLowerCase() + c.slice(1))
+      .join('; ')}. Delivery follows the NXTGEN Agile methodology on a 12-week standard programme.`,
+  },
+]
+---
+
+<Page
+  title={`Frappe ERP for ${industry.name}`}
+  heading={`Frappe ERP for ${industry.name}`}
+  eyebrow="Industry"
+  intro={industry.summary}
+  description={`${industry.summary} Implemented by TECHINCGLOBAL — Sri Lanka's #1 Frappe Partner.`}
+  path={`/industries/${industry.slug}`}
+  breadcrumb={industry.name}
+  parents={[{ label: 'Industries', href: '/industries' }]}
+  faq={faq}
+  ctaSource={`industry:${industry.slug}`}
+>
+  <section class="section">
+    <div class="shell split">
+      <div data-reveal>
+        <h2 class="h3">How we approach it</h2>
+        <p class="prose lead-body">{industry.body}</p>
+
+        <h3 class="h4 sub">What we usually find</h3>
+        <ul class="problems">
+          {industry.challenges.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+
+      <aside data-reveal>
+        {
+          study && (
+            <a class="study" href={`/case-studies/${study.slug}`}>
+              <p class="eyebrow">Case study · {study.sector}</p>
+              <h3 class="h4 study__title">{study.title}</h3>
+              <blockquote class="study__quote">“{study.quote}”</blockquote>
+              <ul class="study__results">
+                {study.results.map((r) => (
+                  <li>
+                    <span class="study__v num">{r.value}</span>
+                    <span class="study__l">{r.label}</span>
+                  </li>
+                ))}
+              </ul>
+              <span class="mono study__go">Read the case study →</span>
+            </a>
+          )
+        }
+
+        <div class="panel">
+          <p class="eyebrow">Services that apply</p>
+          <ul class="panel__links">
+            {
+              SERVICES.slice(0, 5).map((s) => (
+                <li>
+                  <a class="link" href={`/services/${s.slug}`}>{s.navName}</a>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="btn btn--solid" href="/assessment" data-cta={`industry:${industry.slug}:assessment`}>
+            Check your readiness
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+
+  .lead-body {
+    margin-top: var(--s-5);
+    font-size: var(--t-lead);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 52ch;
+  }
+
+  .sub {
+    margin-top: clamp(var(--s-10), 5vw, var(--s-16));
+  }
+
+  .problems {
+    margin-top: var(--s-6);
+    border-top: 1px solid var(--hair);
+  }
+
+  .problems li {
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--hair);
+    color: var(--ink-2);
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+  }
+
+  .problems li::before {
+    content: '×';
+    color: var(--n-400);
+    font-size: 1.1em;
+    line-height: 1.3;
+  }
+
+  aside {
+    display: grid;
+    gap: var(--s-6);
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-6));
+  }
+
+  .study,
+  .panel {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+    padding: clamp(var(--s-6), 3vw, var(--s-8));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    box-shadow: var(--lift-1);
+  }
+
+  .study {
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .study:hover {
+    background: var(--n-100);
+  }
+
+  .study__quote {
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--ink);
+  }
+
+  .study__results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-6);
+    width: 100%;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--hair);
+  }
+
+  .study__results li {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .study__v {
+    font-size: var(--t-h4);
+    font-weight: 700;
+  }
+
+  .study__l {
+    font-size: var(--t-mono);
+    color: var(--ink-faint);
+  }
+
+  .study__go {
+    color: var(--ink-faint);
+  }
+
+  .study:hover .study__go {
+    color: var(--ink);
+  }
+
+  .panel__links {
+    display: grid;
+    gap: var(--s-3);
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+    aside {
+      position: static;
+    }
+  }
+</style>

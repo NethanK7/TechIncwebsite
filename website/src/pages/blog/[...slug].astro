@@ -1,0 +1,281 @@
+---
+import Page from '@/layouts/Page.astro'
+import { getCollection, render } from 'astro:content'
+import { abs } from '@/lib/seo'
+import { COMPANY } from '@/lib/data/company'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog', ({ data }) => !data.draft)
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, posts } }))
+}) satisfies GetStaticPaths
+
+const { post, posts } = Astro.props
+const { Content } = await render(post)
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+
+const related = posts
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
+  .slice(0, 3)
+
+const articleSchema = {
+  '@type': 'BlogPosting',
+  '@id': `${abs(`/blog/${post.id}`)}#article`,
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.published.toISOString(),
+  dateModified: (post.data.updated ?? post.data.published).toISOString(),
+  author: { '@type': 'Organization', name: COMPANY.name, url: COMPANY.url },
+  publisher: { '@id': `${COMPANY.url}/#organization` },
+  mainEntityOfPage: abs(`/blog/${post.id}`),
+  articleSection: post.data.topic,
+  timeRequired: `PT${post.data.readingMinutes}M`,
+  inLanguage: 'en',
+}
+---
+
+<Page
+  title={post.data.title}
+  heading={post.data.title}
+  eyebrow={post.data.topic}
+  intro={post.data.description}
+  description={post.data.description}
+  path={`/blog/${post.id}`}
+  breadcrumb={post.data.title}
+  parents={[{ label: 'Blog', href: '/blog' }]}
+  type="article"
+  publishedAt={post.data.published.toISOString()}
+  updatedAt={(post.data.updated ?? post.data.published).toISOString()}
+  schema={[articleSchema]}
+  faq={post.data.faq}
+  ctaSource={`blog:${post.id}`}
+>
+  <p slot="head-extra" class="byline mono">
+    <time datetime={post.data.published.toISOString()}>{fmt(post.data.published)}</time>
+    <span aria-hidden="true">·</span>
+    <span>{post.data.readingMinutes} min read</span>
+    <span aria-hidden="true">·</span>
+    <span>{COMPANY.name}</span>
+  </p>
+
+  <section class="section">
+    <div class="shell article">
+      <article class="copy">
+        <Content />
+      </article>
+
+      <aside data-reveal>
+        {
+          post.data.faq.length > 0 && (
+            <div class="qa">
+              <p class="eyebrow">In short</p>
+              <dl>
+                {post.data.faq.map((f) => (
+                  <div>
+                    <dt>{f.q}</dt>
+                    <dd data-speakable>{f.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )
+        }
+
+        <div class="next">
+          <p class="eyebrow">Keep reading</p>
+          <ul>
+            {
+              related.map((r) => (
+                <li>
+                  <a href={`/blog/${r.id}`}>
+                    <span class="next__t">{r.data.title}</span>
+                    <span class="next__m mono">{r.data.topic}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-8);
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .article {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+
+  /* ---- Long-form copy ---- */
+
+  .copy {
+    max-width: 62ch;
+    font-size: var(--t-lead);
+    line-height: 1.62;
+    color: var(--ink-2);
+  }
+
+  .copy :global(p + p),
+  .copy :global(ul),
+  .copy :global(ol) {
+    margin-top: var(--s-5);
+  }
+
+  .copy :global(h2) {
+    margin-top: clamp(var(--s-10), 5vw, var(--s-16));
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    max-width: 30ch;
+  }
+
+  .copy :global(h2 + p) {
+    margin-top: var(--s-5);
+  }
+
+  .copy :global(h3) {
+    margin-top: var(--s-10);
+    font-size: var(--t-h4);
+    color: var(--ink);
+  }
+
+  .copy :global(ul li),
+  .copy :global(ol li) {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    margin-top: var(--s-3);
+  }
+
+  .copy :global(ul li)::before {
+    content: '—';
+    color: var(--n-400);
+  }
+
+  .copy :global(ol) {
+    counter-reset: n;
+  }
+
+  .copy :global(ol li) {
+    counter-increment: n;
+  }
+
+  .copy :global(ol li)::before {
+    content: counter(n) '.';
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .copy :global(strong) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .copy :global(a) {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--n-400);
+    transition: text-decoration-color var(--dur-fast) var(--ease-out);
+  }
+
+  .copy :global(a:hover) {
+    text-decoration-color: var(--ink);
+  }
+
+  .copy :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    padding: 0.15em 0.4em;
+    background: var(--n-150);
+    border-radius: 0.25rem;
+  }
+
+  /* ---- Sidebar ---- */
+
+  aside {
+    display: grid;
+    gap: var(--s-6);
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-6));
+  }
+
+  .qa,
+  .next {
+    padding: clamp(var(--s-5), 3vw, var(--s-7));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    box-shadow: var(--lift-1);
+  }
+
+  .qa dl {
+    display: grid;
+    gap: var(--s-5);
+    margin-top: var(--s-4);
+  }
+
+  .qa dt {
+    font-weight: 600;
+    font-size: var(--t-sm);
+  }
+
+  .qa dd {
+    margin-top: var(--s-2);
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  .next ul {
+    display: grid;
+    gap: var(--s-4);
+    margin-top: var(--s-4);
+  }
+
+  .next li a {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .next__t {
+    font-size: var(--t-sm);
+    font-weight: 500;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .next li a:hover .next__t {
+    color: var(--ink);
+  }
+
+  .next__m {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 900px) {
+    .article {
+      grid-template-columns: 1fr;
+    }
+    aside {
+      position: static;
+    }
+  }
+</style>

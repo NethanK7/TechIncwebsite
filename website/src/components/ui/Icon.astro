@@ -1,0 +1,101 @@
+---
+/**
+ * Isometric line/solid icons, drawn inline.
+ *
+ * Matched to the reference's icon language: a true isometric projection, heavy
+ * black fills against open outlines, no rounded corners, no colour. Drawn by
+ * hand as SVG rather than pulled from a library because no icon set ships in
+ * this style, and four bespoke marks are cheaper than a dependency.
+ *
+ * All are drawn on a 64×64 grid with a 2:1 isometric axis (dx 1, dy 0.5).
+ */
+
+interface Props {
+  name: 'partner' | 'method' | 'compliance' | 'adoption' | 'support'
+  class?: string
+}
+
+const { name, class: className = '' } = Astro.props
+---
+
+<svg
+  class:list={['icon', className]}
+  viewBox="0 0 64 64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linejoin="miter"
+  aria-hidden="true"
+  role="presentation"
+>
+  {
+    name === 'partner' && (
+      /* Certified plinth: an isometric block with a solid seal on top. */
+      <g>
+        <path d="M8 40 32 54 56 40 32 26z" />
+        <path d="M8 40v6l24 14 24-14v-6" />
+        <path d="M32 54v6" />
+        <path d="M20 33 32 40 44 33 32 26z" fill="currentColor" stroke="none" />
+        <path d="M32 8v14" />
+        <path d="M24 14 32 8l8 6" />
+      </g>
+    )
+  }
+  {
+    name === 'method' && (
+      /* Five stacked plates stepping up — the phased methodology. */
+      <g>
+        <path d="M4 46 20 55 36 46 20 37z" fill="currentColor" stroke="none" />
+        <path d="M18 37 34 46 50 37 34 28z" />
+        <path d="M32 28 48 37 60 30 44 21z" />
+        <path d="M20 55v-4M34 46v-4M48 37v-4" />
+      </g>
+    )
+  }
+  {
+    name === 'compliance' && (
+      /* Document stack with a solid check plate. */
+      <g>
+        <path d="M10 34 32 46 54 34 32 22z" />
+        <path d="M10 34v5l22 12 22-12v-5" />
+        <path d="M14 26 32 36 50 26 32 16z" />
+        <path d="M24 27 30 30 40 24" stroke-width="2.4" />
+        <path d="M32 6v8" />
+        <path d="M44 46 54 52 44 58 34 52z" fill="currentColor" stroke="none" />
+      </g>
+    )
+  }
+  {
+    name === 'adoption' && (
+      /* Three figures on an isometric plate. */
+      <g>
+        <path d="M6 46 32 60 58 46 32 32z" />
+        <ellipse cx="22" cy="34" rx="5" ry="5" fill="currentColor" stroke="none" />
+        <path d="M14 47c0-6 4-9 8-9s8 3 8 9l-8 4z" fill="currentColor" stroke="none" />
+        <ellipse cx="41" cy="30" rx="4.4" ry="4.4" fill="currentColor" stroke="none" />
+        <path d="M34 42c0-5.4 3.4-8 7-8s7 2.6 7 8l-7 3.6z" fill="currentColor" stroke="none" />
+        <ellipse cx="32" cy="42" rx="3.6" ry="3.6" fill="currentColor" stroke="none" />
+        <path d="M26 52c0-4.6 2.8-6.8 6-6.8s6 2.2 6 6.8l-6 3z" fill="currentColor" stroke="none" />
+      </g>
+    )
+  }
+  {
+    name === 'support' && (
+      /* Isometric ring of cabinets around a solid core. */
+      <g>
+        <path d="M6 38 32 52 58 38 32 24z" />
+        <path d="M24 34 32 38 40 34 32 30z" fill="currentColor" stroke="none" />
+        <path d="M12 30 20 34M52 30 44 34M32 18v6M32 52v6" />
+        <path d="M14 44 22 48M50 44 42 48" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .icon {
+    width: clamp(2.75rem, 4vw, 3.75rem);
+    height: auto;
+    color: var(--ink);
+  }
+</style>

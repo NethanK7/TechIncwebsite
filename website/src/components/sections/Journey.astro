@@ -1,0 +1,539 @@
+---
+/**
+ * Hero + pinned scroll journey.
+ *
+ * `[data-journey]` is the element the engine measures. It contains the hero
+ * screen followed by one screen per narrative stage, so its scroll span maps
+ * linearly onto the camera's flight: one screen of scroll = one keyframe.
+ *
+ * Adding or removing a stage here without updating KEYFRAMES in
+ * lib/three/layout.ts will desynchronise the two. They are intentionally the
+ * same length and the same order (JOURNEY = KEYFRAMES minus the leading
+ * `origin` frame, which is this hero).
+ *
+ * The stepper is the reference's flow module: previous step small, current step
+ * expanded with its body copy, next step small, joined by a hairline. Showing
+ * three of ten at a time is what keeps a long narrative uncluttered.
+ *
+ * Every word is in the static HTML. If WebGL never starts, the whole thing
+ * degrades to a readable list of statements on the pale field.
+ */
+import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
+---
+
+<section class="journey" data-journey data-stage="origin" data-stage-index="0">
+  <!-- Canvas is prepended here by lib/three/journey.ts. -->
+
+  <!-- Static fallback: a soft horizon wash, so the copy always has a stage. -->
+  <div class="journey__sky" aria-hidden="true"></div>
+
+  <!-- Scrim behind the hero copy. The camera aims above the model so the city
+       sits low in frame, but tall towers still reach into the headline; a soft
+       wash of the field colour guarantees contrast without a visible edge. -->
+  <div class="journey__scrim" aria-hidden="true"></div>
+
+  <!-- ---------------- Hero: one screen, stage 0 ---------------- -->
+  <div class="journey__screen journey__screen--hero">
+    <div class="shell hero">
+      <p class="hero__eyebrow eyebrow" data-reveal>{COMPANY.motto}</p>
+      <h1 class="display hero__title" data-reveal data-speakable>
+        One platform.<br />Every department.
+      </h1>
+      <p class="hero__lead" data-reveal>
+        {COMPANY.name} is Sri Lanka's first and only authorized Frappe Technologies
+        partner. We have connected finance, production, stock, sales, people and
+        projects into a single system more than 150 times.
+      </p>
+      <div class="hero__actions" data-reveal>
+        <a class="btn btn--solid" href="/contact" data-cta="hero:consultation">
+          Book a consultation
+        </a>
+        <a class="btn btn--line" href="/assessment" data-cta="hero:assessment">
+          Free readiness assessment
+        </a>
+      </div>
+      <p class="scroll-hint mono" aria-hidden="true">Scroll to follow the build</p>
+    </div>
+  </div>
+
+  <!-- ---------------- Stepper: one screen per stage ---------------- -->
+
+  <div class="journey__flow">
+    <!-- Fixed overlay. The scroll screens below drive which step is active. -->
+    <ol class="steps" data-steps aria-label="How an ERP implementation connects your business">
+      {
+        JOURNEY.map((stage, i) => (
+          <li class="step" data-step={i + 1} data-key={stage.key}>
+            <span class="step__n mono">{stage.index}</span>
+            <div class="step__body">
+              <h2 class="step__title">{stage.title}</h2>
+              <p class="step__text">{stage.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <!-- Scroll length. One screen per stage; the copy above is the visible
+         layer, and these carry a screen-reader-only heading so the document
+         outline still describes the journey without JS. -->
+    {
+      JOURNEY.map((stage) => (
+        <div class="journey__screen" data-screen={stage.key}>
+          <div class="shell journey__static">
+            <p class="eyebrow">{stage.eyebrow}</p>
+            <h2 class="h3">{stage.title}</h2>
+            <p class="prose">{stage.body}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <!-- Stats band closing the pale field, before the white sections begin. -->
+  <div class="journey__stats">
+    <div class="shell">
+      <ul class="statband" data-reveal-group>
+        {
+          STATS.map((s) => (
+            <li data-reveal>
+              <span class="statband__v num">{s.value}</span>
+              <span class="statband__l">{s.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --------------------------------------------------------------------------
+     The pale field. Everything in this section sits on it; the white content
+     sections begin immediately after.
+     -------------------------------------------------------------------------- */
+
+  .journey {
+    position: relative;
+    z-index: var(--z-content);
+    background: linear-gradient(180deg, var(--sky-100) 0%, var(--sky-200) 45%, var(--sky-300) 100%);
+  }
+
+  .journey__screen {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    /* Bottom-aligned so the fallback copy sits where the stepper sits. */
+    align-items: flex-end;
+    padding-bottom: clamp(var(--s-8), 8vh, var(--s-20));
+  }
+
+  /* ---- Canvas + fallback ---- */
+
+  /* Fixed rather than sticky: one fixed canvas behind eleven scrolling screens
+     is simpler and cheaper than a sticky wrapper, and the sections below paint
+     an opaque background over it. */
+  .journey :global(.journey__canvas) {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-out);
+  }
+
+  .journey[data-journey-state='running'] :global(.journey__canvas) {
+    opacity: 1;
+  }
+
+  .journey[data-journey-visible='false'] :global(.journey__canvas),
+  .journey[data-journey-visible='false'] .journey__sky {
+    opacity: 0;
+  }
+
+  .journey__sky {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 1.4s var(--ease-out);
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 88%, rgb(255 255 255 / 0.85), transparent 70%),
+      radial-gradient(ellipse 90% 60% at 20% 20%, rgb(255 255 255 / 0.5), transparent 70%);
+  }
+
+  /* Once WebGL is up the wash is redundant. */
+  .journey[data-journey-state='running'] .journey__sky {
+    opacity: 0.35;
+  }
+
+  /* Only covers the top of the first screen, and only while the hero is on
+     screen — it must not wash out the districts further down the flight. */
+  .journey__scrim {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 100svh;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      var(--sky-100) 0%,
+      rgb(234 241 248 / 0.92) 34%,
+      rgb(234 241 248 / 0.55) 56%,
+      transparent 78%
+    );
+  }
+
+  /* --------------------------------------------------------------------------
+     Hero — centred, exactly as the reference composes it. The 3D camera aims
+     above the model so the city occupies the lower half of the frame and this
+     copy has the upper half to itself.
+     -------------------------------------------------------------------------- */
+
+  .journey__screen--hero {
+    align-items: flex-start;
+    padding-top: calc(var(--header-h) + clamp(var(--s-8), 7vh, var(--s-20)));
+    z-index: 2;
+  }
+
+  .hero {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-5);
+  }
+
+  .hero__eyebrow {
+    color: var(--ink-2);
+  }
+
+  .hero__title {
+    max-width: 20ch;
+  }
+
+  .hero__lead {
+    font-size: var(--t-lead);
+    line-height: 1.4;
+    letter-spacing: -0.012em;
+    color: var(--ink-2);
+    max-width: 44ch;
+    margin-top: var(--s-1);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-3);
+    margin-top: var(--s-4);
+  }
+
+  .scroll-hint {
+    margin-top: var(--s-10);
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-hint {
+      animation: hint 2.8s var(--ease-in-out) infinite;
+    }
+  }
+
+  @keyframes hint {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     Stepper
+     -------------------------------------------------------------------------- */
+
+  .journey__flow {
+    position: relative;
+  }
+
+  .steps {
+    position: fixed;
+    left: var(--gutter);
+    bottom: clamp(var(--s-8), 8vh, var(--s-20));
+    z-index: 3;
+    width: min(30rem, calc(100vw - var(--gutter) * 2));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+
+  .steps.is-live {
+    opacity: 1;
+  }
+
+  /* Every step is laid out, but only the active one and its immediate
+     neighbours are given height. Collapsing to zero height rather than
+     display:none keeps the transition animatable. */
+  .step {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: var(--s-4);
+    align-items: start;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-height var(--dur) var(--ease-out),
+      opacity var(--dur) var(--ease-out);
+  }
+
+  .step.is-near {
+    max-height: 3rem;
+    opacity: 1;
+  }
+
+  .step.is-active {
+    max-height: 22rem;
+    opacity: 1;
+  }
+
+  /* The number badge. The active step's number gets a white chip, which is the
+     reference's one piece of chrome in this module. */
+  .step__n {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.7rem;
+    color: var(--ink-faint);
+    font-weight: 500;
+    transition:
+      background var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+
+  .step.is-active .step__n {
+    background: var(--paper-pure);
+    color: var(--ink);
+    box-shadow: 0 6px 20px -8px rgb(11 13 24 / 0.22);
+  }
+
+  .step__title {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    color: var(--ink-faint);
+    padding-top: 0.5em;
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .step.is-active .step__title {
+    font-size: var(--t-h3);
+    color: var(--ink);
+    padding-top: 0.3em;
+  }
+
+  .step__text {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    max-width: 42ch;
+    transition:
+      max-height var(--dur) var(--ease-out),
+      opacity var(--dur) var(--ease-out),
+      margin-top var(--dur) var(--ease-out);
+  }
+
+  .step.is-active .step__text {
+    max-height: 14rem;
+    opacity: 1;
+    margin-top: var(--s-3);
+  }
+
+  /* Hairline joining the numbers into a single vertical run. */
+  .step + .step.is-near .step__n::before,
+  .step + .step.is-active .step__n::before {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: var(--s-6);
+    margin-top: calc(var(--s-6) * -1 - 0.6rem);
+    background: var(--hair-strong);
+  }
+
+  /* The per-screen static copy is the no-JS / no-WebGL layer. Once the stepper
+     is live it is hidden, because the stepper is showing the same words. */
+  /* Where it does show (no JS, mobile, reduced motion) it is anchored bottom-left
+     to match the stepper exactly, so the two layers never disagree about where
+     stage copy lives. */
+  .journey__static {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 32rem;
+    margin-right: auto;
+  }
+
+  /* Desktop with JS: the stepper is the only stage copy. Hidden outright rather
+     than faded, so it never occupies the centre of the frame at any point. */
+  @media (min-width: 781px) {
+    html:not(.no-js) .journey__static {
+      display: none;
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     Stats band
+     -------------------------------------------------------------------------- */
+
+  .journey__stats {
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(var(--s-16), 8vw, var(--s-24));
+  }
+
+  .statband {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--s-8);
+    padding-top: var(--s-8);
+    border-top: 1px solid rgb(11 13 24 / 0.12);
+  }
+
+  .statband li {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .statband__v {
+    font-size: var(--t-h3);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .statband__l {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  /* --------------------------------------------------------------------------
+     Small screens: the stepper would cover the model, so the static per-screen
+     copy is used instead and the fixed overlay is dropped.
+     -------------------------------------------------------------------------- */
+
+  @media (max-width: 780px) {
+    .steps {
+      display: none;
+    }
+    .journey__screen {
+      min-height: 82svh;
+    }
+    .journey__static {
+      padding: var(--s-6);
+      background: rgb(255 255 255 / 0.72);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+    }
+  }
+
+  /* Reduced motion: no fixed layers at all, just a readable sequence. */
+  @media (prefers-reduced-motion: reduce) {
+    .steps,
+    .journey__sky {
+      display: none;
+    }
+    /* Overrides the desktop `display: none` — with no camera flight, the static
+       copy is the only copy there is. */
+    html:not(.no-js) .journey__static {
+      display: grid;
+    }
+    .journey__screen {
+      min-height: auto;
+      align-items: flex-start;
+      padding-block: var(--s-16);
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Drives the stepper from the stage the engine publishes on the mount, and
+   * hides the fixed layers once the journey has scrolled past.
+   *
+   * Deliberately reads `data-stage-index` rather than doing any scroll maths of
+   * its own — there is exactly one source of truth for where we are in the
+   * flight, and it is the engine.
+   *
+   * Without the engine (no WebGL, reduced motion), an IntersectionObserver on
+   * the per-stage screens drives the same attribute, so the stepper still works.
+   */
+  function initJourneyUi() {
+    const mount = document.querySelector<HTMLElement>('[data-journey]')
+    if (!mount || mount.dataset.uiBound) return
+    mount.dataset.uiBound = '1'
+
+    const list = mount.querySelector<HTMLElement>('[data-steps]')
+    const steps = Array.from(mount.querySelectorAll<HTMLElement>('.step'))
+    if (!list || !steps.length) return
+
+    const paint = () => {
+      // Stage 0 is the hero; stages 1..n map onto steps 1..n.
+      const stage = Number(mount.getAttribute('data-stage-index') ?? '0')
+      const active = stage // step[0] has data-step="1", so index === stage - 1
+
+      list.classList.toggle('is-live', stage >= 1)
+
+      steps.forEach((el, i) => {
+        const n = i + 1
+        el.classList.toggle('is-active', n === active)
+        el.classList.toggle('is-near', Math.abs(n - active) === 1)
+      })
+    }
+
+    paint()
+    new MutationObserver(paint).observe(mount, {
+      attributes: true,
+      attributeFilter: ['data-stage-index'],
+    })
+
+    // Hide the fixed canvas and stepper once the journey leaves the viewport.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        ([entry]) => {
+          const visible = !!entry?.isIntersecting
+          mount.setAttribute('data-journey-visible', String(visible))
+          if (!visible) list.classList.remove('is-live')
+          else paint()
+        },
+        { threshold: 0 },
+      ).observe(mount)
+
+      // Fallback driver: if the engine never claims the mount, let the screens
+      // themselves report the stage so the stepper is not dead.
+      const screens = Array.from(mount.querySelectorAll<HTMLElement>('[data-screen]'))
+      const screenIo = new IntersectionObserver(
+        (entries) => {
+          if (mount.getAttribute('data-journey-state') === 'running') return
+          for (const e of entries) {
+            if (!e.isIntersecting) continue
+            const i = screens.indexOf(e.target as HTMLElement)
+            if (i > -1) mount.setAttribute('data-stage-index', String(i + 1))
+          }
+        },
+        { threshold: 0.5 },
+      )
+      screens.forEach((s) => screenIo.observe(s))
+    }
+  }
+
+  initJourneyUi()
+  document.addEventListener('astro:page-load', initJourneyUi)
+</script>

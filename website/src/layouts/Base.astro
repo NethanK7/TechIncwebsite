@@ -1,0 +1,142 @@
+---
+import '@/styles/global.css'
+import { ClientRouter } from 'astro:transitions'
+import Header from '@/components/ui/Header.astro'
+import Footer from '@/components/ui/Footer.astro'
+import { COMPANY } from '@/lib/data/company'
+import { abs, pageTitle, baseGraph, graph, type SeoInput } from '@/lib/seo'
+
+interface Props extends SeoInput {
+  /** Label for the last breadcrumb crumb. Defaults to the h1-ish title. */
+  breadcrumb?: string
+  /** Set on the home page, which owns the persistent WebGL canvas. */
+  bodyClass?: string
+}
+
+const {
+  title,
+  description,
+  path,
+  image = '/og/default.png',
+  type = 'website',
+  publishedAt,
+  updatedAt,
+  noindex = false,
+  schema = [],
+  faq,
+  breadcrumb,
+  bodyClass = '',
+} = Astro.props
+
+const fullTitle = pageTitle(title)
+const canonical = abs(path)
+const ogImage = abs(image)
+const jsonld = graph(
+  baseGraph(
+    { title, description, path, image, type, publishedAt, updatedAt, schema, faq },
+    breadcrumb ?? title,
+  ),
+)
+---
+
+<!doctype html>
+<html lang="en" class="preload no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {
+      !noindex && (
+        <meta
+          name="robots"
+          content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+        />
+      )
+    }
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={COMPANY.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Entity + geo signals -->
+    <meta name="author" content={COMPANY.name} />
+    <meta name="publisher" content={COMPANY.name} />
+    <meta name="geo.region" content="LK-1" />
+    <meta name="geo.placename" content={COMPANY.contact.address.locality} />
+    <meta
+      name="geo.position"
+      content={`${COMPANY.contact.address.lat};${COMPANY.contact.address.lng}`}
+    />
+    <meta name="theme-color" content="#dde8f3" />
+    <meta name="color-scheme" content="light" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="text/markdown" href={abs(`/md${path === '/' ? '/index' : path}.md`)} />
+
+    <!-- Structured data: one @graph so the whole page validates in a single pass. -->
+    <script type="application/ld+json" set:html={jsonld} is:inline />
+
+    <!-- Runs before paint: kills the no-js state and prevents the browser
+         restoring a mid-page scroll position into a pinned WebGL timeline. -->
+    <script is:inline>
+      document.documentElement.classList.remove('no-js')
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    </script>
+
+    <ClientRouter />
+  </head>
+
+  <body class={bodyClass}>
+    <Header />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      import { boot, unboot } from '@/lib/boot'
+      import { initCtaTracking } from '@/lib/analytics'
+      import { refreshScroll } from '@/lib/scroll'
+
+      const start = () => {
+        boot()
+        initCtaTracking()
+      }
+
+      start()
+      document.addEventListener('astro:after-swap', () => {
+        window.scrollTo(0, 0)
+        refreshScroll()
+      })
+      document.addEventListener('astro:before-preparation', unboot)
+      document.addEventListener('astro:page-load', start)
+    </script>
+  </body>
+</html>
+
+<style>
+  #main {
+    position: relative;
+    z-index: var(--z-content);
+  }
+</style>

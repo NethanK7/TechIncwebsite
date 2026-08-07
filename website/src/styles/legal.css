@@ -1,0 +1,40 @@
+/* Long-form legal copy. One narrow measure, generous rhythm, nothing else. */
+.legal {
+  max-width: 68ch;
+  color: var(--ink-2);
+}
+.legal h2 {
+  margin-top: clamp(var(--s-10), 5vw, var(--s-16));
+  font-size: var(--t-h4);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.legal h2:first-child { margin-top: 0; }
+.legal p, .legal ul { margin-top: var(--s-4); }
+.legal ul { display: grid; gap: var(--s-3); }
+.legal li { display: grid; grid-template-columns: 1.5rem 1fr; }
+.legal li::before { content: '—'; color: var(--n-400); }
+.legal strong { color: var(--ink); font-weight: 600; }
+.legal a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--n-400);
+}
+.legal a:hover { text-decoration-color: var(--ink); }
+.legal code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+  background: var(--n-150);
+  border-radius: 0.25rem;
+}
+.legal__note {
+  margin-top: clamp(var(--s-10), 5vw, var(--s-16));
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--hair);
+  font-size: var(--t-sm);
+  color: var(--ink-faint);
+}

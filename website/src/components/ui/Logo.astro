@@ -1,0 +1,39 @@
+---
+/**
+ * The TECHINCGLOBAL wordmark, inlined so it inherits `currentColor` and can be
+ * animated. Path data comes from the supplied logo.svg via lib/data/logo.ts.
+ */
+import { LOGO_PATH, LOGO_VIEWBOX } from '@/lib/data/logo'
+
+interface Props {
+  /** Rendered height; width follows the intrinsic 1277:257 ratio. */
+  height?: string
+  class?: string
+  /** Decorative when the mark sits next to a text label that already names us. */
+  decorative?: boolean
+}
+
+const { height = '1.5rem', class: className = '', decorative = false } = Astro.props
+---
+
+<svg
+  class:list={['logo', className]}
+  viewBox={LOGO_VIEWBOX}
+  fill="currentColor"
+  style={`height:${height}`}
+  role={decorative ? 'presentation' : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : 'TECHINCGLOBAL'}
+>
+  {!decorative && <title>TECHINCGLOBAL</title>}
+  <path fill-rule="evenodd" d={LOGO_PATH} />
+</svg>
+
+<style>
+  .logo {
+    width: auto;
+    display: block;
+    /* The mark's own shapes carry the weight; never let it get blurry. */
+    shape-rendering: geometricPrecision;
+  }
+</style>

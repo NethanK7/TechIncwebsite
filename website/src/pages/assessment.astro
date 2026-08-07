@@ -1,0 +1,93 @@
+---
+import Page from '@/layouts/Page.astro'
+import Assessment from '@/components/islands/Assessment.tsx'
+import { QUESTIONS } from '@/lib/data/assessment'
+import { COMPANY } from '@/lib/data/company'
+import { abs } from '@/lib/seo'
+import '@/styles/forms.css'
+import '@/styles/assessment.css'
+
+const faq = [
+  {
+    q: 'What is the ERP readiness assessment?',
+    a: `The ERP readiness assessment is a free ten-question tool from ${COMPANY.name} that scores how ready an organisation is to benefit from an ERP implementation now. It takes about five minutes, requires no email address to see the score, and returns a recommendation — including advising against proceeding when that is the honest answer.`,
+  },
+  {
+    q: 'What does the readiness score measure?',
+    a: 'The score measures readiness to benefit from an implementation now, not how much software you already own. A company running on spreadsheets with a committed owner-sponsor scores higher than one with a heavily customised legacy ERP and no internal sponsor, because sponsorship and internal capacity are the strongest predictors of success.',
+  },
+  {
+    q: 'Is the assessment free?',
+    a: 'Yes. It is free, needs no email address to see your result, and there is no obligation. Contact details are only requested if you want the reasoning written up and sent to you.',
+  },
+]
+
+/** A WebApplication node: this is a tool, and describing it as one earns a
+ *  richer result than a generic WebPage. */
+const schema = [
+  {
+    '@type': 'WebApplication',
+    '@id': `${abs('/assessment')}#tool`,
+    name: 'ERP Readiness Assessment',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    url: abs('/assessment'),
+    description: `A free ${QUESTIONS.length}-question tool that scores how ready your organisation is for a Frappe ERP implementation.`,
+    provider: { '@id': `${COMPANY.url}/#organization` },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'LKR' },
+    isAccessibleForFree: true,
+  },
+]
+---
+
+<Page
+  title="Free ERP Readiness Assessment"
+  heading="How ready are you, really?"
+  eyebrow="Free tool"
+  intro={`${QUESTIONS.length} questions, about five minutes, and an honest score. No email needed to see your result — and we will tell you if the answer is “not yet”.`}
+  description="A free 10-question ERP readiness assessment from TECHINCGLOBAL, Sri Lanka's #1 Frappe Partner. Get a score, the reasoning, and what to do next."
+  path="/assessment"
+  breadcrumb="Assessment"
+  schema={schema}
+  faq={faq}
+  ctaSource="assessment"
+>
+  <section class="section">
+    <div class="shell">
+      <Assessment client:load />
+    </div>
+  </section>
+
+  <!-- The question set in static HTML. The island replaces it interactively, but
+       having the real questions crawlable is what makes this page rank for the
+       long-tail queries people actually type. -->
+  <section class="section section--tight questions">
+    <div class="shell">
+      <h2 class="h3" data-reveal>What the assessment asks</h2>
+      <ol class="qlist" data-reveal-group>
+        {
+          QUESTIONS.map((q, i) => (
+            <li data-reveal>
+              <span class="qlist__n mono">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 class="h4">{q.question}</h3>
+                <p class="qlist__hint">{q.hint}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .questions { border-top: 1px solid var(--hair); }
+  .qlist { margin-top: var(--s-8); border-top: 1px solid var(--hair); }
+  .qlist li {
+    display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: var(--s-5);
+    padding: var(--s-5) 0; border-bottom: 1px solid var(--hair);
+  }
+  .qlist__n { color: var(--ink-faint); padding-top: 0.35em; }
+  .qlist__hint { margin-top: var(--s-2); font-size: var(--t-sm); color: var(--ink-dim); max-width: 60ch; }
+</style>

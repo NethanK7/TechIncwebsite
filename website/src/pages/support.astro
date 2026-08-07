@@ -1,0 +1,134 @@
+---
+import Page from '@/layouts/Page.astro'
+import Form from '@/components/islands/Form.tsx'
+import { COMPANY } from '@/lib/data/company'
+import '@/styles/forms.css'
+
+const fields = [
+  { name: 'name', label: 'Your name', required: true, autoComplete: 'name' },
+  { name: 'email', label: 'Work email', type: 'email' as const, required: true, autoComplete: 'email' },
+  { name: 'organization', label: 'Organisation', autoComplete: 'organization' },
+  {
+    name: 'priority', label: 'Priority', type: 'select' as const,
+    options: ['Low', 'Medium', 'High', 'Urgent'], required: true,
+    help: 'Urgent means production is stopped or financial data is at risk.',
+  },
+  {
+    name: 'category', label: 'Area', type: 'select' as const, wide: true,
+    options: [
+      'Accounting & finance', 'Inventory & warehouse', 'Manufacturing', 'Sales & CRM',
+      'HR & payroll', 'Projects', 'Reports & printing', 'Integrations', 'Performance',
+      'Access & permissions', 'Something else',
+    ],
+  },
+  {
+    name: 'subject', label: 'Subject', required: true, wide: true,
+    placeholder: 'One line — what is broken',
+  },
+  {
+    name: 'description', label: 'What happened?', type: 'textarea' as const, required: true,
+    placeholder: 'What you were doing, what you expected, and what happened instead. Document names and error messages help a lot.',
+    help: 'Include the document number and the exact error text if you have them.',
+  },
+]
+
+const faq = [
+  { q: 'How do I raise a support ticket with TECHINCGLOBAL?',
+    a: `Existing clients can raise a support ticket at ${COMPANY.url}/support. Every submission creates a tracked ticket in our helpdesk with an SLA, and you receive the ticket reference by email. Urgent production issues can also be phoned through on ${COMPANY.contact.phone}.` },
+  { q: 'What support does TECHINCGLOBAL provide after go-live?',
+    a: 'TECHINCGLOBAL provides SLA-backed support with tracked tickets, Frappe version upgrades with regression testing, database and performance optimization, phased rollout of additional modules, and quarterly optimization reviews.' },
+  { q: 'What counts as an urgent ticket?',
+    a: 'Urgent means production is stopped or financial data is at risk — for example a failed period close, a blocked dispatch, or a payroll run that cannot complete. Urgent tickets are escalated immediately rather than queued.' },
+]
+---
+
+<Page
+  title="Raise a Support Ticket"
+  heading="Raise a support ticket."
+  eyebrow="Support"
+  intro="For existing clients. Every ticket you raise here is tracked against an SLA in our helpdesk — not left in an inbox."
+  description="Raise a tracked, SLA-backed Frappe ERP support ticket with TECHINCGLOBAL, Sri Lanka's #1 Frappe Partner."
+  path="/support"
+  breadcrumb="Support"
+  faq={faq}
+  cta={false}
+>
+  <section class="section">
+    <div class="shell support">
+      <div>
+        <h2 class="h3">Tell us what is happening</h2>
+        <p class="dim support__lead">
+          The more specific you are, the faster this gets resolved. Document numbers and the
+          exact error text are the two things that most often save a round trip.
+        </p>
+        <Form
+          client:load
+          endpoint="/api/ticket"
+          formName="ticket"
+          fields={fields}
+          submitLabel="Open ticket"
+          successTitle="Ticket opened."
+          successBody="It is now in our helpdesk queue with an SLA against it. You will get the reference by email, and an agent will pick it up within the SLA window."
+        />
+      </div>
+
+      <aside class="support__aside">
+        <div class="block">
+          <p class="eyebrow">Production down?</p>
+          <p class="block__text">
+            Do not wait on the form. Call us and we will escalate immediately.
+          </p>
+          <a class="btn btn--solid" href={`tel:${COMPANY.contact.phoneHref}`}>
+            {COMPANY.contact.phone}
+          </a>
+        </div>
+
+        <div class="block">
+          <p class="eyebrow">What happens next</p>
+          <ol class="steps">
+            <li>Your ticket is created and given a reference.</li>
+            <li>It is routed to the consultant who knows your instance.</li>
+            <li>You get a first response inside the SLA window.</li>
+            <li>Resolution, then a note on how to avoid a repeat.</li>
+          </ol>
+        </div>
+
+        <div class="block">
+          <p class="eyebrow">Not a client yet?</p>
+          <p class="block__text">
+            This form is for existing support contracts. For anything else, start here.
+          </p>
+          <a class="btn btn--line" href="/contact">Contact us</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .support {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+  .support__lead { margin: var(--s-4) 0 var(--s-8); max-width: 50ch; }
+  .support__aside { display: grid; gap: var(--s-5); }
+  .block {
+    display: grid; gap: var(--s-4); justify-items: start;
+    padding: clamp(var(--s-5), 3vw, var(--s-7));
+    background: var(--paper-pure); border: 1px solid var(--hair);
+    border-radius: 1rem; box-shadow: var(--lift-1);
+  }
+  .block__text { font-size: var(--t-sm); color: var(--ink-dim); }
+  .steps { display: grid; gap: var(--s-3); counter-reset: s; }
+  .steps li {
+    display: grid; grid-template-columns: 1.5rem 1fr;
+    font-size: var(--t-sm); color: var(--ink-dim); counter-increment: s;
+  }
+  .steps li::before {
+    content: counter(s); color: var(--ink-faint);
+    font-family: var(--font-mono); font-size: var(--t-mono);
+  }
+  @media (max-width: 900px) { .support { grid-template-columns: 1fr; } }
+</style>

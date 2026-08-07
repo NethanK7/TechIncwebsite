@@ -1,0 +1,114 @@
+---
+import Page from '@/layouts/Page.astro'
+import { getCollection } from 'astro:content'
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.published.getTime() - a.data.published.getTime(),
+)
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+---
+
+<Page
+  title="Blog"
+  heading="Writing about ERP, honestly."
+  eyebrow="Resources"
+  intro="Platform choices, business cases, and the parts of an ERP implementation that vendors tend not to mention."
+  description="Articles on Frappe ERP, implementation methodology, legacy modernization and digital transformation for Sri Lankan businesses."
+  path="/blog"
+  breadcrumb="Blog"
+  ctaSource="blog"
+>
+  <section class="section">
+    <div class="shell">
+      <ul class="posts" data-reveal-group>
+        {
+          posts.map((post) => (
+            <li data-reveal>
+              <a class="post" href={`/blog/${post.id}`}>
+                <div class="post__meta">
+                  <span class="eyebrow">{post.data.topic}</span>
+                  <time class="mono post__date" datetime={post.data.published.toISOString()}>
+                    {fmt(post.data.published)}
+                  </time>
+                </div>
+                <div class="post__main">
+                  <h2 class="h3 post__title">{post.data.title}</h2>
+                  <p class="post__desc">{post.data.description}</p>
+                  <span class="mono post__read">{post.data.readingMinutes} min read →</span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .posts {
+    border-top: 1px solid var(--hair);
+  }
+
+  .post {
+    display: grid;
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: var(--s-8);
+    padding: clamp(var(--s-6), 3vw, var(--s-10)) 0;
+    border-bottom: 1px solid var(--hair);
+    transition:
+      padding-left var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+
+  .post:hover {
+    padding-left: var(--s-5);
+    background: var(--paper-pure);
+  }
+
+  .post__meta {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+  }
+
+  .post__date {
+    color: var(--ink-faint);
+  }
+
+  .post__title {
+    max-width: 30ch;
+  }
+
+  .post__desc {
+    margin-top: var(--s-4);
+    color: var(--ink-dim);
+    max-width: 60ch;
+  }
+
+  .post__read {
+    display: inline-block;
+    margin-top: var(--s-5);
+    color: var(--ink-faint);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .post:hover .post__read {
+    color: var(--ink);
+  }
+
+  @media (max-width: 760px) {
+    .post {
+      grid-template-columns: 1fr;
+      gap: var(--s-4);
+    }
+    .post__meta {
+      grid-auto-flow: column;
+      justify-content: start;
+      gap: var(--s-4);
+      align-items: center;
+    }
+  }
+</style>

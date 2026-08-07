@@ -1,0 +1,136 @@
+---
+import Page from '@/layouts/Page.astro'
+import { CASE_STUDIES } from '@/lib/data/company'
+import { caseStudySchema } from '@/lib/seo'
+---
+
+<Page
+  title="Case Studies"
+  heading="What changed for them."
+  eyebrow="Proof"
+  intro="Two implementations, with the numbers that moved. Both delivered on the NXTGEN Agile methodology."
+  description="Frappe ERP case studies from TECHINCGLOBAL: 30% production lead time reduction, month-end from 5 days to 1, and 99.2% inventory accuracy."
+  path="/case-studies"
+  breadcrumb="Case studies"
+  schema={CASE_STUDIES.map(caseStudySchema)}
+  ctaSource="cases"
+>
+  <section class="section">
+    <div class="shell">
+      <ul class="list" data-reveal-group>
+        {
+          CASE_STUDIES.map((c) => (
+            <li data-reveal>
+              <a class="entry" href={`/case-studies/${c.slug}`}>
+                <div class="entry__main">
+                  <p class="eyebrow">{c.sector}</p>
+                  <h2 class="h2 entry__title">{c.title}</h2>
+                  <p class="entry__summary">{c.summary}</p>
+                  <blockquote class="entry__quote">“{c.quote}”</blockquote>
+                  <span class="mono entry__go">Read the case study →</span>
+                </div>
+                <ul class="entry__results">
+                  {c.results.map((r) => (
+                    <li>
+                      <span class="entry__v num">{r.value}</span>
+                      <span class="entry__l">{r.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .list {
+    display: grid;
+    gap: clamp(var(--s-6), 3vw, var(--s-10));
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: clamp(var(--s-6), 4vw, var(--s-16));
+    padding: clamp(var(--s-6), 4vw, var(--s-12));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1.25rem;
+    box-shadow: var(--lift-1);
+    transition:
+      background var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out);
+  }
+
+  .entry:hover {
+    background: var(--n-100);
+    transform: translateY(-3px);
+  }
+
+  .entry__title {
+    margin-top: var(--s-4);
+    max-width: 24ch;
+  }
+
+  .entry__summary {
+    margin-top: var(--s-5);
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+
+  .entry__quote {
+    margin-top: var(--s-6);
+    padding-left: var(--s-5);
+    border-left: 2px solid var(--ink);
+    font-size: var(--t-lead);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--ink-2);
+    max-width: 48ch;
+  }
+
+  .entry__go {
+    display: inline-block;
+    margin-top: var(--s-8);
+    color: var(--ink-faint);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .entry:hover .entry__go {
+    color: var(--ink);
+  }
+
+  .entry__results {
+    display: grid;
+    gap: var(--s-8);
+    align-content: start;
+  }
+
+  .entry__results li {
+    display: grid;
+    gap: var(--s-2);
+    padding-top: var(--s-5);
+    border-top: 2px solid var(--ink);
+  }
+
+  .entry__v {
+    font-size: var(--t-h3);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .entry__l {
+    font-size: var(--t-sm);
+    color: var(--ink-dim);
+  }
+
+  @media (max-width: 900px) {
+    .entry {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

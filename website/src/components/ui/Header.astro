@@ -1,0 +1,348 @@
+---
+/**
+ * Header, matching the reference layout exactly: a small set of text links on
+ * the left, the wordmark optically centred, and two pill buttons on the right.
+ *
+ * Deliberately only three link groups. The reference gets its uncluttered feel
+ * from restraint in the nav more than anywhere else, so the full site map lives
+ * in the footer and inside the Services/Industries index pages rather than in a
+ * wall of dropdowns.
+ */
+import Logo from './Logo.astro'
+import { NAV, COMPANY } from '@/lib/data/company'
+---
+
+<header class="site-header" transition:persist="header">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="site-header__inner">
+    <nav class="site-nav" aria-label="Primary">
+      <ul class="site-nav__list">
+        {
+          NAV.map((group) => (
+            <li class="site-nav__item">
+              <a class="site-nav__link" href={group.href}>
+                {group.label}
+              </a>
+              {group.children && (
+                <div class="site-menu">
+                  <ul>
+                    {group.children.map((child) => (
+                      <li>
+                        <a class="site-menu__link" href={child.href}>
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="site-header__brand" href="/" aria-label={`${COMPANY.name} home`}>
+      <Logo height="1.05rem" decorative />
+    </a>
+
+    <div class="site-header__actions">
+      <a class="btn btn--soft btn--sm" href="/assessment" data-cta="header:assessment">
+        Free assessment
+      </a>
+      <a class="btn btn--solid btn--sm" href="/contact" data-cta="header:consultation">
+        Book a consultation
+      </a>
+    </div>
+
+    <button
+      class="site-header__burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Open menu"
+    >
+      <span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <nav aria-label="Mobile">
+      {
+        NAV.map((group) => (
+          <section class="mobile-nav__group">
+            <p class="eyebrow">{group.label}</p>
+            <ul>
+              {group.href && (
+                <li>
+                  <a href={group.href}>Overview</a>
+                </li>
+              )}
+              {group.children?.map((child) => (
+                <li>
+                  <a href={child.href}>{child.label}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+      <div class="mobile-nav__cta">
+        <a class="btn btn--solid" href="/contact">Book a consultation</a>
+        <a class="btn btn--soft" href="/assessment">Free assessment</a>
+        <a class="btn btn--line" href="/support">Raise a ticket</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-header);
+    /* No background by default — it floats over the pale sky field, exactly as
+       the reference does. A blur only appears once you have scrolled onto the
+       content sections, where the links would otherwise collide. */
+    border-bottom: 1px solid transparent;
+    transition:
+      background var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+
+  /* Tinted to the paper rather than pure white: against the deepened content
+     background a white bar reads as a stray panel, and the hairline gives the
+     bar an edge instead of letting it dissolve mid-scroll. */
+  .site-header.is-stuck {
+    background: rgb(245 246 248 / 0.82);
+    backdrop-filter: blur(16px) saturate(1.4);
+    border-bottom-color: var(--hair);
+  }
+
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: var(--header-h);
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .site-header__brand {
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    /* The mark is 17px; the link needs to clear the WCAG minimum on its own. */
+    min-height: 2.75rem;
+    padding-inline: var(--s-2);
+    color: var(--ink);
+  }
+
+  /* ---- Left nav ---- */
+
+  .site-nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+  }
+
+  .site-nav__item {
+    position: relative;
+  }
+
+  .site-nav__link {
+    display: block;
+    padding: var(--s-3) 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-mono);
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.7;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+
+  .site-nav__link:hover,
+  .site-nav__item:focus-within .site-nav__link {
+    opacity: 1;
+  }
+
+  /* Hover/focus dropdown. No JS: focus-within makes it keyboard usable. */
+  .site-menu {
+    position: absolute;
+    top: 100%;
+    left: calc(var(--s-4) * -1);
+    min-width: 18rem;
+    padding: var(--s-3);
+    background: rgb(255 255 255 / 0.96);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--hair);
+    border-radius: 0.875rem;
+    box-shadow: 0 18px 50px -20px rgb(11 13 24 / 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      visibility var(--dur-fast);
+  }
+
+  .site-nav__item:hover .site-menu,
+  .site-nav__item:focus-within .site-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .site-menu__link {
+    display: block;
+    padding: 0.6em 0.75em;
+    border-radius: 0.5rem;
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .site-menu__link:hover {
+    background: var(--n-100);
+    color: var(--ink);
+  }
+
+  /* ---- Right actions ---- */
+
+  .site-header__actions {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+
+  /* ---- Burger ---- */
+
+  .site-header__burger {
+    display: none;
+    justify-self: end;
+    width: 2.75rem;
+    height: 2.75rem;
+    position: relative;
+    margin-right: calc(var(--s-3) * -1);
+  }
+
+  .site-header__burger span {
+    position: absolute;
+    left: 50%;
+    width: 1.15rem;
+    height: 1.5px;
+    background: var(--ink);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: transform var(--dur) var(--ease-in-out);
+  }
+
+  .site-header__burger span:nth-child(1) {
+    top: calc(50% - 3.5px);
+  }
+  .site-header__burger span:nth-child(2) {
+    top: calc(50% + 3.5px);
+  }
+
+  .site-header__burger[aria-expanded='true'] span:nth-child(1) {
+    transform: translateX(-50%) translateY(3.5px) rotate(45deg);
+  }
+  .site-header__burger[aria-expanded='true'] span:nth-child(2) {
+    transform: translateX(-50%) translateY(-3.5px) rotate(-45deg);
+  }
+
+  /* ---- Mobile panel ---- */
+
+  .mobile-nav {
+    position: fixed;
+    inset: var(--header-h) 0 0;
+    z-index: calc(var(--z-header) - 1);
+    background: rgb(255 255 255 / 0.98);
+    backdrop-filter: blur(20px);
+    overflow-y: auto;
+    padding: var(--s-6) var(--gutter) var(--s-16);
+    display: grid;
+    gap: var(--s-8);
+    align-content: start;
+  }
+
+  .mobile-nav[hidden] {
+    display: none;
+  }
+
+  .mobile-nav__group ul {
+    margin-top: var(--s-2);
+  }
+
+  .mobile-nav__group li a {
+    display: block;
+    padding: 0.7em 0;
+    border-bottom: 1px solid var(--hair);
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+  }
+
+  .mobile-nav__cta {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  @media (max-width: 1080px) {
+    .site-nav,
+    .site-header__actions {
+      display: none;
+    }
+    .site-header__inner {
+      grid-template-columns: auto 1fr;
+    }
+    .site-header__brand {
+      justify-self: start;
+    }
+    .site-header__burger {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  function initHeaderUi() {
+    const header = document.querySelector<HTMLElement>('.site-header')
+    const burger = document.querySelector<HTMLButtonElement>('.site-header__burger')
+    const panel = document.querySelector<HTMLElement>('#mobile-nav')
+    if (!header || !burger || !panel || burger.dataset.bound) return
+    burger.dataset.bound = '1'
+
+    const setOpen = (open: boolean) => {
+      burger.setAttribute('aria-expanded', String(open))
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+      panel.hidden = !open
+      document.documentElement.style.overflow = open ? 'hidden' : ''
+    }
+
+    burger.addEventListener('click', () =>
+      setOpen(burger.getAttribute('aria-expanded') !== 'true'),
+    )
+    panel.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false)
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') setOpen(false)
+    })
+    matchMedia('(min-width: 1081px)').addEventListener('change', (e) => {
+      if (e.matches) setOpen(false)
+    })
+  }
+
+  initHeaderUi()
+  document.addEventListener('astro:page-load', initHeaderUi)
+</script>

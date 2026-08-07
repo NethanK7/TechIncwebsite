@@ -1,0 +1,66 @@
+---
+import Page from '@/layouts/Page.astro'
+import { COMPANY } from '@/lib/data/company'
+import '@/styles/legal.css'
+const updated = '7 August 2026'
+---
+<Page
+  title="Privacy Policy"
+  heading="Privacy policy"
+  eyebrow="Legal"
+  intro={`How ${COMPANY.name} handles the information you give us. Last updated ${updated}.`}
+  description={`Privacy policy for ${COMPANY.name} — what we collect, why, how long we keep it, and how to have it removed.`}
+  path="/privacy-policy"
+  breadcrumb="Privacy policy"
+  cta={false}
+>
+  <section class="section">
+    <div class="shell legal">
+      <h2>What we collect</h2>
+      <p>We collect only what you give us and what we need to run the site:</p>
+      <ul>
+        <li><strong>Enquiry and consultation details.</strong> Your name, email, phone, organisation and the message you send. Stored in our CRM so a consultant can reply.</li>
+        <li><strong>Support ticket details.</strong> Your name, email, organisation and the description of the issue, stored as a tracked ticket in our helpdesk.</li>
+        <li><strong>Assessment answers.</strong> Your answers and score. Stored anonymously unless you give us contact details to receive the write-up.</li>
+        <li><strong>Site analytics.</strong> Page paths, referrer, coarse device class, country, and how far through the page you scrolled.</li>
+      </ul>
+
+      <h2>What we do not do</h2>
+      <ul>
+        <li>We do not use third-party analytics, advertising or social tracking scripts. Analytics is first-party and stored on our own infrastructure.</li>
+        <li>We do not set tracking cookies. The site uses one <code>sessionStorage</code> value to group events within a single browser tab; it is deleted when you close the tab and cannot identify you across sites or sessions.</li>
+        <li>We do not sell, rent or share your details with anyone for marketing.</li>
+      </ul>
+
+      <h2>Why we are allowed to hold it</h2>
+      <p>For enquiries, tickets and assessment submissions, our basis is your request — you asked us to get in touch or to help. For analytics, it is our legitimate interest in understanding whether the site works, using data that does not identify you.</p>
+
+      <h2>How long we keep it</h2>
+      <ul>
+        <li>Enquiries and leads: up to 24 months from last contact, then deleted.</li>
+        <li>Support tickets: for the life of the support relationship plus 24 months, since ticket history is operationally useful to you.</li>
+        <li>Assessment submissions without contact details: retained indefinitely in aggregate only.</li>
+        <li>Analytics: raw events for 90 days, then only daily aggregates.</li>
+      </ul>
+
+      <h2>Who else sees it</h2>
+      <p>Our own consultants, and the infrastructure providers who host our systems. As part of the {COMPANY.group}, group colleagues may assist on delivery where you are an existing client. Nobody else.</p>
+
+      <h2>Your rights</h2>
+      <p>You can ask us for a copy of what we hold on you, to correct it, or to delete it. Email <a href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a> and we will action it within 30 days. You do not need to give a reason.</p>
+
+      <h2>Security</h2>
+      <p>Data is transmitted over TLS and held in access-controlled systems. Form submissions are validated and rate-limited server-side. Credentials for our backend are never present in the browser.</p>
+
+      <h2>Contact</h2>
+      <p>
+        {COMPANY.legalName}<br />
+        {COMPANY.contact.address.full}<br />
+        <a href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a> ·
+        <a href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a>
+      </p>
+
+      <p class="legal__note">If we change this policy we will update the date at the top of the page. Material changes affecting existing clients will be notified by email.</p>
+    </div>
+  </section>
+</Page>

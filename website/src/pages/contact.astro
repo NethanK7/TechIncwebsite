@@ -1,0 +1,132 @@
+---
+import Page from '@/layouts/Page.astro'
+import Form from '@/components/islands/Form.tsx'
+import { COMPANY, INDUSTRIES, SERVICES } from '@/lib/data/company'
+import { abs } from '@/lib/seo'
+import '@/styles/forms.css'
+
+const fields = [
+  { name: 'name', label: 'Your name', required: true, autoComplete: 'name' },
+  { name: 'email', label: 'Work email', type: 'email' as const, required: true, autoComplete: 'email' },
+  { name: 'organization', label: 'Organisation', autoComplete: 'organization' },
+  { name: 'phone', label: 'Phone', type: 'tel' as const, autoComplete: 'tel' },
+  {
+    name: 'industry', label: 'Industry', type: 'select' as const,
+    options: [...INDUSTRIES.map((i) => i.name), 'Other'],
+  },
+  {
+    name: 'employees', label: 'Company size', type: 'select' as const,
+    options: ['Fewer than 20', '20–50', '51–200', '201–500', 'More than 500'],
+  },
+  {
+    name: 'interest', label: 'What do you need?', type: 'select' as const, wide: true,
+    options: [...SERVICES.map((s) => s.name), 'Not sure yet — advise me'],
+  },
+  {
+    name: 'message', label: 'Tell us what is going on', type: 'textarea' as const, required: true,
+    placeholder: 'What is not working today, and what would good look like?',
+    help: 'The more concrete you are, the more useful our first reply will be.',
+  },
+]
+
+/** A ContactPage node so the address and phone are unambiguous to crawlers. */
+const schema = [{
+  '@type': 'ContactPage',
+  '@id': `${abs('/contact')}#contactpage`,
+  name: `Contact ${COMPANY.name}`,
+  mainEntity: { '@id': `${COMPANY.url}/#organization` },
+}]
+
+const faq = [
+  { q: 'How do I contact TECHINCGLOBAL?',
+    a: `You can contact ${COMPANY.name} by email at ${COMPANY.contact.email}, by phone on ${COMPANY.contact.phone}, or through the form at ${COMPANY.url}/contact. The office is at ${COMPANY.contact.address.full}. Enquiries receive a reply within one business day.` },
+  { q: 'Does a first consultation cost anything?',
+    a: 'No. The first consultation is free and carries no obligation. TECHINCGLOBAL will give an honest assessment of whether an ERP change is the right move, including saying so when it is not.' },
+]
+---
+
+<Page
+  title="Contact Us"
+  heading="Let's talk about what is not working."
+  eyebrow="Contact"
+  intro="Tell us what is going on and we will reply within one business day — with a view, not a brochure."
+  description={`Contact TECHINCGLOBAL, Sri Lanka's #1 Frappe Partner. Email ${COMPANY.contact.email}, phone ${COMPANY.contact.phone}, or book a free consultation.`}
+  path="/contact"
+  breadcrumb="Contact"
+  schema={schema}
+  faq={faq}
+  cta={false}
+>
+  <section class="section">
+    <div class="shell contact">
+      <div class="contact__form">
+        <h2 class="h3">Book a consultation</h2>
+        <p class="dim contact__lead">
+          No obligation, and no sales script. If we think your current system is fine, or the
+          real problem is process rather than software, we will tell you.
+        </p>
+        <Form
+          client:load
+          endpoint="/api/contact"
+          formName="contact"
+          hidden={{ kind: 'consultation' }}
+          fields={fields}
+          submitLabel="Send enquiry"
+          successTitle="Thank you — that reached us."
+          successBody="One of our consultants will reply within one business day. If it is urgent, call us on +94 707 978 978."
+        />
+      </div>
+
+      <aside class="contact__aside">
+        <div class="block">
+          <p class="eyebrow">Direct</p>
+          <ul class="block__list">
+            <li><a class="link" href={`mailto:${COMPANY.contact.email}`}>{COMPANY.contact.email}</a></li>
+            <li><a class="link" href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a></li>
+          </ul>
+          <address class="block__addr">{COMPANY.contact.address.full}</address>
+          <p class="block__hours mono">Mon–Fri · 08:30–17:30 (+05:30)</p>
+        </div>
+
+        <div class="block">
+          <p class="eyebrow">Already a client?</p>
+          <p class="block__text">
+            Support requests are tracked properly rather than lost in an inbox.
+          </p>
+          <a class="btn btn--line" href="/support">Raise a support ticket</a>
+        </div>
+
+        <div class="block">
+          <p class="eyebrow">Not sure yet?</p>
+          <p class="block__text">
+            Ten questions, five minutes, an honest score — including whether we would tell
+            you to wait.
+          </p>
+          <a class="btn btn--line" href="/assessment">Take the assessment</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-20));
+    align-items: start;
+  }
+  .contact__lead { margin: var(--s-4) 0 var(--s-8); max-width: 50ch; }
+  .contact__aside { display: grid; gap: var(--s-5); }
+  .block {
+    display: grid; gap: var(--s-4); justify-items: start;
+    padding: clamp(var(--s-5), 3vw, var(--s-7));
+    background: var(--paper-pure); border: 1px solid var(--hair);
+    border-radius: 1rem; box-shadow: var(--lift-1);
+  }
+  .block__list { display: grid; gap: var(--s-2); font-size: var(--t-sm); }
+  .block__addr { font-style: normal; font-size: var(--t-sm); color: var(--ink-dim); max-width: 24ch; }
+  .block__hours { color: var(--ink-faint); }
+  .block__text { font-size: var(--t-sm); color: var(--ink-dim); }
+  @media (max-width: 900px) { .contact { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  @font-face{font-family:'IT';src:url('../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2') format('woff2');font-weight:100 900}
+  @font-face{font-family:'JM';src:url('../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2');font-weight:100 800}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1200px;height:630px;font-family:'IT',sans-serif;
+    background:linear-gradient(160deg,#eaf1f8 0%,#dde8f3 52%,#cfdeee 100%);
+    color:#0b0d18;display:flex;flex-direction:column;justify-content:space-between;
+    padding:70px 78px;position:relative;overflow:hidden}
+  /* Same halftone dot field the 3D conduits lay on the ground, as a flat motif. */
+  .dots{position:absolute;inset:auto -60px -120px -60px;height:420px;opacity:.5;
+    background-image:radial-gradient(circle,rgba(11,13,24,.13) 1.6px,transparent 1.7px);
+    background-size:22px 22px;
+    mask-image:linear-gradient(0deg,#000,transparent 78%);
+    -webkit-mask-image:linear-gradient(0deg,#000,transparent 78%)}
+  .eyebrow{font-family:'JM',monospace;font-size:19px;letter-spacing:.2em;
+    text-transform:uppercase;color:#6b7383;position:relative}
+  h1{font-size:96px;font-weight:700;letter-spacing:-.045em;line-height:.94;
+    max-width:19ch;position:relative}
+  .foot{display:flex;align-items:flex-end;justify-content:space-between;position:relative}
+  .logo{height:34px;width:auto;color:#0b0d18}
+  .meta{font-family:'JM',monospace;font-size:19px;letter-spacing:.12em;
+    text-transform:uppercase;color:#4a5160;text-align:right;line-height:1.7}
+  .rule{position:absolute;left:78px;right:78px;bottom:150px;height:1px;
+    background:rgba(11,13,24,.14)}
+</style></head>
+<body>
+  <div class="dots"></div>
+  <p class="eyebrow">Sri Lanka&rsquo;s #1 Frappe Partner</p>
+  <h1>One platform.<br>Every department.</h1>
+  <div class="rule"></div>
+  <div class="foot">
+    <img class="logo" src="../public/logo-black.svg" alt="">
+    <p class="meta">150+ implementations<br>techincglobal.com</p>
+  </div>
+</body></html>
