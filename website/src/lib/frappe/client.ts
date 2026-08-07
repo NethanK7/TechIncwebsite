@@ -13,17 +13,35 @@
  * write arbitrary doctypes even if this key leaked.
  */
 
-const FRAPPE_URL = (import.meta.env.FRAPPE_URL ?? 'http://develop.localhost:8000').replace(
-  /\/$/,
-  '',
-)
-const API_KEY = import.meta.env.FRAPPE_API_KEY ?? ''
-const API_SECRET = import.meta.env.FRAPPE_API_SECRET ?? ''
+/**
+ * Read a secret at *call* time, preferring the real process environment.
+ *
+ * This is not a stylistic choice. Vite statically replaces `import.meta.env.X`
+ * during the build, so a value that only exists at runtime — which is exactly
+ * what a Vercel environment variable is — gets inlined as `undefined` and the
+ * endpoint silently reports "backend not configured" forever. Reading
+ * `process.env` inside the function defers the lookup to the request, which is
+ * when the variable actually exists.
+ *
+ * `import.meta.env` is kept as the fallback so a local `.env` still works during
+ * `astro dev`, where Vite loads it and `process.env` may not carry it.
+ */
+function secret(name: string, fallback = ''): string {
+  const fromProcess =
+    typeof process !== 'undefined' && process.env ? process.env[name] : undefined
+  const fromVite = (import.meta.env as Record<string, string | undefined>)[name]
+  return fromProcess ?? fromVite ?? fallback
+}
+
+const frappeUrl = () => secret('FRAPPE_URL', 'http://develop.localhost:8000').replace(/\/$/, '')
+const apiKey = () => secret('FRAPPE_API_KEY')
+const apiSecret = () => secret('FRAPPE_API_SECRET')
 
 /** Shared secret the Frappe app checks on guest-allowed intake methods. */
-const INTAKE_SECRET = import.meta.env.WEBSITE_INTAKE_SECRET ?? ''
+const intakeSecret = () => secret('WEBSITE_INTAKE_SECRET')
 
-export const frappeConfigured = Boolean(API_KEY && API_SECRET)
+/** Evaluated per call, for the same reason the getters exist. */
+export const frappeConfigured = (): boolean => Boolean(apiKey() && apiSecret())
 
 export interface FrappeResult<T = unknown> {
   ok: boolean
@@ -49,27 +67,30 @@ export async function callMethod<T = unknown>(
   payload: object,
   { timeoutMs = 8000 }: { timeoutMs?: number } = {},
 ): Promise<FrappeResult<T>> {
-  if (!frappeConfigured) {
+  if (!frappeConfigured()) {
     return {
       ok: false,
       error: 'The backend is not configured yet.',
-      detail: 'FRAPPE_API_KEY / FRAPPE_API_SECRET missing from the environment',
+      detail:
+        'FRAPPE_API_KEY / FRAPPE_API_SECRET missing from the environment. On Vercel these must be set for the Production environment and the project redeployed.',
     }
   }
+
+  const secretValue = intakeSecret()
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
-    const res = await fetch(`${FRAPPE_URL}/api/method/${method}`, {
+    const res = await fetch(`${frappeUrl()}/api/method/${method}`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
         // Frappe token auth: `token <key>:<secret>`.
-        authorization: `token ${API_KEY}:${API_SECRET}`,
-        'x-website-secret': INTAKE_SECRET,
+        authorization: `token ${apiKey()}:${apiSecret()}`,
+        'x-website-secret': secretValue,
       },
-      body: JSON.stringify({ ...payload, website_secret: INTAKE_SECRET }),
+      body: JSON.stringify({ ...payload, website_secret: secretValue }),
       signal: controller.signal,
     })
 

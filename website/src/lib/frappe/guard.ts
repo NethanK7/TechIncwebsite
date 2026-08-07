@@ -31,10 +31,15 @@ const REFILL_PER_MS = CAPACITY / (10 * 60 * 1000) // full bucket per 10 minutes
 /**
  * In-process token bucket.
  *
- * Deliberately in memory: this is a single Node process behind the site, and a
- * shared store would be a new dependency to protect a contact form. If this ever
- * runs multi-instance, the effective limit becomes per-instance — still useful,
- * and the Frappe app validates independently.
+ * Deliberately in memory rather than Redis: a shared store is a new dependency
+ * and a new failure mode to protect a contact form.
+ *
+ * On Vercel this is per serverless instance, and instances come and go — so the
+ * effective limit is looser than the constants suggest, and a determined flood
+ * spread across cold starts would get through. That is accepted: this layer
+ * exists to stop drive-by spam, the honeypot and timing checks sit in front of
+ * it, and the Frappe app verifies the shared secret independently on every call.
+ * Swap in a durable store here if abuse ever becomes real.
  */
 export function rateLimit(ip: string, cost = 1): { allowed: boolean; retryAfter: number } {
   const now = Date.now()

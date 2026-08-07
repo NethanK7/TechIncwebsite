@@ -14,9 +14,9 @@
     "og": "node scripts/make-og.mjs"
   },
   "dependencies": {
-    "@astrojs/node": "^9.0.0",
     "@astrojs/react": "^4.1.0",
     "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/vercel": "^9.0.5",
     "@fontsource-variable/inter-tight": "^5.1.1",
     "@fontsource-variable/jetbrains-mono": "^5.1.2",
     "astro": "^5.1.0",
@@ -33,5 +33,8 @@
     "@types/react-dom": "^19.0.2",
     "@types/three": "^0.171.0",
     "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
