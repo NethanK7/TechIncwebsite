@@ -72,7 +72,7 @@ import {
   STAGE_KEYS,
   buildCameraCurves,
   fovAt,
-  stageAt,
+  narrativeStage,
 } from './layout'
 
 export interface Journey {
@@ -94,6 +94,18 @@ export interface Journey {
     release: () => void
   }
 }
+
+/**
+ * Fog range for the scroll flight, which always looks down at the model from
+ * well above it. Nothing the camera cares about is closer than the near plane.
+ */
+const FOG_NEAR = 540
+const FOG_FAR = 2100
+
+/** Fog and framing for explore mode, which is at eye level. See takeControl. */
+const EXPLORE_FOG_NEAR = 90
+const EXPLORE_FOG_FAR = 1250
+const EXPLORE_FOV = 62
 
 let active: Journey | null = null
 
@@ -242,7 +254,7 @@ export function startJourney(mount: HTMLElement): Journey | null {
   // so anything nearer than about 400 would haze the subject itself rather than
   // only the horizon. Exponential fog is wrong here for the same reason: it eats
   // the near ground before it touches the distance.
-  scene.fog = new Fog(PALETTE.skyFar, 540, 2100)
+  scene.fog = new Fog(PALETTE.skyFar, FOG_NEAR, FOG_FAR)
 
   const camera = new PerspectiveCamera(38, size.x / Math.max(1, size.y), 1, 2400)
   camera.position.set(...KEYFRAMES[0]!.pos)
@@ -569,7 +581,7 @@ export function startJourney(mount: HTMLElement): Journey | null {
     }
 
     // --- Stage bookkeeping ---
-    const { index } = stageAt(progress)
+    const index = narrativeStage(progress)
     if (index !== lastStage) {
       lastStage = index
       const stageKey = STAGE_KEYS[index] ?? ''
@@ -729,7 +741,29 @@ export function startJourney(mount: HTMLElement): Journey | null {
       // Explore mode has its own near plane needs: the scroll camera never gets
       // within 100 units of anything, a walking one is constantly beside walls.
       camera.near = 0.5
+      camera.fov = EXPLORE_FOV
       camera.updateProjectionMatrix()
+
+      // Re-tune the atmosphere for eye level.
+      //
+      // The scroll camera looks *down* at the model from 80–390 units up, so the
+      // ground always fills the frame and the fog only has to soften the far
+      // edge — hence a near plane of 540. At eye height you are looking *across*
+      // it instead, and ground and sky are near-identical whites: with no fog
+      // between 0 and 540 units there is no aerial perspective, no horizon, and
+      // the world reads as a blank void with a few objects floating in it.
+      //
+      // Pulling the fog in gives distance something to work against, so the
+      // districts recede properly and the ground separates from the sky. Bloom
+      // comes down too — the sun streaks that read as atmosphere from above just
+      // blow out the frame when they are at your own height.
+      if (scene.fog instanceof Fog) {
+        scene.fog.near = EXPLORE_FOG_NEAR
+        scene.fog.far = EXPLORE_FOG_FAR
+      }
+      const bloomWas = bloom.strength
+      bloom.strength = bloom.strength * 0.45
+
       return {
         camera,
         canvas,
@@ -738,6 +772,11 @@ export function startJourney(mount: HTMLElement): Journey | null {
           camera.near = 1
           camera.fov = fovCurrent
           camera.updateProjectionMatrix()
+          if (scene.fog instanceof Fog) {
+            scene.fog.near = FOG_NEAR
+            scene.fog.far = FOG_FAR
+          }
+          bloom.strength = bloomWas
           // Re-seed the filters at the current scroll position so handing back
           // does not fly the camera across the map.
           driver.snap()
@@ -756,4 +795,13 @@ export function startJourney(mount: HTMLElement): Journey | null {
 export function stopJourney(): void {
   active?.destroy()
   active = null
+}
+
+/**
+ * The running instance, or null if the journey never started (no WebGL, reduced
+ * motion, still idle-deferred). Explore mode needs this to borrow the camera; it
+ * must handle null rather than assume the scene is up.
+ */
+export function currentJourney(): Journey | null {
+  return active && active.canvas.isConnected ? active : null
 }

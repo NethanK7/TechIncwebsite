@@ -90,22 +90,30 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
     }
   </div>
 
-  <!-- Stats band closing the pale field, before the white sections begin. -->
-  <div class="journey__stats">
-    <div class="shell">
-      <ul class="statband" data-reveal-group>
-        {
-          STATS.map((s) => (
-            <li data-reveal>
-              <span class="statband__v num">{s.value}</span>
-              <span class="statband__l">{s.label}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
 </section>
+
+<!-- Stats band closing the pale field, before the white sections begin.
+
+     Deliberately *outside* `[data-journey]`. The engine maps scroll progress
+     across the mount's whole height, so anything inside it consumes part of the
+     narrative: with the band in there, progress 1.0 — the closing overhead and
+     its copy — landed on the same screen as the numbers, and the fixed stepper
+     printed straight through them. Out here the journey spans exactly the hero
+     plus five stage screens, and the band is what comes next. -->
+<div class="journey__stats">
+  <div class="shell">
+    <ul class="statband" data-reveal-group>
+      {
+        STATS.map((s) => (
+          <li data-reveal>
+            <span class="statband__v num">{s.value}</span>
+            <span class="statband__l">{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
 
 <style>
   /* --------------------------------------------------------------------------
@@ -394,10 +402,30 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
      Stats band
      -------------------------------------------------------------------------- */
 
+  /* The stats band needs its own vertical space, not the tail of the last
+     stage's screen.
+
+     The stepper is `position: fixed` at the bottom-left, so anything sharing a
+     viewport with it prints underneath it. Giving the band its own block means
+     the closing beat gets a full screen to itself, and the band arrives only
+     after it — which is also when the observer retires the stepper. Content is
+     bottom-aligned so the band still reads as closing the field rather than
+     floating in the middle of it. */
+  /* Continues the pale field the journey sits on, since it is no longer inside
+     that section. Bottom-aligned in its own block so the closing beat above it
+     keeps a full screen to itself. */
   .journey__stats {
     position: relative;
     z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    min-height: 58svh;
     padding-block: clamp(var(--s-16), 8vw, var(--s-24));
+    background: var(--sky-300);
+  }
+
+  .journey__stats > .shell {
+    width: 100%;
   }
 
   .statband {
@@ -515,6 +543,25 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
         },
         { threshold: 0 },
       ).observe(mount)
+
+      // The stepper is `position: fixed`, and the stats band is the last thing
+      // inside this section — so the section is still intersecting while the
+      // band scrolls up into the exact space the stepper occupies, and the two
+      // print on top of each other. The band arriving is what actually marks the
+      // end of the narrative, so retire the stepper on that instead of waiting
+      // for the whole section to leave.
+      const stats = document.querySelector<HTMLElement>('.journey__stats')
+      if (stats) {
+        new IntersectionObserver(
+          ([entry]) => {
+            if (entry?.isIntersecting) list.classList.remove('is-live')
+            else if (mount.getAttribute('data-journey-visible') === 'true') paint()
+          },
+          // Fire a little before it arrives, so the stepper is gone rather than
+          // fading out underneath the numbers.
+          { rootMargin: '0px 0px -20% 0px', threshold: 0 },
+        ).observe(stats)
+      }
 
       // Fallback driver: if the engine never claims the mount, let the screens
       // themselves report the stage so the stepper is not dead.

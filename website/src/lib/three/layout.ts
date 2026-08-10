@@ -289,6 +289,23 @@ export function stageAt(progress: number): { index: number; local: number } {
   return { index, local: raw - index }
 }
 
+/**
+ * Which keyframe's *copy* should be showing — which is not the same question as
+ * which curve segment the camera is on.
+ *
+ * `stageAt` answers the camera's question: six keyframes make five segments, so
+ * it returns 0–4 and the final keyframe is only ever a segment's endpoint. Used
+ * for the copy that would mean the last beat never becomes current — you would
+ * reach the closing overhead with the previous stage still highlighted.
+ *
+ * The narrative question is "which keyframe am I at", so this rounds to the
+ * nearest one. Every beat gets an equal share of the scroll, including the last.
+ */
+export function narrativeStage(progress: number): number {
+  const p = Math.max(0, Math.min(1, progress))
+  return Math.round(p * (STAGE_COUNT - 1))
+}
+
 export function fovAt(progress: number): number {
   const { index, local } = stageAt(progress)
   const a = KEYFRAMES[index]?.fov ?? 38

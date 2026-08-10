@@ -47,6 +47,8 @@
     <div class="explore__where">
       <span class="mono explore__whereLabel" data-explore-place></span>
       <span class="mono explore__whereDist" data-explore-dist></span>
+      <!-- Only filled once you are standing inside a district's footprint. -->
+      <span class="explore__whereBlurb" data-explore-blurb hidden></span>
     </div>
     <div class="mono explore__hint">
       <kbd>WASD</kbd> move · <kbd>Shift</kbd> run · <kbd>Esc</kbd> exit
@@ -55,6 +57,41 @@
 </div>
 
 <style>
+  /* ---- Explore mode takes over the viewport ----
+
+     The canvas normally sits at z-index 0 behind the copy, with pointer events
+     off and its opacity tied to whether the journey section is on screen. While
+     exploring it has to be the whole page instead: on top, interactive, and lit
+     regardless of where the visitor had scrolled to when they found the egg.
+
+     These selectors are fully :global() because the elements they target belong
+     to the journey section and the document root, not to this component. */
+
+  /* `!important` on all three, deliberately.
+
+     The competing rules live in Journey.astro and compile to
+     `.journey.astro-<hash> .journey__canvas` — three classes. Any selector we
+     could write here that beats that on specificity would be an unreadable
+     accident waiting to be broken by an unrelated edit to that component. This
+     is a whole-viewport mode takeover, which is exactly the case `!important`
+     exists for: a state that must win over the normal cascade, not a fight
+     between two rules of equal standing. */
+  :global(html.is-exploring .journey__canvas) {
+    z-index: calc(var(--z-header) + 5) !important;
+    pointer-events: auto !important;
+    /* Beats both `[data-journey-visible='false']` and the state-based rules. */
+    opacity: 1 !important;
+  }
+
+  /* The site is still in the document underneath — hidden rather than unmounted,
+     so leaving explore mode returns to the exact scroll position. */
+  :global(html.is-exploring .site-header),
+  :global(html.is-exploring .journey__flow),
+  :global(html.is-exploring .site-footer) {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
   /* ---- Hint ---- */
 
   .egg-hint {
@@ -208,10 +245,22 @@
   .explore__where {
     display: grid;
     gap: var(--s-1);
+    max-width: 30rem;
     padding: var(--s-3) var(--s-4);
     background: rgb(255 255 255 / 0.82);
     backdrop-filter: blur(10px);
     border-radius: 0.75rem;
+  }
+
+  .explore__whereBlurb {
+    margin-top: var(--s-1);
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+
+  .explore__whereBlurb[hidden] {
+    display: none;
   }
 
   .explore__whereLabel {

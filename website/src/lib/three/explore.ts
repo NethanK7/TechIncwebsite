@@ -28,13 +28,26 @@ import { DISTRICTS, DERELICT, CORE } from './layout'
 
 /** Where the camera sits above the ground while walking, in world units. */
 const EYE_HEIGHT = 5.2
-const WALK_SPEED = 42
-const RUN_MULTIPLIER = 2.6
+const WALK_SPEED = 30
+const RUN_MULTIPLIER = 2.8
 /** How quickly velocity reaches the target. Higher is twitchier. */
 const ACCEL = 9
 const GRAVITY = 90
 const JUMP_SPEED = 34
 const WORLD_RADIUS = 560
+
+/**
+ * The one solid object in the world.
+ *
+ * Explore mode has no collision mesh — you walk through the districts, which is
+ * a deliberate trade (see the header). The core is the exception, because it is
+ * the only object big enough that walking into it puts the camera *inside* the
+ * geometry: you get backfaces, the podium filling the top and bottom of the
+ * frame, and the whole scene reading as broken. Its podium is 31 units across,
+ * so a 34-unit keep-out stops you at the steps with the monolith filling the
+ * view — which is the shot you actually want when you arrive.
+ */
+const CORE_KEEP_OUT = 34
 const LOOK_SENSITIVITY = 0.0022
 
 export interface ExploreHost {
@@ -49,7 +62,7 @@ export interface ExploreSession {
   /** Advance one frame. Called by the host's existing loop. */
   update(dt: number): void
   /** Nearest labelled place, for the on-screen readout. */
-  nearest(): { key: string; label: string; distance: number } | null
+  nearest(): { key: string; label: string; distance: number; blurb: string; inside: boolean } | null
   destroy(): void
 }
 
@@ -58,23 +71,49 @@ interface Place {
   label: string
   at: Vector3
   radius: number
+  /** Shown once you are actually standing in it — the reason it is here. */
+  blurb: string
+}
+
+/**
+ * What each district is running, keyed by district.
+ *
+ * Real ERPNext doctypes rather than feature-speak: the point of walking the city
+ * is to see that every building is one part of one system, and naming the actual
+ * documents is what makes that concrete.
+ */
+const BLURBS: Record<string, string> = {
+  construction: 'Projects, Tasks and Timesheets. Hours and materials cost to the job as they happen.',
+  warehousing: 'Stock Entries, Delivery Notes and the Stock Ledger. Every movement, one running balance.',
+  manufacturing: 'BOMs, Work Orders and Job Cards. Production consumes stock and books its own cost.',
+  accounts: 'The General Ledger. Every transaction in this city posts here, in the same database write.',
+  sales: 'Leads, Quotations, Sales Orders. The pipeline that becomes the invoices next door.',
+  people: 'Employees, Attendance, Salary Slips. Payroll posts to the ledger with EPF and ETF handled.',
 }
 
 /** Every labelled destination, for the compass readout and the fast-travel keys. */
 export function places(): Place[] {
   return [
-    { key: 'core', label: 'The Frappe core — one database', at: CORE.at.clone(), radius: 40 },
+    {
+      key: 'core',
+      label: 'The Frappe core — one database',
+      at: CORE.at.clone(),
+      radius: 40,
+      blurb: 'One framework, one database. Every district around you reads and writes these same rows.',
+    },
     ...DISTRICTS.map((d) => ({
       key: d.key,
       label: d.label,
       at: d.at.clone(),
       radius: d.radius,
+      blurb: BLURBS[d.key] ?? '',
     })),
     {
       key: 'derelict',
       label: 'Before — a business with no system',
       at: DERELICT.at.clone(),
       radius: DERELICT.radius,
+      blurb: 'Nothing is wired to anything. No conduits, no ledger, nobody walking. This is the starting point.',
     },
   ]
 }
@@ -84,9 +123,11 @@ export function startExplore(host: ExploreHost): ExploreSession {
 
   const PLACES = places()
 
-  // Start just outside the core, looking at it — a legible opening shot rather
-  // than wherever the scroll happened to leave the camera.
-  const position = new Vector3(0, EYE_HEIGHT, 120)
+  // Start on the approach to the core, looking straight at it — a legible
+  // opening shot rather than wherever the scroll happened to leave the camera.
+  // Close enough that the core is the nearest labelled place, so the readout
+  // names the thing filling the screen.
+  const position = new Vector3(0, EYE_HEIGHT, 86)
   const velocity = new Vector3()
   let verticalVelocity = 0
   let grounded = true
@@ -94,8 +135,10 @@ export function startExplore(host: ExploreHost): ExploreSession {
   // Yaw/pitch kept as scalars rather than read back off the camera: decomposing
   // a quaternion into Euler angles every frame is unstable near vertical, which
   // is exactly where a mouse-look camera spends time.
-  let yaw = Math.PI
-  let pitch = -0.06
+  // yaw 0 faces -Z. Standing at +Z looking back at the origin is therefore yaw 0,
+  // not PI — heading is (-sin yaw, 0, -cos yaw), same as the camera's local -Z.
+  let yaw = 0
+  let pitch = -0.02
 
   const keys = new Set<string>()
   let destroyed = false
@@ -205,6 +248,16 @@ export function startExplore(host: ExploreHost): ExploreSession {
       velocity.multiplyScalar(0.9)
     }
 
+    // And out of the core. Same soft push, so walking into it slides you around
+    // the podium rather than stopping you dead against an invisible wall.
+    const fromCore = Math.hypot(position.x - CORE.at.x, position.z - CORE.at.z)
+    if (fromCore < CORE_KEEP_OUT && fromCore > 0.001) {
+      const push = (CORE_KEEP_OUT - fromCore) / fromCore
+      position.x += (position.x - CORE.at.x) * push
+      position.z += (position.z - CORE.at.z) * push
+      velocity.multiplyScalar(0.6)
+    }
+
     camera.position.copy(position)
     euler.set(pitch, yaw, 0)
     camera.quaternion.setFromEuler(euler)
@@ -221,7 +274,15 @@ export function startExplore(host: ExploreHost): ExploreSession {
       }
     }
     if (!best) return null
-    return { key: best.key, label: best.label, distance: Math.round(bestDist) }
+    return {
+      key: best.key,
+      label: best.label,
+      distance: Math.round(bestDist),
+      blurb: best.blurb,
+      // Inside its footprint, so the readout can switch from "how far" to "what
+      // this place is" exactly when you arrive.
+      inside: bestDist <= best.radius,
+    }
   }
 
   return {

@@ -1,6 +1,7 @@
 ---
 import Base from '@/layouts/Base.astro'
 import Journey from '@/components/sections/Journey.astro'
+import Explore from '@/components/sections/Explore.astro'
 import Faq from '@/components/ui/Faq.astro'
 import Cta from '@/components/ui/Cta.astro'
 import Icon from '@/components/ui/Icon.astro'
@@ -47,6 +48,9 @@ const features = [
   bodyClass="page-home"
 >
   <Journey />
+
+  <!-- Explore-mode overlay. Inert until the wordmark is clicked five times. -->
+  <Explore />
 
   <!-- Everything below sits on the near-white paper, which is also what stops
        the fixed journey canvas showing through. -->
