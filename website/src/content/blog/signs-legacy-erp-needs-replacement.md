@@ -3,6 +3,7 @@ title: "Seven signs your legacy ERP needs replacing"
 description: "Not every ageing system needs replacing. These are the signals that reliably mean it does."
 published: 2026-03-11
 topic: "Legacy systems"
+author: "lahiru-pathirana"
 readingMinutes: 7
 faq:
   - q: "How do I know if our ERP needs replacing?"

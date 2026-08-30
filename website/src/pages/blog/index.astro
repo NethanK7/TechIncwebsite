@@ -1,6 +1,7 @@
 ---
 import Page from '@/layouts/Page.astro'
 import { getCollection } from 'astro:content'
+import { TEAM } from '@/lib/data/company'
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime(),
@@ -8,6 +9,8 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
 const fmt = (d: Date) =>
   d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+
+const authorOf = (slug?: string) => TEAM.find((m) => m.slug === slug)
 ---
 
 <Page
@@ -36,7 +39,9 @@ const fmt = (d: Date) =>
                 <div class="post__main">
                   <h2 class="h3 post__title">{post.data.title}</h2>
                   <p class="post__desc">{post.data.description}</p>
-                  <span class="mono post__read">{post.data.readingMinutes} min read →</span>
+                  <span class="mono post__read">
+                    {authorOf(post.data.author)?.name ?? 'TECHINCGLOBAL'} · {post.data.readingMinutes} min read →
+                  </span>
                 </div>
               </a>
             </li>

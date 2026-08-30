@@ -4,9 +4,10 @@ description: "Spreadsheets are free at the point of use and expensive everywhere
 published: 2026-02-03
 topic: "Business case"
 readingMinutes: 6
+author: "niluka-dilrukshi"
 faq:
   - q: "What does it actually cost to run a business on spreadsheets?"
-    a: "The cost of running a business on spreadsheets shows up as reconciliation labour, delayed month-end closing, stock inaccuracy and decisions made on stale numbers. In TECHINCGLOBAL implementations, month-end closing commonly falls from five days to one, and distribution clients reach 99.2% inventory accuracy from a spreadsheet baseline."
+    a: "The cost of running a business on spreadsheets shows up as reconciliation labour, delayed month-end closing, stock inaccuracy and decisions made on stale numbers. When every transaction posts to one ledger as it happens, month-end becomes a review instead of a reconstruction."
   - q: "When should a company move off spreadsheets?"
     a: "A company should move off spreadsheets when the same number exists in more than one file, when month-end requires manual consolidation across departments, or when someone has to be phoned to confirm a figure before a decision is made."
 ---
@@ -18,7 +19,7 @@ The cost is real, it is just never on an invoice. Here is where we consistently 
 
 The most visible cost. Someone — usually a good, expensive person in finance — spends the first week of every month making three sources agree. That is not analysis. That is data entry with extra steps.
 
-In implementations we have delivered, month-end closing routinely goes from five days to one. Not because the work got faster, but because it stopped existing: when every transaction posts itself to the ledger as it happens, closing becomes a review rather than a reconstruction.
+In the implementations we have delivered, month-end closing consistently gets shorter — not because the work got faster, but because it stopped existing: when every transaction posts itself to the ledger as it happens, closing becomes a review rather than a reconstruction.
 
 ## Decisions on stale numbers
 
@@ -26,7 +27,7 @@ A spreadsheet is a photograph of a moment that has already passed. If your stock
 
 This is where the money actually goes, and it is the hardest cost to see. Excess stock that nobody knew was there. A stockout on the one SKU that mattered. A customer promised a delivery the warehouse could not make.
 
-One distribution client reached 99.2% inventory accuracy and cut excess stock by 40% — that second number is working capital that was sitting on a shelf.
+Excess stock is the clearest version of this: money sitting on a shelf because nobody had a live, reliable position to reorder against. See our [Electro-Serv Lanka case study](/case-studies/electro-serv-lanka) for what improved inventory visibility looks like once distribution, manufacturing and warehousing read from the same system.
 
 ## The single point of failure
 

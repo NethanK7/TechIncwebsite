@@ -32,7 +32,7 @@ const faq = [
   heading="Transforming businesses with expertise."
   eyebrow={STORY.eyebrow}
   intro={STORY.intro}
-  description="TECHINCGLOBAL is Sri Lanka's first authorized Frappe Technologies partner. Founded 2018, part of the SEBSA Group, 150+ implementations delivered."
+  description="TECHINCGLOBAL is Sri Lanka's first authorized Frappe Technologies partner. Founded 2018, part of the SEBSA Group, 30+ implementations delivered."
   path="/about"
   breadcrumb="About"
   faq={faq}
@@ -119,13 +119,16 @@ const faq = [
         {
           TEAM.map((m) => (
             <li class="member" data-reveal>
-              {/* Monogram plate. Swaps for a photograph the moment one is supplied. */}
-              <div class="member__plate" aria-hidden="true">
-                <span>{m.initials}</span>
-              </div>
-              <h3 class="h4 member__name">{m.name}</h3>
-              <p class="member__role mono">{m.role}</p>
-              <p class="member__bio">{m.bio}</p>
+              <a class="member__link" href={`/team/${m.slug}`}>
+                {/* Monogram plate. Swaps for a photograph the moment one is supplied. */}
+                <div class="member__plate" aria-hidden="true">
+                  <span>{m.initials}</span>
+                </div>
+                <h3 class="h4 member__name">{m.name}</h3>
+                <p class="member__role mono">{m.role}</p>
+                <p class="member__bio">{m.bio}</p>
+                <span class="mono member__go">View profile & posts →</span>
+              </a>
             </li>
           ))
         }
@@ -252,6 +255,30 @@ const faq = [
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: clamp(var(--s-6), 3vw, var(--s-10));
+  }
+
+  .member__link {
+    display: block;
+    transition: transform var(--dur) var(--ease-out);
+  }
+
+  .member__link:hover {
+    transform: translateY(-3px);
+  }
+
+  .member__link:hover .member__plate {
+    border-color: var(--n-400);
+  }
+
+  .member__go {
+    display: inline-block;
+    margin-top: var(--s-4);
+    color: var(--ink-faint);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .member__link:hover .member__go {
+    color: var(--ink);
   }
 
   .member__plate {

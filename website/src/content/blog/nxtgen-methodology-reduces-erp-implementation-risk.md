@@ -3,6 +3,7 @@ title: "How the NXTGEN methodology reduces ERP implementation risk"
 description: "Big-bang go-lives fail for structural reasons. Segregating scope into independently gated modules removes most of the risk."
 published: 2026-05-19
 topic: "Methodology"
+author: "sean-fernando"
 readingMinutes: 8
 faq:
   - q: "How does the NXTGEN methodology reduce implementation risk?"
@@ -12,7 +13,7 @@ faq:
 ---
 Most ERP implementations that fail do not fail on technology. They fail because the whole thing was scheduled to arrive on one date, and the date arrived before the understanding did.
 
-NXTGEN is our answer to that, developed across more than 150 implementations. It has five phases, and the second one is where most of the risk actually leaves the project.
+NXTGEN is our answer to that, developed across more than 30 implementations. It has five phases, and the second one is where most of the risk actually leaves the project.
 
 ## Design: map what happens, not what should
 
@@ -54,7 +55,7 @@ We do not go live on a date. We go live when the gate is genuinely clear. Saying
 
 ## What it adds up to
 
-Deployment time down by up to 40% against conventional approaches, on a 12-week standard programme, with 98% client satisfaction across the portfolio.
+Deployment time down by up to 40% against conventional approaches, on a 12-week standard programme, with 100% client satisfaction across the portfolio.
 
 The speed is a consequence, not the aim. Segregated scope with real gates is simply a more efficient way to work than a single monolithic push toward one immovable date.
 

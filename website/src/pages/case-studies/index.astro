@@ -8,8 +8,8 @@ import { caseStudySchema } from '@/lib/seo'
   title="Case Studies"
   heading="What changed for them."
   eyebrow="Proof"
-  intro="Two implementations, with the numbers that moved. Both delivered on the NXTGEN Agile methodology."
-  description="Frappe ERP case studies from TECHINCGLOBAL: 30% production lead time reduction, month-end from 5 days to 1, and 99.2% inventory accuracy."
+  intro="Four engagements, named and on the record — from signed reference letters and acceptance correspondence, not modelled figures."
+  description="Frappe ERP case studies from TECHINCGLOBAL: named client references across manufacturing, trading, distribution and professional services, delivered on the NXTGEN Agile methodology."
   path="/case-studies"
   breadcrumb="Case studies"
   schema={CASE_STUDIES.map(caseStudySchema)}
@@ -27,6 +27,7 @@ import { caseStudySchema } from '@/lib/seo'
                   <h2 class="h2 entry__title">{c.title}</h2>
                   <p class="entry__summary">{c.summary}</p>
                   <blockquote class="entry__quote">“{c.quote}”</blockquote>
+                  <p class="mono entry__by">{c.signatory}</p>
                   <span class="mono entry__go">Read the case study →</span>
                 </div>
                 <ul class="entry__results">
@@ -90,6 +91,12 @@ import { caseStudySchema } from '@/lib/seo'
     line-height: 1.35;
     letter-spacing: -0.015em;
     color: var(--ink-2);
+    max-width: 48ch;
+  }
+
+  .entry__by {
+    margin-top: var(--s-4);
+    color: var(--ink-faint);
     max-width: 48ch;
   }
 

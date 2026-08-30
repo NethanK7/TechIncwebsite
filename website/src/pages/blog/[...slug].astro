@@ -2,7 +2,7 @@
 import Page from '@/layouts/Page.astro'
 import { getCollection, render } from 'astro:content'
 import { abs } from '@/lib/seo'
-import { COMPANY } from '@/lib/data/company'
+import { COMPANY, TEAM } from '@/lib/data/company'
 import type { GetStaticPaths } from 'astro'
 
 export const getStaticPaths = (async () => {
@@ -12,6 +12,8 @@ export const getStaticPaths = (async () => {
 
 const { post, posts } = Astro.props
 const { Content } = await render(post)
+
+const author = TEAM.find((m) => m.slug === post.data.author)
 
 const fmt = (d: Date) =>
   d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -28,7 +30,9 @@ const articleSchema = {
   description: post.data.description,
   datePublished: post.data.published.toISOString(),
   dateModified: (post.data.updated ?? post.data.published).toISOString(),
-  author: { '@type': 'Organization', name: COMPANY.name, url: COMPANY.url },
+  author: author
+    ? { '@type': 'Person', name: author.name, jobTitle: author.role, url: abs(`/team/${author.slug}`) }
+    : { '@type': 'Organization', name: COMPANY.name, url: COMPANY.url },
   publisher: { '@id': `${COMPANY.url}/#organization` },
   mainEntityOfPage: abs(`/blog/${post.id}`),
   articleSection: post.data.topic,
@@ -58,7 +62,15 @@ const articleSchema = {
     <span aria-hidden="true">·</span>
     <span>{post.data.readingMinutes} min read</span>
     <span aria-hidden="true">·</span>
-    <span>{COMPANY.name}</span>
+    {
+      author ? (
+        <a class="byline__author" href={`/team/${author.slug}`}>
+          {author.name}
+        </a>
+      ) : (
+        <span>{COMPANY.name}</span>
+      )
+    }
   </p>
 
   <section class="section">
@@ -113,6 +125,19 @@ const articleSchema = {
     color: var(--ink-faint);
     text-transform: uppercase;
     letter-spacing: 0.1em;
+  }
+
+  .byline__author {
+    color: var(--ink-faint);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--n-400);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .byline__author:hover {
+    color: var(--ink);
   }
 
   .article {

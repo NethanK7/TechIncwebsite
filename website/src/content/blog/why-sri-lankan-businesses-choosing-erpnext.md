@@ -3,6 +3,7 @@ title: "Why Sri Lankan businesses are choosing Frappe ERP"
 description: "Licence-free, locally compliant and genuinely extensible — the three reasons Frappe ERP is displacing both spreadsheets and licensed ERP in Sri Lanka."
 published: 2026-01-14
 topic: "Platform choice"
+author: "jeby-krishoan"
 readingMinutes: 7
 faq:
   - q: "Why are Sri Lankan companies moving to Frappe ERP?"

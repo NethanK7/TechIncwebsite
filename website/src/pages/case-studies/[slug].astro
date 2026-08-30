@@ -11,7 +11,10 @@ export const getStaticPaths = (() =>
   }))) satisfies GetStaticPaths
 
 const { study } = Astro.props
-const other = CASE_STUDIES.find((c) => c.slug !== study.slug)
+// Follows the fixed chain (Emjay → Electro-Serv → DRH → Asia Securities → back
+// to Emjay) rather than any other study — the order set out in the source brief.
+const index = CASE_STUDIES.findIndex((c) => c.slug === study.slug)
+const other = CASE_STUDIES[(index + 1) % CASE_STUDIES.length]
 ---
 
 <Page
@@ -56,7 +59,8 @@ const other = CASE_STUDIES.find((c) => c.slug !== study.slug)
       <aside data-reveal>
         <blockquote class="pull">
           <p>“{study.quote}”</p>
-          <footer class="mono">{study.sector} client</footer>
+          <footer class="mono">{study.signatory}</footer>
+          {study.credit && <p class="mono pull__credit">{study.credit}</p>}
         </blockquote>
 
         {
@@ -144,6 +148,12 @@ const other = CASE_STUDIES.find((c) => c.slug !== study.slug)
     color: rgb(255 255 255 / 0.55);
     text-transform: uppercase;
     letter-spacing: 0.12em;
+  }
+
+  .pull__credit {
+    margin-top: var(--s-2);
+    color: rgb(255 255 255 / 0.4);
+    font-size: var(--t-xs, 0.75rem);
   }
 
   .other {

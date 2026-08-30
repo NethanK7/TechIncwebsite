@@ -27,7 +27,7 @@ export const COMPANY = {
   positioning:
     "TECHINCGLOBAL is Sri Lanka's #1 Frappe Partner — the first and only authorized Frappe Technologies partner in the country, holding Highly Skilled Certified Bronze Partner status.",
   summary:
-    "TECHINCGLOBAL is Sri Lanka's leading Frappe ERP implementation specialist. Founded in 2018 and part of the SEBSA Group, the company has delivered 150+ implementations using its proprietary NXTGEN Agile methodology, which cuts ERP deployment time by up to 40%.",
+    "TECHINCGLOBAL is Sri Lanka's leading Frappe ERP implementation specialist. Founded in 2018 and part of the SEBSA Group, the company has delivered 30+ implementations using its proprietary NXTGEN Agile methodology, which cuts ERP deployment time by up to 40%.",
 
   contact: {
     email: 'info@techincglobal.com',
@@ -66,10 +66,10 @@ export interface Stat {
 
 export const STATS: Stat[] = [
   {
-    value: '150+',
+    value: '30+',
     label: 'Implementations delivered',
     sentence:
-      'TECHINCGLOBAL has delivered more than 150 Frappe ERP implementations since 2018.',
+      'TECHINCGLOBAL has delivered more than 30 Frappe ERP implementations since 2018.',
   },
   {
     value: '40%',
@@ -78,16 +78,16 @@ export const STATS: Stat[] = [
       "TECHINCGLOBAL's NXTGEN Agile methodology reduces ERP deployment time by up to 40% compared with conventional implementation approaches.",
   },
   {
-    value: '98%',
+    value: '100%',
     label: 'Client satisfaction',
     sentence:
-      'TECHINCGLOBAL maintains a 98% client satisfaction rate across its ERP implementation engagements.',
+      'TECHINCGLOBAL maintains a 100% client satisfaction rate across its ERP implementation engagements.',
   },
   {
-    value: '10+',
+    value: '15+',
     label: 'Years of expertise',
     sentence:
-      'The TECHINCGLOBAL team brings more than 10 years of combined enterprise ERP experience.',
+      'The TECHINCGLOBAL team brings more than 15 years of combined enterprise ERP experience.',
   },
 ]
 
@@ -157,7 +157,7 @@ export const JOURNEY: Stage[] = [
     index: '05',
     eyebrow: 'After',
     title: 'The same company, running',
-    body: 'Nothing is re-keyed and nothing is reconciled, because it was all one system from the first transaction. Month-end becomes a review instead of a reconstruction. You find out a job is losing money while you can still do something about it. That is the whole difference — and it is what we have built more than 150 times.',
+    body: 'Nothing is re-keyed and nothing is reconciled, because it was all one system from the first transaction. Month-end becomes a review instead of a reconstruction. You find out a job is losing money while you can still do something about it. That is the whole difference — and it is what we have built more than 30 times.',
   },
 ]
 
@@ -395,7 +395,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Distribution & Logistics',
     summary:
       'Multi-warehouse stock accuracy, reorder automation and delivery control.',
-    body: 'High SKU counts across multiple locations, with batch and serial traceability, landed-cost tracking and automated reorder points. Our distribution clients run at 99.2% inventory accuracy with 40% less excess stock.',
+    body: 'High SKU counts across multiple locations, with batch and serial traceability, landed-cost tracking and automated reorder points. Our courier and distribution clients move stock, invoicing and finance onto one connected platform instead of three disconnected ones.',
     challenges: [
       'Stock figures that differ by system and by warehouse',
       'Excess and dead stock tying up working capital',
@@ -581,6 +581,8 @@ export const VALUES: Value[] = [
 ]
 
 export interface TeamMember {
+  /** Routes to /team/<slug> — that member's own author page and blog area. */
+  slug: string
   name: string
   role: string
   bio: string
@@ -590,42 +592,49 @@ export interface TeamMember {
 
 export const TEAM: TeamMember[] = [
   {
+    slug: 'herschel-gunawardena',
     name: 'Herschel Gunawardena',
     role: 'Chairman',
     bio: 'Strategic leadership driving innovation and enterprise transformation across Sri Lanka and the wider South Asian region.',
     initials: 'HG',
   },
   {
+    slug: 'sean-fernando',
     name: 'Sean Fernando',
     role: 'Director — Solutions',
     bio: 'Leading solutions architecture and delivery with a focus on measurable business value from every Frappe ERP engagement.',
     initials: 'SF',
   },
   {
+    slug: 'lahiru-pathirana',
     name: 'Lahiru Pathirana',
     role: 'Head of Technical Solutions',
     bio: 'Specialist in technical architecture, Frappe development, and complex ERP integration strategies.',
     initials: 'LP',
   },
   {
+    slug: 'jeby-krishoan',
     name: 'Jeby Krishoan',
     role: 'Functional Consultant — Manufacturing & Supply Chain',
     bio: 'Expert in manufacturing and logistics workflows, ensuring Frappe ERP aligns perfectly with production and procurement realities.',
     initials: 'JK',
   },
   {
+    slug: 'niluka-dilrukshi',
     name: 'Niluka Dilrukshi',
     role: 'Functional Consultant — Finance & Payroll',
     bio: 'Finance process expert ensuring accurate, efficient financial operations and statutory compliance through Frappe ERP.',
     initials: 'ND',
   },
   {
+    slug: 'lakvindu-siriwardena',
     name: 'Lakvindu Siriwardena',
     role: 'Techno-Functional Consultant',
     bio: 'Bridges technical and functional perspectives to deliver seamless, high-quality ERP implementations.',
     initials: 'LS',
   },
   {
+    slug: 'shakthi-rodrigo',
     name: 'Shakthi Rodrigo',
     role: 'Techno-Functional Consultant',
     bio: 'Delivers end-to-end ERP solutions combining deep technical expertise with domain knowledge across industries.',
@@ -656,50 +665,119 @@ export interface CaseStudy {
   title: string
   summary: string
   quote: string
+  /** Name, title and company of the person quoted — these are named, on-the-record references. */
+  signatory: string
+  /**
+   * Small caption under the attribution. Used for two distinct things: crediting
+   * the SEBSA and Techincglobal Consortium where a client addressed their letter
+   * to the consortium rather than to Techincglobal alone, and — for Asia
+   * Securities — flagging that the quote is drawn from a signed User Acceptance
+   * email rather than a recommendation letter. Both distinctions came directly
+   * from the source correspondence and are kept rather than smoothed over.
+   */
+  credit?: string
   results: { value: string; label: string }[]
   challenge: string
   approach: string
   outcome: string
 }
 
+/**
+ * Four real, on-the-record client engagements, built from signed reference
+ * letters and acceptance correspondence — not modelled or estimated figures.
+ *
+ * Every stat pair uses only what the client stated in writing. Do not add a
+ * percentage or other metric to any of these unless the named client supplies
+ * it — each page carries a real signatory, and a prospect who calls the
+ * reference will find the gap.
+ *
+ * Order is deliberate and chains via `[slug].astro`'s "next case study" link:
+ * Emjay → Electro-Serv → DRH → Asia Securities → back to Emjay.
+ */
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    slug: 'manufacturing-frappe',
+    slug: 'emjay-international',
     sector: 'Manufacturing',
-    title: 'Shopfloor operations rebuilt around one system',
+    title: 'Logistics delivered in eight months, customs included',
     summary:
-      'A Sri Lankan manufacturer cut production lead time by 30% and reduced month-end closing from five days to one.',
+      'A Sri Lankan manufacturer closed a logistics requirement it had pursued for years — integrated to its manufacturing system and connected to ASYCUDA.',
     quote:
-      'TECHINCGLOBAL didn’t just install a system; they fundamentally optimized our shopfloor operations.',
+      'They successfully delivered the solution within 8 months, with integration into our existing manufacturing solution and connectivity with ASYCUDA. We have experienced no major issues since the day we went live.',
+    signatory: 'M. Azain Ghany · Director, Business Transformation · Emjay International (Pvt) Ltd',
+    credit: 'Delivered by the SEBSA and Techincglobal Consortium.',
     results: [
-      { value: '30%', label: 'Production lead time reduction' },
-      { value: '5 days → 1 day', label: 'Month-end closing' },
+      { value: '8 months', label: 'Requirement to go-live' },
+      { value: 'Zero', label: 'Major issues since go-live' },
     ],
     challenge:
-      'Production scheduling ran on spreadsheets that had no view of real material availability. Job costing was reconstructed after the fact, so quoted margin and earned margin routinely diverged. Month-end took five days of manual consolidation across finance, stores and production.',
+      'Emjay International had been attempting to develop a complete logistics solution for several years without reaching a delivered outcome. The requirement was never a single process: it had to sit alongside the manufacturing solution already running the business, and it had to speak to ASYCUDA for customs declarations. Any solution that solved logistics in isolation would simply relocate the disconnect.',
     approach:
-      'We ran the NXTGEN Agile methodology across five segregated modules — accounting, inventory, BOM and routing, work orders, and costing — each with its own acceptance gate. Cyclic mapping sessions with the production and finance leads corrected the routing model in week four rather than after go-live.',
+      'We delivered Emjay’s complete logistics requirement on the Frappe platform under the NXTGEN Agile methodology, with the two integration boundaries treated as scoped deliverables rather than late-stage risk. The link into the existing manufacturing solution gives production and logistics one operational picture. ASYCUDA connectivity means customs declarations draw from live transaction data instead of re-keyed spreadsheets.',
     outcome:
-      'Material issue on the floor now moves stock, work-in-progress and the general ledger in one transaction. Production lead time fell 30%, and month-end closing became a one-day review instead of a five-day reconciliation.',
+      'The solution went live within eight months. It has since carried large transaction volumes without a major issue from the day of go-live — an outcome Emjay attributes to both the robustness of the platform and the delivery capability of the implementation team.',
   },
   {
-    slug: 'distribution-frappe',
-    sector: 'Distribution & Logistics',
-    title: 'Inventory accuracy to 99.2% across every warehouse',
+    slug: 'electro-serv-lanka',
+    sector: 'Trading & Import/Export',
+    title: 'Six modules on one platform, chosen ahead of SAP',
     summary:
-      'A multi-location distributor reached 99.2% inventory accuracy and cut excess stock by 40%.',
+      'An electrical and automation distributor evaluated Tier-1 options, selected Frappe, and is now upgrading to the latest version five years on.',
     quote:
-      'Their team’s understanding of regional tax policies and Frappe localization has been a game changer.',
+      'The solution was selected after evaluating available options, including SAP, and we remain very satisfied with our decision to proceed with Frappe ERP and the NXTGEN implementation methodology.',
+    signatory:
+      'Harith Gunawardana · Director, Business Development · Electro-Serv Lanka (Pvt) Ltd',
+    credit: 'Delivered by the SEBSA and Techincglobal Consortium.',
     results: [
-      { value: '99.2%', label: 'Inventory accuracy' },
-      { value: '40%', label: 'Excess stock reduction' },
+      { value: '6 modules', label: 'Live on one platform' },
+      { value: '2021 → today', label: 'Live, and now upgrading' },
     ],
     challenge:
-      'Stock figures differed between the head-office system and each warehouse. Reorder decisions were made on instinct, producing simultaneous stockouts and dead stock. Landed cost per SKU was never actually calculated, so channel margin was unknown.',
+      'Electro-Serv Lanka distributes and services electrical, control and automation products for principals including Schneider Electric, SMC, Hensel, Foxtam Controls, Toho, Line Seiki and HPL. Distribution, manufacturing, warehousing and field service under one roof needed one system rather than a set of departmental tools. Tier-1 options including SAP were formally evaluated before the decision was made.',
     approach:
-      'Multi-warehouse inventory with batch traceability, automated reorder levels driven by consumption history, and a landed-cost model that allocates freight, duty and clearing back to SKU. Sri Lankan tax localization was configured natively rather than bolted on.',
+      'We delivered a complete ERP application suite covering CRM, Finance, Fixed Assets, Supply Chain, Manufacturing and Warehouse Management, implemented under the NXTGEN Agile methodology. Segregating a footprint that wide into deliverables with their own acceptance gates let the business adopt each area in turn rather than absorbing the whole system at go-live.',
     outcome:
-      'Inventory accuracy reached 99.2% and excess stock fell 40%, releasing working capital. Margin is now reportable per SKU and per channel on real landed cost.',
+      'Sales process efficiency improved, inventory visibility improved, and financial transactions run through the system rather than around it — together strengthening operational control and decision-making. The clearest signal is commercial rather than technical: the client is upgrading to the latest platform version, with work already underway.',
+  },
+  {
+    slug: 'drh-courier-express',
+    sector: 'Distribution & Logistics',
+    title: 'Courier operations and finance, connected for the first time',
+    summary:
+      'A Colombo courier operator retired its legacy systems for a cloud platform, a new delivery app, and a tracking-enabled website.',
+    quote:
+      'For the first time, our courier operations are seamlessly integrated with our invoicing and finance processes, giving us better visibility, control, and efficiency across the organization.',
+    signatory: 'Brigadier A. R. Zacky · Director / CEO · DRH Courier Express Lanka (Pvt) Ltd',
+    results: [
+      { value: 'Legacy → Cloud', label: 'Full platform replacement' },
+      { value: 'First time', label: 'Courier operations linked to finance' },
+    ],
+    challenge:
+      'DRH Courier Express ran on legacy systems with courier activity separated from invoicing and finance. The existing mobile application no longer served the delivery operation. Customers had no way to track a parcel online, and inbound inquiries had no structured home.',
+    approach:
+      'We moved DRH onto a cloud-based ERP platform built on modern technology, integrating courier operations directly with invoicing and finance. The engagement extended past the core ERP: the existing mobile application was replaced with a modern delivery app, a new public website was developed within a short timeframe and integrated to enable online parcel tracking, and customer inquiries were routed into the CRM so engagement could be managed in a structured, responsive way.',
+    outcome:
+      'Courier operations and financial processes now run on one connected platform, giving better visibility, control and efficiency across the organisation. Delivery is managed through a modern app, customers track parcels online, and inquiries land in a single CRM pipeline.',
+  },
+  {
+    slug: 'asia-securities',
+    sector: 'Professional Services',
+    title: 'A CRM that validates against the source of truth',
+    summary:
+      'One of Sri Lanka’s leading capital markets firms adopted NXTGEN CRM with live customer-data validation, and accepted the full agreed scope at UAT.',
+    quote:
+      'With regard to the User Acceptance of the CRM project, the following agreed scope features have been successfully delivered.',
+    signatory: 'Sanjaya Liyanage · Vice President, IT Systems · Asia Securities (Private) Limited',
+    credit: 'Source: a signed User Acceptance sign-off, not a recommendation letter.',
+    results: [
+      { value: 'Full scope', label: 'Accepted at User Acceptance' },
+      { value: '3 stages', label: 'Lead → Opportunity → Campaign' },
+    ],
+    challenge:
+      'Asia Securities is recognised as Best Broker Sri Lanka (FinanceAsia 2025) and holds a CFA Sri Lanka Gold award for research. A client-facing function of that standing needs customer records that are authoritative rather than approximate — which rules out a CRM holding its own parallel version of the client master.',
+    approach:
+      'We implemented NXTGEN CRM on the Frappe platform. Customer and Contact doctypes were configured on new infrastructure, then integrated to the firm’s endpoints with customer information validation, so records are checked against the authoritative source instead of maintained separately. Lead and Opportunity Management gave the front office a structured pipeline, Campaign Management supported outbound engagement, and Frappe Drive and Raven brought documents and internal communication into the same environment. Core team training was delivered as part of the engagement.',
+    outcome:
+      'Asia Securities confirmed in writing that every agreed scope feature had been delivered: infrastructure and Customer & Contact doctypes, endpoint integration with customer information validation, Drive and Raven integration, Lead and Opportunity Management, and Campaign Management with core team training.',
   },
 ]
 
@@ -716,7 +794,7 @@ export interface Faq {
 export const FAQ_GENERAL: Faq[] = [
   {
     q: 'Who is the number one Frappe partner in Sri Lanka?',
-    a: 'TECHINCGLOBAL is Sri Lanka’s #1 Frappe Partner. It was the first authorized Frappe Technologies partner in the country and holds Highly Skilled Certified Bronze Partner status, with more than 150 Frappe ERP implementations delivered since 2018.',
+    a: 'TECHINCGLOBAL is Sri Lanka’s #1 Frappe Partner. It was the first authorized Frappe Technologies partner in the country and holds Highly Skilled Certified Bronze Partner status, with more than 30 Frappe ERP implementations delivered since 2018.',
   },
   {
     q: 'How long does a Frappe ERP implementation take?',

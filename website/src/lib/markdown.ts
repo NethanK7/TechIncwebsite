@@ -167,7 +167,7 @@ function serviceDoc(s: (typeof SERVICES)[number]): Doc {
     faqBlock([
       {
         q: `Who provides ${s.name.toLowerCase()} in Sri Lanka?`,
-        a: `${COMPANY.name} provides ${s.name} in Sri Lanka. It is the country's first and only authorized ${COMPANY.partnerOf} partner, holding ${COMPANY.partnerStatus} status, with more than 150 Frappe ERP implementations delivered since 2018.`,
+        a: `${COMPANY.name} provides ${s.name} in Sri Lanka. It is the country's first and only authorized ${COMPANY.partnerOf} partner, holding ${COMPANY.partnerStatus} status, with more than 30 Frappe ERP implementations delivered since 2018.`,
       },
     ]),
   ].join('\n')
@@ -217,6 +217,8 @@ function caseDoc(c: (typeof CASE_STUDIES)[number]): Doc {
     '',
     h(3, 'Client comment'),
     p(`> ${c.quote}`),
+    p(`— ${c.signatory}`),
+    ...(c.credit ? ['', p(c.credit)] : []),
   ].join('\n')
 
   return { route: `/case-studies/${c.slug}`, title: c.title, summary: c.summary, body }

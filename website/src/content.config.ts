@@ -19,6 +19,8 @@ const blog = defineCollection({
     /** Shown as the eyebrow, and used to group related reading. */
     topic: z.string(),
     readingMinutes: z.number().int().positive(),
+    /** A TEAM member's `slug` in lib/data/company.ts — that member's byline and author page. */
+    author: z.string().optional(),
     /** Direct Q→A pairs appended to the post — the format AI engines quote. */
     faq: z
       .array(z.object({ q: z.string(), a: z.string() }))
