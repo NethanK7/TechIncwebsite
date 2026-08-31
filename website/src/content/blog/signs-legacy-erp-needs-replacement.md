@@ -7,42 +7,28 @@ author: "lahiru-pathirana"
 readingMinutes: 7
 faq:
   - q: "How do I know if our ERP needs replacing?"
-    a: "The clearest signs an ERP needs replacing are: the vendor no longer supports your version, reports are exported to spreadsheets before anyone uses them, integrations are manual file transfers, and nobody will authorise an upgrade because of the customisation risk."
+    a: "The clearest signs are: the vendor no longer supports your version, reports get exported to spreadsheets before anyone actually uses them, integrations are manual file transfers, and nobody will authorise an upgrade because of the customisation risk."
   - q: "Is it safer to upgrade a legacy ERP or replace it?"
-    a: "It depends on whether the platform still fits. TECHINCGLOBAL's ERP Consulting and Advisory engagement models both paths on real numbers, and will recommend staying on the current system when that is genuinely the better option."
+    a: "It depends on whether the platform still fits. TECHINCGLOBAL's ERP Consulting and Advisory engagement models both paths on real numbers, and will recommend staying on the current system when that's genuinely the better option."
 ---
-An old system is not automatically a bad system. We have told clients their ERP is fine and the real problem is process. But some signals reliably mean the platform itself has become the constraint.
+A lot of ageing systems get blamed for problems that are actually process problems. So before we talk a client into replacing anything, we look for signals that are structural rather than cosmetic. Here are the seven that come up again and again.
 
-## 1. You are on a version the vendor no longer supports
+**1. The vendor has stopped supporting your version.** Not "support is expensive." Stopped. No security patches, no bug fixes, and every year that passes makes the eventual migration harder because the gap between your version and the current one keeps widening.
 
-The obvious one, and still the most common. Unsupported means no security patches and no route to escalate. It also usually means the upgrade path has become a migration in everything but name.
+**2. Reports get exported to spreadsheets before anyone trusts them.** If your finance team's real workflow is "export, then fix in Excel," the system isn't producing decision-ready numbers. It's producing raw material for a manual process that happens to look like a report.
 
-## 2. Every report gets exported before anyone uses it
+**3. Integrations are manual file transfers.** Someone exports a CSV from one system and imports it into another, on a schedule, by hand. That's not an integration, it's a chore with a deadline, and it fails silently the day that person is on leave.
 
-If the standard answer to "can I see X" is a CSV export into Excel, then your ERP has become a transaction log with a reporting problem. The business is already running on spreadsheets; the ERP is just where the data is typed in first.
+**4. Nobody will authorise an upgrade.** This is the quiet one. When a business has customised its ERP so heavily that upgrading feels too risky to attempt, the system has effectively frozen in time, and every year that passes makes it more fragile, not less.
 
-## 3. Nobody will authorise the upgrade
+**5. Multiple systems hold their own version of the same customer or item.** If sales, warehouse and finance each have a slightly different record for the same customer, the business is running on three approximations of the truth instead of one.
 
-Watch for this one. When the technical team cannot say what an upgrade will break, that is not caution — it is a signal that customisation was done in a way that is no longer legible. Undocumented, unversioned customisation is a form of debt that eventually makes the platform unmovable.
+**6. Month-end takes days because numbers need reconciling first, not just reviewing.** A closing process should be a check. If it's actually a reconstruction, that's the system telling you it isn't doing its job.
 
-## 4. Integrations are people moving files
+**7. New hires take weeks to become productive because the system doesn't match how the work actually happens.** People building workarounds and passing them down as tribal knowledge is a sign the software and the business have drifted apart.
 
-A nightly file drop that someone checks in the morning is not an integration, it is a scheduled chore with a failure mode nobody monitors. If your bank reconciliation, e-commerce orders or payroll all move by file, each of those is a silent data-gap waiting to happen.
+## Not every old system is a bad system
 
-## 5. Adding a user is a budget conversation
+Age on its own isn't the problem. A ten-year-old ERP that's still vendor-supported, still integrates cleanly, and produces trustworthy numbers on time isn't a candidate for replacement just because it isn't new. The signals above are what actually separate "old but fine" from "quietly costing you every month."
 
-Per-user licensing is a real constraint on how you operate. When the warehouse team shares one login because seats are expensive, you have lost your audit trail to a commercial decision.
-
-## 6. Compliance changes arrive late
-
-If a change in VAT treatment or payroll contribution rules means waiting on a vendor localisation pack, your compliance timeline is set by someone else's release schedule.
-
-## 7. The process now fits the software
-
-The most subtle sign, and the most expensive. When people describe their work in terms of the system's screens rather than the business's actual steps — "we raise a dummy order because there is no other way to do it" — the software has started dictating the operation.
-
-## What to do next
-
-Two of these can usually be worked around. Four or more and you are paying to maintain a constraint.
-
-A replacement is not the only answer, and it is not always the right one. Our [legacy modernization](/services/legacy-system-modernization) engagement starts with a data audit and a reconciled migration plan precisely because legacy migrations fail on data, not software — and our [advisory](/services/erp-consulting-advisory) work will tell you honestly if staying put is the better call.
+If two or three of these sound familiar, it's worth getting an honest read on whether the fix is replacement, or something smaller. Our [ERP Consulting and Advisory](/services/erp-consulting-advisory) engagement is built to answer that question on real numbers rather than a sales pitch.

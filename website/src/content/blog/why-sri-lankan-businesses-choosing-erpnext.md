@@ -1,44 +1,32 @@
 ---
 title: "Why Sri Lankan businesses are choosing Frappe ERP"
-description: "Licence-free, locally compliant and genuinely extensible — the three reasons Frappe ERP is displacing both spreadsheets and licensed ERP in Sri Lanka."
+description: "Licence-free, locally compliant and genuinely extensible: the three reasons Frappe ERP is displacing both spreadsheets and licensed ERP in Sri Lanka."
 published: 2026-01-14
 topic: "Platform choice"
 author: "jeby-krishoan"
 readingMinutes: 7
 faq:
   - q: "Why are Sri Lankan companies moving to Frappe ERP?"
-    a: "Sri Lankan companies are moving to Frappe ERP for three main reasons: there are no per-user licence fees, the platform can be localised natively for Sri Lankan VAT, EPF and ETF requirements, and it is genuinely extensible because the framework and the application are the same codebase."
+    a: "Three main reasons: there are no per-user licence fees, the platform can be localised natively for Sri Lankan VAT, EPF and ETF requirements, and it's genuinely extensible because the framework and the application are the same codebase."
   - q: "Is Frappe ERP suitable for mid-sized Sri Lankan manufacturers?"
     a: "Yes. Frappe ERP handles multi-level BOMs, routing, work orders, capacity planning and job costing, and TECHINCGLOBAL has delivered implementations to more than 20 Sri Lankan manufacturers."
 ---
-For most of the last two decades, a Sri Lankan company outgrowing its spreadsheets had two options. Buy a licensed ERP from an international vendor and accept per-user fees, a rigid data model and a partner who had to fly in. Or commission something bespoke, and own the maintenance of it forever.
+We get asked some version of the same question on almost every first call: why Frappe, and not one of the bigger names everyone's heard of? The honest answer isn't a single feature. It's three things that compound.
 
-Frappe changed that arithmetic. Here is what actually drives the decision in the conversations we have.
+## No per-user licence fees
 
-## The licence line disappears
+Most licensed ERP is priced per named user, which sounds manageable until the business grows and every new hire in finance, sales or the warehouse floor becomes a recurring cost that has nothing to do with the value they add. Frappe is open source. The cost is implementation and support, not a permanent subscription tax on headcount. For a growing Sri Lankan business, that difference compounds every year, not just at signing.
 
-Frappe is open-source. There is no per-user fee, no module unlock, no annual true-up. That does not make an implementation free — the cost moves to implementation and support, where it is at least proportional to work delivered rather than to headcount. For a growing company, the difference compounds: adding thirty warehouse users to a licensed system is a budget conversation, and on Frappe it is an afternoon.
+## It gets localised properly, not patched around
 
-It also changes who can afford to do this properly. We have configured full double-entry accounting, multi-warehouse inventory and payroll for companies that had been told ERP was a hundred-thousand-dollar conversation.
+VAT, EPF, ETF and the other statutory requirements specific to Sri Lanka aren't an afterthought bolted onto a generic template. They get configured at the platform level: chart of accounts, tax templates, payroll components, print formats. That's a structural difference from adapting software built for a different market and hoping the edge cases don't bite later.
 
-## Localisation is not an add-on
+## The framework and the application are the same codebase
 
-This is the part that decides most projects, and the part most easily underestimated.
+This is the one people underestimate until they hit it. ERPNext (the application most people mean when they say "Frappe ERP") is built on the Frappe framework using the exact same tools available to any developer. When your business needs something the standard configuration doesn't cover, that gets built as a proper extension of the platform, not a fragile workaround glued on from outside. It stays upgrade-safe because it was never a hack in the first place.
 
-Sri Lankan compliance is specific. VAT treatment, withholding, EPF and ETF contribution handling in payroll, and the statutory report formats your auditors expect. On a licensed platform these arrive as a localisation pack, maintained by whoever the vendor contracted, updated when they get to it.
+## Where this actually shows up
 
-On Frappe, they are configuration and code in your own instance. As the country's authorized Frappe partner, we maintain those localisations directly — which means when a rule changes, the fix is ours to ship, not a support ticket in another timezone.
+Manufacturing is our largest sector, and it's a good test case: multi-level bills of materials, routing, work orders, capacity planning and job costing all need to talk to each other and to finance in real time, not at month-end. We've delivered implementations to more than 20 Sri Lankan manufacturers on exactly this foundation.
 
-## The framework and the app are the same thing
-
-Frappe is unusual in that ERPNext is built on the Frappe framework using the same tools you get. A new doctype, a server script, a custom report, an approval workflow — these are first-class, not extension points bolted on the side.
-
-The practical consequence: when your process genuinely is yours, we build *for* it rather than around it. And because it is a proper Frappe app under version control, it survives framework upgrades instead of breaking on the next release, which is exactly what happens to customisation done as database-level patches.
-
-## Where it is the wrong answer
-
-We would rather set the right expectation than win a deal, so: Frappe is not the answer if your real problem is process rather than software. Automating a broken approval chain gets you a faster broken approval chain. If nobody can say who owns a decision today, an ERP will not tell you.
-
-It is also not the answer if you have no internal capacity to adopt it. The most common cause of ERP failure we see is not technical — it is people quietly going back to the spreadsheet because nobody trained them on their own workflows with their own data.
-
-Both of those are fixable. Neither is fixed by choosing a platform.
+None of this is about Frappe being cheaper in isolation. It's about a Sri Lankan business getting a platform that fits its actual compliance requirements, doesn't punish it for growing, and can be extended by the same team that built it rather than a vendor on the other side of the world.
