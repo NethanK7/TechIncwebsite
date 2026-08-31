@@ -3,7 +3,7 @@ title: "What actually gets weighed when a Tier-1 evaluation includes Frappe"
 description: "When SAP is on the shortlist, the decision isn't licence cost versus licence cost. It's whether one connected platform beats a portfolio of departmental tools."
 published: 2026-07-22
 topic: "Platform choice"
-author: "shakthi-rodrigo"
+author: "sean-fernando"
 readingMinutes: 6
 faq:
   - q: "Is Frappe ERP a genuine alternative to SAP for mid-sized distributors?"

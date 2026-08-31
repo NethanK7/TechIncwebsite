@@ -640,6 +640,20 @@ export const TEAM: TeamMember[] = [
     bio: 'Delivers end-to-end ERP solutions combining deep technical expertise with domain knowledge across industries.',
     initials: 'SR',
   },
+  {
+    slug: 'thineth-weerasinghe',
+    name: 'Thineth Weerasinghe',
+    role: 'Developer — AI Enterprise Solutions',
+    bio: 'Builds AI-driven capability into Frappe implementations — from document extraction to forecasting — grounded in what the platform can actually support in production.',
+    initials: 'TW',
+  },
+  {
+    slug: 'nethan-kombalavitana',
+    name: 'Nethan Kombalavitana',
+    role: 'Developer — AI Enterprise Solutions',
+    bio: 'Designs the interfaces our clients actually use day to day, with a focus on enterprise UX that holds up under real operational load, not just a demo.',
+    initials: 'NK',
+  },
 ]
 
 export const PARTNERSHIPS = [

@@ -3,7 +3,7 @@ title: "Integrating an ERP with ASYCUDA: what actually has to be true"
 description: "Customs connectivity isn't a bolt-on feature. It has to sit on the same transaction data as manufacturing and stock, or the declaration is a second version of the truth."
 published: 2026-07-08
 topic: "Integration"
-author: "lakvindu-siriwardena"
+author: "jeby-krishoan"
 readingMinutes: 6
 faq:
   - q: "What does it take to integrate an ERP with ASYCUDA for customs declarations?"
