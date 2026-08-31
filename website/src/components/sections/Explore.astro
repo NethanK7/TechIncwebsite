@@ -28,14 +28,17 @@
     <h2 class="explore__title">Walk the ERP city.</h2>
     <p class="explore__lead">
       The same model the page just flew you through — but this time you have the
-      controls. Six departments, one core, and about half a kilometre of ground
-      between them.
+      controls. Six departments around one core, six industries out past them,
+      and about a kilometre of ground in between. Walk it, or take off and fly.
     </p>
     <ul class="explore__keys">
       <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Move</span></li>
       <li><kbd>Mouse</kbd><span>Look</span></li>
-      <li><kbd>Shift</kbd><span>Run</span></li>
-      <li><kbd>Space</kbd><span>Jump</span></li>
+      <li><kbd>Shift</kbd><span>Run / boost</span></li>
+      <li class="explore__keys--lede">
+        <kbd>F</kbd><span>Fly — or tap <kbd>Space</kbd> twice</span>
+      </li>
+      <li><kbd>Space</kbd><kbd>C</kbd><span>Up / down, in flight</span></li>
       <li><kbd>Esc</kbd><span>Back to the site</span></li>
     </ul>
     <button class="btn btn--solid" type="button" data-explore-start>Click to enter</button>
@@ -50,8 +53,12 @@
       <!-- Only filled once you are standing inside a district's footprint. -->
       <span class="explore__whereBlurb" data-explore-blurb hidden></span>
     </div>
-    <div class="mono explore__hint">
-      <kbd>WASD</kbd> move · <kbd>Shift</kbd> run · <kbd>Esc</kbd> exit
+    <div class="explore__right">
+      <!-- Mode and altitude. Reads "WALK" until the visitor takes off. -->
+      <div class="mono explore__mode" data-explore-mode></div>
+      <div class="mono explore__hint" data-explore-keys>
+        <kbd>WASD</kbd> move · <kbd>F</kbd> fly · <kbd>Esc</kbd> exit
+      </div>
     </div>
   </div>
 </div>
@@ -281,6 +288,39 @@
     background: rgb(255 255 255 / 0.82);
     backdrop-filter: blur(10px);
     border-radius: 0.75rem;
+  }
+
+  .explore__right {
+    display: grid;
+    justify-items: end;
+    gap: var(--s-2);
+  }
+
+  /* Mode badge. Inverts in flight, so a glance at the corner is enough to know
+     whether Space will jump or climb. */
+  .explore__mode {
+    padding: var(--s-2) var(--s-4);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 0.82);
+    backdrop-filter: blur(10px);
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .explore__mode[data-flying='true'] {
+    background: var(--ink);
+    color: var(--paper-pure);
+  }
+
+  /* The one control worth reading twice. */
+  .explore__keys--lede kbd:first-child {
+    background: var(--ink);
+    color: var(--paper-pure);
+    border-color: var(--ink);
   }
 
   @media (max-width: 780px) {

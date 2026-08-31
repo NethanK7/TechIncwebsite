@@ -58,16 +58,20 @@ import {
   buildDerelict,
   buildDistrict,
   buildGround,
+  buildOutpost,
+  buildPylons,
   buildRoads,
   buildScatter,
+  buildStreetFurniture,
 } from './city'
-import { buildCrowd, buildRotors, buildTraffic } from './animated'
+import { buildCrowd, buildFlock, buildRotors, buildTraffic } from './animated'
 import { buildAscentRamps, buildConduits } from './conduits'
 import { PALETTE, SHARED_MATERIALS, makeSkyMaterial, tickMaterials } from './materials'
 import {
   CORE,
   DISTRICTS,
   KEYFRAMES,
+  OUTPOSTS,
   STAGE_COUNT,
   STAGE_KEYS,
   buildCameraCurves,
@@ -102,9 +106,23 @@ export interface Journey {
 const FOG_NEAR = 540
 const FOG_FAR = 2100
 
-/** Fog and framing for explore mode, which is at eye level. See takeControl. */
+/**
+ * Fog and framing for explore mode. See takeControl.
+ *
+ * Two sets, because explore mode has two very different vantage points. At eye
+ * level the fog has to come in close: ground and sky are near-identical whites,
+ * and without aerial perspective in the first few hundred units the world reads
+ * as a void with objects floating in it. In flight that same fog would bury the
+ * entire model in haze, so it opens out with altitude — by the ceiling the
+ * atmosphere is close to the scroll camera's, which is the one tuned for looking
+ * down at the whole model from above.
+ */
 const EXPLORE_FOG_NEAR = 90
 const EXPLORE_FOG_FAR = 1250
+const EXPLORE_HIGH_FOG_NEAR = 460
+const EXPLORE_HIGH_FOG_FAR = 2600
+/** Altitude at which the fog has fully opened out. */
+const EXPLORE_HIGH_AT = 260
 const EXPLORE_FOV = 62
 
 let active: Journey | null = null
@@ -122,6 +140,7 @@ interface Capability {
   scatter: boolean
   crowd: boolean
   traffic: boolean
+  flock: boolean
   maxDpr: number
   msaa: number
 }
@@ -136,6 +155,7 @@ function detect(): Capability {
     scatter: false,
     crowd: false,
     traffic: false,
+    flock: false,
     maxDpr: 1,
     msaa: 0,
   }
@@ -168,6 +188,7 @@ function detect(): Capability {
       // (one draw call), so it survives on weak hardware; traffic does not.
       crowd: true,
       traffic: !weak,
+      flock: !weak,
       // Above 2 costs 2.25x the fill for a difference nobody can see.
       maxDpr: weak ? 1.25 : coarse ? 1.75 : 2,
       msaa: weak ? 0 : 4,
@@ -324,7 +345,15 @@ export function startJourney(mount: HTMLElement): Journey | null {
   const ground = buildGround()
   world.add(ground.mesh)
 
-  const roads = buildRoads(DISTRICTS)
+  // Every road on the map: the core out to each department, then each department
+  // out to the outpost it serves. The outer legs are what stop the outposts
+  // reading as unrelated islands parked near the model.
+  const ROUTES = [
+    ...DISTRICTS.map((d) => ({ from: CORE.at, to: d.at })),
+    ...OUTPOSTS.map((o) => ({ from: DISTRICTS[o.servedBy]!.at, to: o.at })),
+  ]
+
+  const roads = buildRoads(ROUTES)
   world.add(roads.mesh)
 
   const core = buildCore()
@@ -332,6 +361,15 @@ export function startJourney(mount: HTMLElement): Journey | null {
 
   const districts = DISTRICTS.map(buildDistrict)
   districts.forEach((d) => world.add(d.group))
+
+  const outposts = cap.scatter ? OUTPOSTS.map(buildOutpost) : []
+  outposts.forEach((o) => world.add(o.group))
+
+  const pylons = cap.scatter ? buildPylons() : null
+  if (pylons) world.add(pylons.group)
+
+  const streetFurniture = cap.scatter ? buildStreetFurniture(ROUTES) : null
+  if (streetFurniture) world.add(streetFurniture.group)
 
   const derelict = buildDerelict()
   world.add(derelict.group)
@@ -362,24 +400,59 @@ export function startJourney(mount: HTMLElement): Journey | null {
   // the handful of rotors) no per-frame CPU work — the motion is computed in the
   // vertex shaders from one shared clock.
   const crowd = cap.crowd
-    ? buildCrowd(
-        DISTRICTS.map((d) => ({
+    ? buildCrowd([
+        ...DISTRICTS.map((d) => ({
           at: d.at,
           radius: d.radius,
           count: d.crowd,
           seed: d.seed,
         })),
-      )
+        // Outposts get their crowds only where the scatter budget allows, since
+        // they are the part of the world the scroll never visits.
+        ...(cap.scatter
+          ? OUTPOSTS.map((o) => ({
+              at: o.at,
+              radius: o.radius,
+              count: o.crowd,
+              seed: o.seed,
+            }))
+          : []),
+      ])
     : null
   if (crowd) world.add(crowd.group)
 
-  const traffic = cap.traffic
-    ? buildTraffic(DISTRICTS.map((d) => ({ from: CORE.at, to: d.at })), 2)
-    : null
+  // Traffic runs the same graph as the roads, so vans reach the outposts too.
+  const traffic = cap.traffic ? buildTraffic(ROUTES, 2) : null
   if (traffic) world.add(traffic.group)
 
   const rotors = scatter && cap.scatter ? buildRotors(scatter.hubs) : null
   if (rotors) world.add(rotors.group)
+
+  // Birds. Almost invisible from the scroll camera's altitude and entirely for
+  // the explorer, who flies through them.
+  // Altitudes sit clear of the tallest structure (the core's mast, at about 63)
+  // so the flock always reads as sky rather than as something tangled in the
+  // rooftops — and so an explorer climbing has a band to pass through.
+  const flock = cap.flock
+    ? buildFlock([
+        { at: CORE.at, radius: 165, count: 30, seed: 2213, altitude: 128 },
+        ...DISTRICTS.filter((_, i) => i % 2 === 0).map((d, i) => ({
+          at: d.at,
+          radius: 120,
+          count: 14,
+          seed: d.seed ^ 0x77,
+          altitude: 96 + i * 18,
+        })),
+        ...OUTPOSTS.slice(0, 3).map((o, i) => ({
+          at: o.at,
+          radius: 130,
+          count: 12,
+          seed: o.seed ^ 0x77,
+          altitude: 92 + i * 22,
+        })),
+      ])
+    : null
+  if (flock) world.add(flock.group)
 
   /* ---- Post chain ---- */
 
@@ -529,6 +602,20 @@ export function startJourney(mount: HTMLElement): Journey | null {
       // Explore mode drives the camera. Skip the spline entirely — but keep the
       // world's own animation and the post chain running below.
       externalCamera(dt)
+
+      // Open the fog out as the explorer climbs.
+      //
+      // Read off the camera rather than passed in, so explore mode stays a pure
+      // camera controller and does not need to know the engine has an
+      // atmosphere. Eased so that most of the change happens in the first
+      // hundred units, which is where the view actually opens up.
+      if (scene.fog instanceof Fog) {
+        const t = Math.min(1, Math.max(0, camera.position.y / EXPLORE_HIGH_AT))
+        const ease = t * t * (3 - 2 * t)
+        scene.fog.near = EXPLORE_FOG_NEAR + (EXPLORE_HIGH_FOG_NEAR - EXPLORE_FOG_NEAR) * ease
+        scene.fog.far = EXPLORE_FOG_FAR + (EXPLORE_HIGH_FOG_FAR - EXPLORE_FOG_FAR) * ease
+      }
+
       tickMaterials(elapsed, 0, driver.current)
       conduits.update(1) // everything lit while exploring: it is the finished city
       core.update(elapsed)
@@ -709,10 +796,14 @@ export function startJourney(mount: HTMLElement): Journey | null {
     conduits.dispose()
     ramps.dispose()
     ascent.dispose()
+    outposts.forEach((o) => o.dispose())
+    pylons?.dispose()
+    streetFurniture?.dispose()
     scatter?.dispose()
     crowd?.dispose()
     traffic?.dispose()
     rotors?.dispose()
+    flock?.dispose()
     core.dispose()
     roads.dispose()
     ground.dispose()

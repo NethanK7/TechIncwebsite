@@ -844,6 +844,353 @@ export const scaffoldFrame: Prop = (r) => {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Outpost props — the outer ring beyond the six departments                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Ship-to-shore container crane.
+ *
+ * The tallest thing in the world after the core, and deliberately so: it is what
+ * tells you where the port is from anywhere else on the map, including from the
+ * air. The cantilevered boom reaching out over the water is the whole silhouette,
+ * so it gets the length rather than the legs.
+ */
+export const quayCrane: Prop = (r) => {
+  const out: Piece[] = []
+  const h = r.range(38, 48)
+  const gauge = r.range(16, 20)
+  const boom = r.range(38, 46)
+  const back = boom * 0.42
+
+  // Portal legs on rails, braced. Four legs, not two, or it reads as a gantry.
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) {
+      out.push(box(1.5, h, 1.5, (sx * gauge) / 2, h / 2, (sz * gauge) / 2, 'mid'))
+    }
+    out.push(box(2.2, h * 0.5, gauge + 1.5, (sx * gauge) / 2, h * 0.62, 0, 'mid'))
+    out.push(box(3.6, 1, gauge + 4, (sx * gauge) / 2, 0.5, 0, 'light'))
+  }
+  // Rails running under it, so it reads as a machine that travels the quay.
+  for (const sz of [-1, 1]) {
+    out.push(box(gauge + 26, 0.4, 1.2, 0, 0.2, (sz * gauge) / 2, 'dark'))
+  }
+
+  // Machine house at the top, then the boom out over the water on +Z and the
+  // counterweighted back-reach on -Z.
+  out.push(box(gauge + 3, 5, gauge * 0.8, 0, h + 2.5, 0, 'shell'))
+  out.push(box(4.4, 3.4, boom, 0, h + 1.7, boom / 2 + gauge * 0.3, 'light'))
+  out.push(box(4.4, 3, back, 0, h + 1.7, -back / 2 - gauge * 0.3, 'light'))
+  out.push(box(7, 4.5, 6, 0, h + 1.5, -back - gauge * 0.3, 'dark'))
+
+  // Stay cables from an apex mast down to both ends of the boom.
+  const apex = h + 16
+  out.push(cyl(0.4, 0.6, 13, 0, h + 9, 0, 'mid', 8))
+  for (const [z, len] of [
+    [boom + gauge * 0.3, boom],
+    [-back - gauge * 0.3, back],
+  ] as const) {
+    const span = Math.hypot(z, apex - (h + 3))
+    const stay = box(0.3, span, 0.3, 0, 0, 0, 'mid')
+    xform(stay, rotX(Math.atan2(z, apex - (h + 3))))
+    stay.geo.translate(0, (h + 3 + apex) / 2, z / 2)
+    out.push(stay)
+    void len
+  }
+
+  // Trolley part-way out the boom, with the spreader hanging under it.
+  const tz = r.range(boom * 0.35, boom * 0.85) + gauge * 0.3
+  out.push(box(4, 2, 4, 0, h - 0.4, tz, 'mid'))
+  const drop = r.range(10, 26)
+  for (const sx of [-1, 1]) {
+    out.push(box(0.16, drop, 0.16, sx * 1.4, h - 1.4 - drop / 2, tz, 'mid'))
+  }
+  out.push(box(6.4, 1.2, 3, 0, h - 1.4 - drop, tz, 'dark'))
+  return out
+}
+
+/**
+ * A moored container vessel: hull, superstructure aft, containers on deck.
+ *
+ * Sits along local +X. Its base is at y = 0 like every other prop, and the water
+ * plate at the port is drawn just above zero, so the hull reads as floating with
+ * its boot line at the surface rather than as a boat parked on the ground.
+ */
+export const shipHull: Prop = (r) => {
+  const out: Piece[] = []
+  const len = r.range(92, 120)
+  const beam = r.range(17, 21)
+  const draft = 5.5
+  const freeboard = 7
+
+  // Hull as three tapering sections, so bow and stern narrow.
+  out.push(box(len * 0.62, draft + freeboard, beam, 0, (draft + freeboard) / 2, 0, 'shell'))
+  out.push(box(len * 0.2, draft + freeboard, beam * 0.74, len * 0.41, (draft + freeboard) / 2, 0, 'shell'))
+  out.push(box(len * 0.1, draft + freeboard * 0.9, beam * 0.44, len * 0.53, (draft + freeboard) / 2, 0, 'shell'))
+  out.push(box(len * 0.2, draft + freeboard, beam * 0.82, -len * 0.41, (draft + freeboard) / 2, 0, 'shell'))
+  // Boot line: a dark band at the waterline is the one detail that makes a white
+  // box read as a ship.
+  out.push(box(len * 0.98, 1.1, beam * 1.01, 0, draft * 0.5, 0, 'dark'))
+  out.push(box(len * 0.86, 0.6, beam, 0, draft + freeboard, 0, 'light'))
+
+  // Superstructure and funnel, aft.
+  const bridgeH = r.range(13, 17)
+  out.push(box(15, bridgeH, beam * 0.8, -len * 0.34, draft + freeboard + bridgeH / 2, 0, 'shell'))
+  windowBands(15, bridgeH, beam * 0.8, 4, 'mid').forEach((p) =>
+    out.push(xform(p, move(-len * 0.34, draft + freeboard, 0))),
+  )
+  out.push(box(16, 1, beam * 0.86, -len * 0.34, draft + freeboard + bridgeH, 0, 'light'))
+  out.push(cyl(3.2, 3.8, 8, -len * 0.4, draft + freeboard + bridgeH + 4, 0, 'mid', 12))
+
+  // Deck containers in bays, with gaps so it never looks like one solid slab.
+  const bays = r.int(6, 9)
+  for (let b = 0; b < bays; b++) {
+    const x = len * 0.28 - (b / Math.max(1, bays - 1)) * len * 0.6
+    const rows = r.int(2, 3)
+    const high = r.int(1, 3)
+    for (let row = 0; row < rows; row++) {
+      const z = (row - (rows - 1) / 2) * (beam / rows)
+      for (let s = 0; s < high; s++) {
+        if (r.chance(0.14)) continue
+        out.push(
+          box(
+            len * 0.055,
+            2.5,
+            beam / rows - 0.7,
+            x,
+            draft + freeboard + 1.5 + s * 2.7,
+            z,
+            s % 2 ? 'light' : 'mid',
+          ),
+        )
+      }
+    }
+  }
+  return out
+}
+
+/** A terrace of retail units with awnings and sign boards. */
+export const storefrontRow: Prop = (r) => {
+  const out: Piece[] = []
+  const units = r.int(4, 7)
+  const uw = r.range(7, 9)
+  const d = r.range(11, 14)
+  const w = units * uw
+
+  for (let i = 0; i < units; i++) {
+    const x = (i - (units - 1) / 2) * uw
+    const h = r.range(5.5, 8)
+    out.push(box(uw - 0.35, h, d, x, h / 2, 0, 'shell'))
+    // Shopfront glazing, then an awning over it, then the fascia sign.
+    out.push(box(uw - 1.6, 3.2, d * 1.02, x, 1.9, 0, 'glass'))
+    const awning = box(uw - 1, 0.3, 3.2, x, 4, d / 2 + 1.5, 'mid')
+    xform(awning, rotX(-0.22))
+    out.push(awning)
+    out.push(box(uw - 1.2, 1.2, 0.5, x, 4.9, d / 2 + 0.2, 'light'))
+    if (r.chance(0.4)) out.push(box(1.1, 2.2, 0.35, x + uw * 0.3, h + 1.1, d / 2, 'mid'))
+    out.push(...parapet(uw - 0.35, d, h, 0.3, 0.5))
+  }
+  // Pavement and a couple of bollards.
+  out.push(box(w + 4, 0.25, 6, 0, 0.12, d / 2 + 4.5, 'light'))
+  for (let i = 0; i < 4; i++) {
+    out.push(cyl(0.22, 0.26, 1, r.range(-w / 2, w / 2), 0.5, d / 2 + 6.5, 'mid', 8))
+  }
+  return out
+}
+
+/** Cruciform ward block with a rooftop helipad. */
+export const hospitalBlock: Prop = (r) => {
+  const out: Piece[] = []
+  const arm = r.range(26, 34)
+  const wing = r.range(11, 14)
+  const h = r.range(16, 22)
+  const floors = Math.max(4, Math.round(h / 3.4))
+
+  // Two crossing wings — the plan that reads unmistakably as a hospital from
+  // above, which is where this one is mostly seen from.
+  out.push(box(arm, h, wing, 0, h / 2, 0, 'shell'))
+  out.push(box(wing, h, arm, 0, h / 2, 0, 'shell'))
+  windowBands(arm, h, wing, floors, 'mid').forEach((p) => out.push(p))
+  windowBands(wing, h, arm, floors, 'mid').forEach((p) => out.push(p))
+  out.push(...parapet(arm, wing, h, 0.4, 0.8))
+  out.push(...parapet(wing, arm, h, 0.4, 0.8))
+
+  // Helipad: a raised deck with a ring marking.
+  out.push(cyl(7.5, 7.5, 0.7, 0, h + 1.1, 0, 'light', 24))
+  out.push(cyl(6.2, 6.2, 0.25, 0, h + 1.6, 0, 'plate', 24))
+  out.push(cyl(4.6, 4.6, 0.3, 0, h + 1.7, 0, 'light', 24))
+  out.push(cyl(0.3, 0.4, 4, arm * 0.4, h + 2, wing * 0.3, 'mid', 8))
+
+  // Single-storey entrance canopy and an ambulance bay.
+  out.push(box(16, 4.5, 10, 0, 2.25, arm / 2 + 4, 'light'))
+  out.push(box(18, 0.5, 12, 0, 4.7, arm / 2 + 4, 'mid'))
+  out.push(box(20, 0.2, 14, 0, 0.1, arm / 2 + 11, 'plate'))
+  return out
+}
+
+/** A marked pitch with a small covered stand along one side. */
+export const sportsField: Prop = (r) => {
+  const out: Piece[] = []
+  const w = r.range(34, 42)
+  const d = w * 0.62
+
+  // Pitch, then the markings as thin raised plates. Line markings are what make
+  // a flat rectangle read instantly as a sports field.
+  out.push(box(w, 0.2, d, 0, 0.1, 0, 'plate'))
+  const line = (lw: number, ld: number, x: number, z: number) =>
+    out.push(box(lw, 0.08, ld, x, 0.24, z, 'light'))
+  line(w * 0.98, 0.4, 0, -d / 2 + 1)
+  line(w * 0.98, 0.4, 0, d / 2 - 1)
+  line(0.4, d * 0.96, -w / 2 + 1, 0)
+  line(0.4, d * 0.96, w / 2 - 1, 0)
+  line(0.4, d * 0.96, 0, 0)
+  out.push(cyl(4.4, 4.4, 0.08, 0, 0.24, 0, 'light', 28))
+  out.push(cyl(3.9, 3.9, 0.1, 0, 0.25, 0, 'plate', 28))
+  for (const sx of [-1, 1]) {
+    line(6, 14, (sx * w) / 2 - sx * 3, 0)
+    // Goals.
+    out.push(box(0.3, 2.4, 7.4, (sx * w) / 2 - sx * 0.6, 1.2, 0, 'light'))
+  }
+
+  // Stand: a raked bank of seating under a cantilevered roof.
+  const standD = 8
+  for (let i = 0; i < 4; i++) {
+    out.push(box(w * 0.7, 1, standD / 4, 0, 0.5 + i * 0.9, -d / 2 - 2 - i * (standD / 4), 'light'))
+  }
+  for (const sx of [-1, 1]) {
+    out.push(box(0.7, 8, 0.7, (sx * w * 0.7) / 2, 4, -d / 2 - standD - 2, 'mid'))
+  }
+  out.push(box(w * 0.74, 0.4, standD + 2, 0, 8, -d / 2 - standD / 2 - 2.5, 'shell'))
+  // Floodlights on the far corners.
+  for (const sx of [-1, 1]) {
+    out.push(cyl(0.35, 0.5, 16, (sx * w) / 2 + sx * 3, 8, d / 2 + 3, 'mid', 8))
+    out.push(box(5, 1.4, 0.6, (sx * w) / 2 + sx * 3, 16.4, d / 2 + 3, 'light'))
+  }
+  return out
+}
+
+/**
+ * Lattice transmission pylon.
+ *
+ * Placed in runs across the open ground rather than singly — a line of pylons
+ * gives the empty middle distance a direction and a sense of scale, which a
+ * scatter of unrelated objects never does.
+ */
+export const pylon: Prop = (r) => {
+  const out: Piece[] = []
+  const h = r.range(26, 34)
+  const base = 6.5
+  const waist = 2.2
+
+  // Four tapering legs with X-bracing between them.
+  const steps = 7
+  for (const [sx, sz] of [
+    [-1, -1],
+    [-1, 1],
+    [1, -1],
+    [1, 1],
+  ] as const) {
+    for (let i = 0; i < steps; i++) {
+      const t0 = i / steps
+      const t1 = (i + 1) / steps
+      const s0 = (base + (waist - base) * t0) / 2
+      const s1 = (base + (waist - base) * t1) / 2
+      const seg = h / steps
+      // One short box per segment, tilted to follow the taper. Tilting each
+      // segment inward is what makes the legs read as a continuous batter rather
+      // than a stack of offset posts.
+      const lean = Math.atan2(s0 - s1, seg)
+      const leg = box(0.42, seg * 1.06, 0.42, 0, 0, 0, 'mid')
+      xform(leg, rotZ(sx * lean).multiply(rotX(-sz * lean)))
+      leg.geo.translate((sx * (s0 + s1)) / 2, h * t0 + seg / 2, (sz * (s0 + s1)) / 2)
+      out.push(leg)
+    }
+  }
+  for (let i = 1; i < steps; i++) {
+    const t = i / steps
+    const s = (base + (waist - base) * t) / 2
+    out.push(box(s * 2, 0.3, 0.3, 0, h * t, s, 'mid'))
+    out.push(box(s * 2, 0.3, 0.3, 0, h * t, -s, 'mid'))
+    out.push(box(0.3, 0.3, s * 2, s, h * t, 0, 'mid'))
+    out.push(box(0.3, 0.3, s * 2, -s, h * t, 0, 'mid'))
+  }
+
+  // Two cross-arms with insulator strings hanging off them.
+  for (const [y, span] of [
+    [h * 0.78, 11],
+    [h * 0.94, 8.5],
+  ] as const) {
+    out.push(box(span * 2, 0.45, 0.7, 0, y, 0, 'light'))
+    for (const sx of [-1, 0, 1]) {
+      if (sx === 0) continue
+      out.push(box(0.3, 2.4, 0.3, sx * span * 0.92, y - 1.2, 0, 'mid'))
+      out.push(box(0.3, 2.4, 0.3, sx * span * 0.5, y - 1.2, 0, 'mid'))
+    }
+  }
+  out.push(cyl(0.2, 0.28, 3, 0, h + 1.5, 0, 'mid', 6))
+  return out
+}
+
+/** Street lamp: post, arm, head. Placed in runs along the roads. */
+export const streetLamp: Prop = () => [
+  cyl(0.16, 0.24, 8.4, 0, 4.2, 0, 'mid', 8),
+  box(0.22, 0.22, 2.2, 0, 8.3, 1.1, 'mid'),
+  box(1.1, 0.34, 0.5, 0, 8.15, 2.1, 'light'),
+  cyl(0.5, 0.6, 0.5, 0, 0.25, 0, 'light', 10),
+]
+
+/** Elevated water tank on legs. A silhouette that says "depot" on sight. */
+export const waterTower: Prop = (r) => {
+  const out: Piece[] = []
+  const h = r.range(16, 22)
+  const rad = r.range(4.5, 6)
+
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2 + Math.PI / 4
+    const x = Math.cos(a) * rad * 0.78
+    const z = Math.sin(a) * rad * 0.78
+    out.push(box(0.6, h, 0.6, x, h / 2, z, 'mid'))
+  }
+  // Two bracing rings.
+  for (const t of [0.35, 0.7]) {
+    out.push(cyl(rad * 0.82, rad * 0.82, 0.3, 0, h * t, 0, 'mid', 12))
+  }
+  out.push(cyl(rad, rad * 0.7, 3, 0, h + 1.5, 0, 'shell', 16))
+  out.push(cyl(rad, rad, 6, 0, h + 6, 0, 'shell', 16))
+  out.push(cyl(rad * 1.04, rad * 1.04, 0.5, 0, h + 4.4, 0, 'mid', 16))
+  out.push(cone(rad * 1.05, 2.6, 0, h + 10.3, 0, 'light', 16))
+  out.push(cyl(0.18, 0.22, 2, 0, h + 12.2, 0, 'mid', 6))
+  return out
+}
+
+/** Fuelling canopy over a row of pumps. */
+export const fuelStation: Prop = (r) => {
+  const out: Piece[] = []
+  const w = r.range(18, 24)
+  const d = r.range(11, 14)
+
+  out.push(box(w + 3, 0.25, d + 6, 0, 0.12, 0, 'light'))
+  for (const sx of [-1, 1]) {
+    out.push(box(1.1, 6.4, 1.1, (sx * w) / 2.6, 3.2, 0, 'mid'))
+  }
+  out.push(box(w, 1.3, d, 0, 7.05, 0, 'shell'))
+  out.push(box(w * 1.02, 0.6, d * 1.02, 0, 6.3, 0, 'light'))
+  // Pump islands.
+  const islands = r.int(2, 3)
+  for (let i = 0; i < islands; i++) {
+    const x = (i - (islands - 1) / 2) * (w / islands)
+    out.push(box(3.4, 0.4, 6, x, 0.35, 0, 'mid'))
+    for (const sz of [-1, 1]) {
+      out.push(box(1, 2.2, 0.8, x, 1.6, sz * 1.7, 'light'))
+    }
+  }
+  // Kiosk alongside.
+  out.push(box(9, 4.2, 7, w / 2 + 7, 2.1, 0, 'shell'))
+  out.push(box(8, 2.6, 0.3, w / 2 + 7, 2.1, 3.6, 'glass'))
+  out.push(...parapet(9, 7, 4.2, 0.3, 0.5))
+  return out
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Geometry for the animated layers                                           */
 /* -------------------------------------------------------------------------- */
 
@@ -938,6 +1285,60 @@ export function vanGeometry(): BufferGeometry {
   merged.deleteAttribute('uv')
   return merged
 }
+
+/**
+ * A bird, pointing along local +Z with its wings spread on X.
+ *
+ * The wings are deliberately flat quads reaching out from the body, because the
+ * flock shader flaps them by rotating any vertex with |x| above a threshold
+ * about the body axis. Keeping the wing roots close to x = 0 and the tips far
+ * out means the hinge lands where a shoulder would be without needing a
+ * skinning rig or a second attribute.
+ */
+export function birdGeometry(): BufferGeometry {
+  const parts: BufferGeometry[] = []
+
+  // Roughly a two-unit wingspan, against a 1.75-unit person and an 8-unit van.
+  // Scale is the whole difference between birds and light aircraft here: built
+  // at the size that felt right in isolation, they read from the scroll camera
+  // as dark crosses the size of trucks, scattered over the model.
+  const S = 0.28
+
+  const body = new CapsuleGeometry(0.28 * S, 1.5 * S, 3, 5)
+  body.applyMatrix4(rotX(Math.PI / 2))
+  parts.push(body)
+
+  const head = new SphereGeometry(0.3 * S, 5, 4)
+  head.translate(0, 0.06 * S, 1.08 * S)
+  parts.push(head)
+
+  // Tail fan.
+  const tail = new BoxGeometry(0.9 * S, 0.09 * S, 1.1 * S)
+  tail.translate(0, 0, -1.35 * S)
+  parts.push(tail)
+
+  for (const s of [-1, 1]) {
+    // Two panels per wing: an inner one that barely moves and an outer one that
+    // gets most of the flap, which reads far more like a wingbeat than one rigid
+    // plank hinged at the body.
+    const inner = new BoxGeometry(1.5 * S, 0.08 * S, 1.0 * S)
+    inner.translate(s * 0.95 * S, 0.04 * S, 0.1 * S)
+    parts.push(inner)
+
+    const outer = new BoxGeometry(1.9 * S, 0.07 * S, 0.72 * S)
+    // Sweep the outer panel back, so the planform is a swept wing not a cross.
+    outer.translate(s * 2.7 * S, 0.04 * S, -0.32 * S)
+    parts.push(outer)
+  }
+
+  const merged = mergeGeometries(parts, false)!
+  parts.forEach((g) => g.dispose())
+  merged.deleteAttribute('uv')
+  return merged
+}
+
+/** Wingspan of {@link birdGeometry}, so the flap shader knows where the tips are. */
+export const BIRD_SPAN = 3.65 * 0.28
 
 /* -------------------------------------------------------------------------- */
 /*  Baking                                                                     */

@@ -169,6 +169,185 @@ export const DISTRICTS: District[] = [
   },
 ]
 
+/* -------------------------------------------------------------------------- */
+/*  Outposts — the outer ring                                                  */
+/* -------------------------------------------------------------------------- */
+
+export interface Outpost {
+  key: string
+  label: string
+  at: Vector3
+  radius: number
+  seed: number
+  accent: number
+  /** How many people walk it. */
+  crowd: number
+  /** Shown in explore mode once you are standing inside its footprint. */
+  blurb: string
+  mix: { prop: string; count: number }[]
+  /** Radius of a water plate under the outpost, for the port. */
+  water?: number
+  /** Index of the DISTRICT this outpost is served by, for its access road. */
+  servedBy: number
+}
+
+/**
+ * Six places beyond the department ring.
+ *
+ * The six DISTRICTS are the departments inside one company — that is the story
+ * the scroll tells, and nothing may be added to them without breaking the "six
+ * places, six versions of the truth" beat the copy is built on.
+ *
+ * These are something else: the industries we implement for, as places. They sit
+ * outside the ring, carry no conduits (they are not departments of the same
+ * company), and exist for two reasons. From above they give the model a horizon,
+ * so the ring reads as the centre of somewhere rather than as an object floating
+ * on a blank plane. On foot and in the air they are the reason to travel — an
+ * explorer who can cross the map in ten seconds needs somewhere at the far end
+ * of it worth arriving at.
+ *
+ * Positions are checked against every district, the derelict yard and the ascent
+ * for footprint clearance, and all fit inside the ±560 shadow frustum.
+ */
+export const OUTPOSTS: Outpost[] = [
+  {
+    key: 'port',
+    label: 'The port — import & export',
+    at: new Vector3(352, 0, -300),
+    radius: 74,
+    seed: 3301,
+    accent: 0xc9dced,
+    crowd: 26,
+    water: 150,
+    servedBy: 1, // warehousing
+    blurb:
+      'Purchase Orders arriving as steel. Landed cost is freight, duty and clearing allocated back to the item, not absorbed into overhead.',
+    mix: [
+      { prop: 'quayCrane', count: 3 },
+      { prop: 'shipHull', count: 1 },
+      { prop: 'containerStack', count: 9 },
+      { prop: 'warehouse', count: 2 },
+      { prop: 'gantryCrane', count: 2 },
+      { prop: 'truck', count: 5 },
+      { prop: 'streetLamp', count: 8 },
+    ],
+  },
+  {
+    key: 'retail',
+    label: 'The high street — retail & e-commerce',
+    at: new Vector3(-372, 0, 96),
+    radius: 64,
+    seed: 5527,
+    accent: 0xead6d6,
+    crowd: 44,
+    servedBy: 4, // sales
+    blurb:
+      'One stock position across counter, warehouse and web. The POS sale and the online order write the same Stock Ledger Entry.',
+    mix: [
+      { prop: 'storefrontRow', count: 4 },
+      { prop: 'plaza', count: 2 },
+      { prop: 'officeTower', count: 3 },
+      { prop: 'streetLamp', count: 14 },
+      { prop: 'tree', count: 22 },
+      { prop: 'truck', count: 3 },
+    ],
+  },
+  {
+    key: 'health',
+    label: 'The hospital — healthcare',
+    at: new Vector3(-268, 0, 330),
+    radius: 62,
+    seed: 7717 ^ 0x11,
+    accent: 0xd4e6e0,
+    crowd: 38,
+    servedBy: 5, // people
+    blurb:
+      'Pharmacy stock with expiry control, and clinical billing that reaches finance without a second system in between.',
+    mix: [
+      { prop: 'hospitalBlock', count: 2 },
+      { prop: 'campusBlock', count: 1 },
+      { prop: 'officeTower', count: 2 },
+      { prop: 'plaza', count: 1 },
+      { prop: 'streetLamp', count: 10 },
+      { prop: 'tree', count: 20 },
+    ],
+  },
+  {
+    key: 'campus',
+    label: 'The campus — education',
+    at: new Vector3(60, 0, 392),
+    radius: 70,
+    seed: 6151,
+    accent: 0xdde3cd,
+    crowd: 52,
+    servedBy: 5, // people
+    blurb:
+      'Admissions, fee schedules and staff payroll on one platform, so the arrears report and the ledger agree by construction.',
+    mix: [
+      { prop: 'campusBlock', count: 3 },
+      { prop: 'sportsField', count: 1 },
+      { prop: 'landmarkTower', count: 1 },
+      { prop: 'plaza', count: 2 },
+      { prop: 'streetLamp', count: 12 },
+      { prop: 'tree', count: 34 },
+    ],
+  },
+  {
+    key: 'energy',
+    label: 'The utility — power & process',
+    at: new Vector3(-130, 0, -372),
+    radius: 68,
+    seed: 4409,
+    accent: 0xe4dfc8,
+    crowd: 14,
+    servedBy: 2, // manufacturing
+    blurb:
+      'Assets with maintenance schedules, meters and consumption booked against cost centres rather than estimated at year end.',
+    mix: [
+      { prop: 'coolingTower', count: 3 },
+      { prop: 'solarField', count: 4 },
+      { prop: 'tank', count: 4 },
+      { prop: 'pipeRack', count: 3 },
+      { prop: 'pylon', count: 4 },
+      { prop: 'chimney', count: 2 },
+      { prop: 'siteHuts', count: 2 },
+    ],
+  },
+  {
+    key: 'depot',
+    label: 'The depot — fleet & field service',
+    at: new Vector3(398, 0, 66),
+    radius: 58,
+    seed: 2963,
+    accent: 0xdcd9e6,
+    crowd: 20,
+    servedBy: 3, // accounts
+    blurb:
+      'Vehicles as Assets, jobs as Maintenance Visits, parts issued from stock. The van that leaves here bills from the same record.',
+    mix: [
+      { prop: 'waterTower', count: 1 },
+      { prop: 'fuelStation', count: 1 },
+      { prop: 'warehouse', count: 2 },
+      { prop: 'truck', count: 9 },
+      { prop: 'palletYard', count: 3 },
+      { prop: 'siteHuts', count: 3 },
+      { prop: 'streetLamp', count: 8 },
+    ],
+  },
+]
+
+/**
+ * Pylon runs across the open ground.
+ *
+ * Each is a straight line of towers from the utility outpost toward a district.
+ * A line of identical objects receding into the distance is the cheapest way to
+ * give a large empty plane a sense of scale, which a random scatter never does.
+ */
+export const PYLON_LINES: { from: Vector3; to: Vector3; count: number }[] = [
+  { from: new Vector3(-130, 0, -372), to: new Vector3(-78, 0, -168), count: 5 },
+  { from: new Vector3(-130, 0, -372), to: new Vector3(96, 0, -150), count: 7 },
+]
+
 /**
  * The derelict yard: the same prop library, deliberately mis-organised.
  * Scattered off-grid, unwired, and — pointedly — nobody walking in it.
@@ -194,7 +373,18 @@ export const ASCENT = {
   size: 38,
 }
 
-export const GROUND_SIZE = 3000
+/**
+ * The ground quad, sized so its edge is never visible.
+ *
+ * Explore mode can put the camera 820 units out and 430 up, looking at the
+ * horizon — and at that vantage the old 3000-unit plane showed its own corner as
+ * a hard diagonal against the sky, because the ground's radial fade resolves to
+ * a flat sky colour while the sky behind it is a gradient, so the two never
+ * quite matched. The fix is distance, not blending: at 8000 the nearest edge
+ * from the furthest reachable point is about 3200 units away, which is past the
+ * far plane of even the high-altitude fog, so it is fully atmosphere by then.
+ */
+export const GROUND_SIZE = 8000
 
 /** Unique stage keys that own at least one district, in flight order. */
 export const DISTRICT_STAGES = [...new Set(DISTRICTS.map((d) => d.stage))]

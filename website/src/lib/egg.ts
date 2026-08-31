@@ -57,6 +57,8 @@ export function wireEasterEgg(overlay: HTMLElement, needed: number): void {
   const placeEl = overlay.querySelector<HTMLElement>('[data-explore-place]')
   const distEl = overlay.querySelector<HTMLElement>('[data-explore-dist]')
   const blurbEl = overlay.querySelector<HTMLElement>('[data-explore-blurb]')
+  const modeEl = overlay.querySelector<HTMLElement>('[data-explore-mode]')
+  const keysEl = overlay.querySelector<HTMLElement>('[data-explore-keys]')
   const startBtn = overlay.querySelector<HTMLButtonElement>('[data-explore-start]')
   const cancelBtn = overlay.querySelector<HTMLButtonElement>('[data-explore-cancel]')
 
@@ -127,13 +129,36 @@ export function wireEasterEgg(overlay: HTMLElement, needed: number): void {
     if (hud) hud.hidden = false
 
     let hudClock = 0
+    let wasFlying: boolean | null = null
     const control = engine.takeControl((dt) => {
       session?.update(dt)
-      // The readout only needs to be roughly live; refreshing it every frame
-      // would thrash layout inside the render loop for no visible gain.
+
+      // The mode badge is the exception to the throttle below: switching between
+      // walking and flying has to register on the frame it happens, or the
+      // controls appear not to have responded.
+      const state = session?.state()
+      if (state && state.flying !== wasFlying) {
+        wasFlying = state.flying
+        if (modeEl) modeEl.dataset.flying = String(state.flying)
+        if (keysEl) {
+          keysEl.innerHTML = state.flying
+            ? '<kbd>WASD</kbd> fly · <kbd>Space</kbd>/<kbd>C</kbd> up·down · <kbd>F</kbd> land'
+            : '<kbd>WASD</kbd> move · <kbd>F</kbd> fly · <kbd>Esc</kbd> exit'
+        }
+      }
+
+      // The rest only needs to be roughly live; refreshing it every frame would
+      // thrash layout inside the render loop for no visible gain.
       hudClock += dt
       if (hudClock < 0.25) return
       hudClock = 0
+
+      if (modeEl && state) {
+        modeEl.textContent = state.flying
+          ? `Flying · ${Math.max(0, state.altitude)} m up`
+          : 'On foot'
+      }
+
       const near = session?.nearest()
       if (!near || !placeEl || !distEl) return
       placeEl.textContent = near.label
@@ -155,8 +180,11 @@ export function wireEasterEgg(overlay: HTMLElement, needed: number): void {
 
     // Pointer lock must come from a user gesture, and the click that ran this
     // handler is one — but the dynamic imports above may have broken that chain
-    // on a cold cache. The session's own canvas click handler is the fallback.
-    control.canvas.requestPointerLock?.()
+    // on a cold cache. A refusal here is expected and handled: the session falls
+    // back to click-to-lock and drag-to-look, so swallow the rejection rather
+    // than letting it surface as an uncaught error.
+    const lock = control.canvas.requestPointerLock?.() as unknown as Promise<void> | undefined
+    if (lock && typeof lock.catch === 'function') lock.catch(() => {})
     track.cta('easter-egg:entered')
   }
 
@@ -169,6 +197,37 @@ export function wireEasterEgg(overlay: HTMLElement, needed: number): void {
 
   startBtn?.addEventListener('click', () => void start())
   cancelBtn?.addEventListener('click', close)
+
+  /* ---------------- The visible way in ---------------- */
+
+  // The wordmark easter egg is a reward for the curious; this is for everyone
+  // else. It stays hidden until the engine reports a live scene, so it never
+  // offers a walk around a world that failed to build.
+  const enterBtn = document.querySelector<HTMLButtonElement>('[data-explore-enter]')
+  if (enterBtn) {
+    enterBtn.addEventListener('click', () => {
+      open()
+      // Straight in. The visitor clicked a button that says what it does, so
+      // making them read the gate and click again is a toll, not an onboarding.
+      // Chaining off the same gesture also keeps pointer lock's user-activation
+      // requirement satisfied.
+      void start()
+    })
+
+    // Poll briefly for the scene rather than guessing at a delay: the engine is
+    // imported on idle after LCP, so how long it takes varies by an order of
+    // magnitude between a fast desktop and a cold cache on a phone.
+    let tries = 0
+    const look = window.setInterval(() => {
+      const mount = document.querySelector('[data-journey]')
+      if (mount?.getAttribute('data-journey-state') === 'running') {
+        enterBtn.hidden = false
+        window.clearInterval(look)
+      } else if (++tries > 40 || !enterBtn.isConnected) {
+        window.clearInterval(look)
+      }
+    }, 500)
+  }
 
   // Hand this mount to the persistent listeners below, replacing whichever
   // overlay was previously current.

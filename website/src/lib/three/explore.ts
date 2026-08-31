@@ -2,9 +2,9 @@
  * Explore mode — the easter egg.
  *
  * Hands the camera over to the visitor: WASD to walk the ERP city, mouse to
- * look, shift to run, space to rise, E to read a district. It reuses the exact
- * world the scroll journey builds, so there is no second scene to maintain and
- * nothing extra to download beyond this file.
+ * look, shift to run, F to fly. It reuses the exact world the scroll journey
+ * builds, so there is no second scene to maintain and nothing extra to download
+ * beyond this file.
  *
  * How it takes control
  * --------------------
@@ -15,16 +15,24 @@
  * One renderer, one loop, one scene — the alternative would double the memory
  * for a feature most visitors never find.
  *
- * Movement is deliberately grounded: eye height is fixed, gravity pulls you back
- * to it, and district aprons are not solid — you walk through the city, not
- * around a collision mesh. Building collision would need a spatial index over a
- * few thousand merged triangles for something nobody is trying to speedrun.
- * Instead the world bounds are a soft cylinder that pushes you back in.
+ * Two movement modes
+ * ------------------
+ * Walking is grounded: fixed eye height, gravity, ground-plane heading, so
+ * looking up at a crane does not launch you at it. Flying is the opposite and
+ * deliberately so — heading follows the full view direction, gravity is off, and
+ * the speed roughly quadruples, because the world is about 1.3km across and a
+ * walking pace makes the outposts feel like a chore rather than a destination.
+ *
+ * Neither mode collides with the city. You pass through the districts, which is
+ * a deliberate trade: real collision would need a spatial index over a few
+ * hundred thousand merged triangles for something nobody is trying to speedrun.
+ * The exceptions are a soft cylinder at the world edge and a keep-out around the
+ * core, both of which push rather than stop.
  */
 
 import { Euler, MathUtils, PerspectiveCamera, Vector3 } from 'three'
 
-import { DISTRICTS, DERELICT, CORE } from './layout'
+import { DISTRICTS, DERELICT, CORE, OUTPOSTS } from './layout'
 
 /** Where the camera sits above the ground while walking, in world units. */
 const EYE_HEIGHT = 5.2
@@ -34,7 +42,31 @@ const RUN_MULTIPLIER = 2.8
 const ACCEL = 9
 const GRAVITY = 90
 const JUMP_SPEED = 34
-const WORLD_RADIUS = 560
+
+/**
+ * Flight.
+ *
+ * Faster and floatier than walking on purpose: a lower acceleration means the
+ * camera keeps drifting after the key is released, which reads as momentum
+ * rather than as a camera being dragged. `FLY_LIFT` is the vertical rate for
+ * Space and C, which is deliberately slower than the horizontal speed — rising
+ * too fast makes it impossible to judge your own altitude.
+ */
+const FLY_SPEED = 92
+const FLY_BOOST = 3.2
+const FLY_ACCEL = 4.2
+const FLY_LIFT = 58
+/** Height of the core's mast plus clearance — the highest thing worth clearing. */
+const MAX_ALTITUDE = 430
+
+/**
+ * How far out you may travel.
+ *
+ * Comfortably past the outpost ring (which reaches about 470 units out), so you
+ * can fly right around the outside of the model and look back at it. The ground
+ * plane is 3000 across, so the edge of the world is never the edge of the ground.
+ */
+const WORLD_RADIUS = 820
 
 /**
  * The one solid object in the world.
@@ -46,8 +78,12 @@ const WORLD_RADIUS = 560
  * frame, and the whole scene reading as broken. Its podium is 31 units across,
  * so a 34-unit keep-out stops you at the steps with the monolith filling the
  * view — which is the shot you actually want when you arrive.
+ *
+ * It only applies below the crown. Above that you are clear of the structure and
+ * flying over the core is one of the better things you can do up there.
  */
 const CORE_KEEP_OUT = 34
+const CORE_CLEARANCE = CORE.height + 26
 const LOOK_SENSITIVITY = 0.0022
 
 export interface ExploreHost {
@@ -63,6 +99,8 @@ export interface ExploreSession {
   update(dt: number): void
   /** Nearest labelled place, for the on-screen readout. */
   nearest(): { key: string; label: string; distance: number; blurb: string; inside: boolean } | null
+  /** Movement mode and altitude, for the readout. */
+  state(): { flying: boolean; altitude: number }
   destroy(): void
 }
 
@@ -108,6 +146,14 @@ export function places(): Place[] {
       radius: d.radius,
       blurb: BLURBS[d.key] ?? '',
     })),
+    // The outer ring: the industries, as places. They carry their own copy.
+    ...OUTPOSTS.map((o) => ({
+      key: o.key,
+      label: o.label,
+      at: o.at.clone(),
+      radius: o.radius,
+      blurb: o.blurb,
+    })),
     {
       key: 'derelict',
       label: 'Before — a business with no system',
@@ -144,46 +190,117 @@ export function startExplore(host: ExploreHost): ExploreSession {
   let destroyed = false
   let locked = false
 
-  /* ---- Input ---- */
+  /** Movement mode. Walking until the visitor asks for flight. */
+  let flying = false
+  /** Timestamp of the last Space press, for the double-tap shortcut. */
+  let lastSpace = 0
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Escape') return // pointer lock handles its own exit
-    // Only swallow the keys we actually use, so browser shortcuts still work.
-    if (HANDLED.has(e.code)) {
-      e.preventDefault()
-      keys.add(e.code)
-    }
-  }
-  const onKeyUp = (e: KeyboardEvent) => keys.delete(e.code)
+  /* ---- Input ---- */
 
   const HANDLED = new Set([
     'KeyW', 'KeyA', 'KeyS', 'KeyD',
     'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight',
     'ShiftLeft', 'ShiftRight', 'Space',
+    'KeyF', 'KeyC', 'ControlLeft', 'ControlRight',
   ])
 
-  const onMouseMove = (e: MouseEvent) => {
-    if (!locked) return
-    yaw -= e.movementX * LOOK_SENSITIVITY
-    pitch -= e.movementY * LOOK_SENSITIVITY
+  /** Double-tapping Space within this window takes off, as most games do. */
+  const DOUBLE_TAP_MS = 320
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Escape') return // pointer lock handles its own exit
+    // Only swallow the keys we actually use, so browser shortcuts still work.
+    if (!HANDLED.has(e.code)) return
+    e.preventDefault()
+
+    // F toggles flight. Double-tapping Space is the second way in, because it is
+    // the gesture people already try, and a control nobody discovers is a
+    // control nobody has.
+    if (e.code === 'KeyF' && !e.repeat) {
+      flying = !flying
+      if (flying) verticalVelocity = 0
+    } else if (e.code === 'Space' && !e.repeat) {
+      const now = performance.now()
+      if (!flying && now - lastSpace < DOUBLE_TAP_MS) {
+        flying = true
+        verticalVelocity = 0
+      }
+      lastSpace = now
+    }
+
+    keys.add(e.code)
+  }
+  const onKeyUp = (e: KeyboardEvent) => keys.delete(e.code)
+
+  const look = (dx: number, dy: number) => {
+    yaw -= dx * LOOK_SENSITIVITY
+    pitch -= dy * LOOK_SENSITIVITY
     // Just short of straight up/down, so the horizon never flips.
     pitch = MathUtils.clamp(pitch, -Math.PI / 2 + 0.05, Math.PI / 2 - 0.05)
   }
 
+  const onMouseMove = (e: MouseEvent) => {
+    if (locked) {
+      look(e.movementX, e.movementY)
+    } else if (dragging) {
+      // Drag fallback. `movementX` is unreliable outside pointer lock in some
+      // browsers, so track the delta ourselves.
+      look(e.clientX - lastX, e.clientY - lastY)
+      lastX = e.clientX
+      lastY = e.clientY
+    }
+  }
+
   const onLockChange = () => {
+    const wasLocked = locked
     locked = document.pointerLockElement === canvas
     // Releasing the pointer (Escape, or tabbing away) exits the mode entirely
     // rather than leaving the visitor in a half-state with no way back.
-    if (!locked && !destroyed) host.onExit()
+    //
+    // Only when the lock was actually engaged, though. A browser that refuses
+    // the request outright — no user gesture in the chain, an unsupported or
+    // policy-blocked context — also fires this event, and treating that as an
+    // exit would eject the visitor the instant they entered.
+    if (wasLocked && !locked && !destroyed) host.onExit()
+  }
+
+  /**
+   * Drag-to-look, for when pointer lock is unavailable.
+   *
+   * Pointer lock can be refused for reasons that have nothing to do with the
+   * visitor: no user gesture survived the dynamic import chain, an embedded
+   * context, or a browser policy. Without a fallback that leaves someone inside
+   * explore mode able to move but unable to turn, which is worse than not
+   * offering the mode at all.
+   */
+  let dragging = false
+  let lastX = 0
+  let lastY = 0
+
+  const onMouseDown = (e: MouseEvent) => {
+    if (locked || destroyed) return
+    dragging = true
+    lastX = e.clientX
+    lastY = e.clientY
+  }
+  const onMouseUp = () => {
+    dragging = false
   }
 
   const onClick = () => {
-    if (!locked && !destroyed) canvas.requestPointerLock()
+    if (!locked && !destroyed) {
+      // Returns a promise in modern browsers; a rejection here is exactly the
+      // case the drag fallback exists for, so swallow it rather than logging.
+      const req = canvas.requestPointerLock() as unknown as Promise<void> | undefined
+      if (req && typeof req.catch === 'function') req.catch(() => {})
+    }
   }
 
   document.addEventListener('keydown', onKeyDown)
   document.addEventListener('keyup', onKeyUp)
   document.addEventListener('mousemove', onMouseMove)
+  document.addEventListener('mousedown', onMouseDown)
+  document.addEventListener('mouseup', onMouseUp)
   document.addEventListener('pointerlockchange', onLockChange)
   canvas.addEventListener('click', onClick)
 
@@ -202,40 +319,89 @@ export function startExplore(host: ExploreHost): ExploreSession {
     if (destroyed) return
     const step = Math.min(dt, 1 / 20)
 
-    // Heading vectors on the ground plane: looking up should not slow you down.
-    forward.set(-Math.sin(yaw), 0, -Math.cos(yaw))
-    right.set(Math.cos(yaw), 0, -Math.sin(yaw))
+    const boosting = keys.has('ShiftLeft') || keys.has('ShiftRight')
+    const ahead = keys.has('KeyW') || keys.has('ArrowUp')
+    const back = keys.has('KeyS') || keys.has('ArrowDown')
+    const rightward = keys.has('KeyD') || keys.has('ArrowRight')
+    const leftward = keys.has('KeyA') || keys.has('ArrowLeft')
 
-    desired.set(0, 0, 0)
-    if (keys.has('KeyW') || keys.has('ArrowUp')) desired.add(forward)
-    if (keys.has('KeyS') || keys.has('ArrowDown')) desired.sub(forward)
-    if (keys.has('KeyD') || keys.has('ArrowRight')) desired.add(right)
-    if (keys.has('KeyA') || keys.has('ArrowLeft')) desired.sub(right)
+    if (flying) {
+      // Heading follows the full view direction, pitch included: you fly where
+      // you are looking. That is the whole difference from walking, and it is
+      // what makes climbing feel like flying rather than like riding a lift.
+      const cosPitch = Math.cos(pitch)
+      forward.set(-Math.sin(yaw) * cosPitch, Math.sin(pitch), -Math.cos(yaw) * cosPitch)
+      right.set(Math.cos(yaw), 0, -Math.sin(yaw))
 
-    const running = keys.has('ShiftLeft') || keys.has('ShiftRight')
-    const speed = WALK_SPEED * (running ? RUN_MULTIPLIER : 1)
-    if (desired.lengthSq() > 0) desired.normalize().multiplyScalar(speed)
-
-    // Frame-rate independent approach, the same form used by the scroll camera.
-    const k = 1 - Math.exp(-ACCEL * step)
-    velocity.lerp(desired, k)
-    position.addScaledVector(velocity, step)
-
-    // Vertical: a small hop, then gravity back to eye height.
-    if (keys.has('Space') && grounded) {
-      verticalVelocity = JUMP_SPEED
-      grounded = false
-    }
-    if (!grounded) {
-      verticalVelocity -= GRAVITY * step
-      position.y += verticalVelocity * step
-      if (position.y <= EYE_HEIGHT) {
-        position.y = EYE_HEIGHT
-        verticalVelocity = 0
-        grounded = true
+      desired.set(0, 0, 0)
+      if (ahead) desired.add(forward)
+      if (back) desired.sub(forward)
+      if (rightward) desired.add(right)
+      if (leftward) desired.sub(right)
+      if (desired.lengthSq() > 0) {
+        desired.normalize().multiplyScalar(FLY_SPEED * (boosting ? FLY_BOOST : 1))
       }
+
+      // Direct vertical thrust on top of the view-relative movement, so you can
+      // hold altitude while looking down at something.
+      const lift =
+        (keys.has('Space') ? 1 : 0) -
+        (keys.has('KeyC') || keys.has('ControlLeft') || keys.has('ControlRight') ? 1 : 0)
+      desired.y += lift * FLY_LIFT * (boosting ? 1.8 : 1)
+
+      const k = 1 - Math.exp(-FLY_ACCEL * step)
+      velocity.lerp(desired, k)
+      position.addScaledVector(velocity, step)
+
+      // Ceiling and floor. Touching down does not land you — you keep flying at
+      // ground level until you press F, which is what people expect.
+      if (position.y > MAX_ALTITUDE) {
+        position.y = MAX_ALTITUDE
+        velocity.y = Math.min(velocity.y, 0)
+      }
+      if (position.y < EYE_HEIGHT) {
+        position.y = EYE_HEIGHT
+        velocity.y = Math.max(velocity.y, 0)
+      }
+      verticalVelocity = 0
+      grounded = false
     } else {
-      position.y = EYE_HEIGHT
+      // Heading vectors on the ground plane: looking up should not slow you down.
+      forward.set(-Math.sin(yaw), 0, -Math.cos(yaw))
+      right.set(Math.cos(yaw), 0, -Math.sin(yaw))
+
+      desired.set(0, 0, 0)
+      if (ahead) desired.add(forward)
+      if (back) desired.sub(forward)
+      if (rightward) desired.add(right)
+      if (leftward) desired.sub(right)
+
+      const speed = WALK_SPEED * (boosting ? RUN_MULTIPLIER : 1)
+      if (desired.lengthSq() > 0) desired.normalize().multiplyScalar(speed)
+
+      // Frame-rate independent approach, the same form used by the scroll camera.
+      const k = 1 - Math.exp(-ACCEL * step)
+      velocity.lerp(desired, k)
+      velocity.y = 0
+      position.addScaledVector(velocity, step)
+
+      // Vertical: a small hop, then gravity back to eye height. Leaving flight
+      // mid-air falls through this same branch, so you drop rather than teleport.
+      if (keys.has('Space') && grounded) {
+        verticalVelocity = JUMP_SPEED
+        grounded = false
+      }
+      if (!grounded || position.y > EYE_HEIGHT) {
+        verticalVelocity -= GRAVITY * step
+        position.y += verticalVelocity * step
+        if (position.y <= EYE_HEIGHT) {
+          position.y = EYE_HEIGHT
+          verticalVelocity = 0
+          grounded = true
+        }
+      } else {
+        position.y = EYE_HEIGHT
+      }
     }
 
     // Soft world bound: pushed back rather than stopped dead, so hitting the
@@ -248,14 +414,18 @@ export function startExplore(host: ExploreHost): ExploreSession {
       velocity.multiplyScalar(0.9)
     }
 
-    // And out of the core. Same soft push, so walking into it slides you around
-    // the podium rather than stopping you dead against an invisible wall.
-    const fromCore = Math.hypot(position.x - CORE.at.x, position.z - CORE.at.z)
-    if (fromCore < CORE_KEEP_OUT && fromCore > 0.001) {
-      const push = (CORE_KEEP_OUT - fromCore) / fromCore
-      position.x += (position.x - CORE.at.x) * push
-      position.z += (position.z - CORE.at.z) * push
-      velocity.multiplyScalar(0.6)
+    // And out of the core, but only below its crown — above that there is
+    // nothing to walk into and flying over it is the point. Same soft push, so
+    // walking into it slides you around the podium rather than stopping you dead
+    // against an invisible wall.
+    if (position.y < CORE_CLEARANCE) {
+      const fromCore = Math.hypot(position.x - CORE.at.x, position.z - CORE.at.z)
+      if (fromCore < CORE_KEEP_OUT && fromCore > 0.001) {
+        const push = (CORE_KEEP_OUT - fromCore) / fromCore
+        position.x += (position.x - CORE.at.x) * push
+        position.z += (position.z - CORE.at.z) * push
+        velocity.multiplyScalar(0.6)
+      }
     }
 
     camera.position.copy(position)
@@ -288,12 +458,15 @@ export function startExplore(host: ExploreHost): ExploreSession {
   return {
     update,
     nearest,
+    state: () => ({ flying, altitude: Math.round(position.y - EYE_HEIGHT) }),
     destroy() {
       if (destroyed) return
       destroyed = true
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('keyup', onKeyUp)
       document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mousedown', onMouseDown)
+      document.removeEventListener('mouseup', onMouseUp)
       document.removeEventListener('pointerlockchange', onLockChange)
       canvas.removeEventListener('click', onClick)
       window.removeEventListener('blur', onBlur)

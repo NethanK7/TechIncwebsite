@@ -42,7 +42,7 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
       <p class="hero__lead" data-reveal>
         {COMPANY.name} is Sri Lanka's first and only authorized Frappe Technologies
         partner. We have connected finance, production, stock, sales, people and
-        projects into a single system more than 150 times.
+        projects into a single system more than 30 times.
       </p>
       <div class="hero__actions" data-reveal>
         <a class="btn btn--solid" href="/contact" data-cta="hero:consultation">
@@ -53,6 +53,20 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
         </a>
       </div>
       <p class="scroll-hint mono" aria-hidden="true">Scroll to follow the build</p>
+
+      <!--
+        The way into explore mode for people who will never click the wordmark
+        five times — which is nearly everyone. Deliberately quiet: mono, faint,
+        below the fold's centre of gravity, so it reads as a discovery rather
+        than as a fourth call to action competing with the two above.
+
+        Hidden by default and revealed by egg.ts only once the WebGL scene is
+        actually running, because on a device that fell back to the static hero
+        there is nothing behind this button to walk around in.
+      -->
+      <button class="journey__enter mono" type="button" data-explore-enter hidden>
+        Or walk the model →
+      </button>
     </div>
   </div>
 
@@ -243,6 +257,47 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
     color: var(--ink-faint);
     text-transform: uppercase;
     letter-spacing: 0.14em;
+  }
+
+  /* A quiet pill rather than bare text.
+
+     The hero copy above sits on a scrim; this control does not, and unbacked
+     mono type at --ink-faint over cranes and rooftops is genuinely unreadable.
+     A translucent pill costs nothing visually and makes it legible over any part
+     of the model that happens to be behind it. */
+  .journey__enter {
+    margin-top: var(--s-3);
+    /* Comfortably over the 24px minimum tap target. */
+    padding: var(--s-2) var(--s-5);
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    background: rgb(255 255 255 / 0.66);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--hair);
+    border-radius: 999px;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      background var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .journey__enter:hover,
+  .journey__enter:focus-visible {
+    color: var(--ink);
+    background: var(--paper-pure);
+    border-color: var(--hair-strong);
+  }
+
+  .journey__enter[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 780px) {
+    /* Pointer lock and WASD have no touch equivalent. */
+    .journey__enter {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {

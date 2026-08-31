@@ -39,7 +39,7 @@ import {
 } from 'three'
 
 import { PALETTE, uTime } from './materials'
-import { bladeGeometry, figureGeometry, vanGeometry } from './props'
+import { BIRD_SPAN, birdGeometry, bladeGeometry, figureGeometry, vanGeometry } from './props'
 import { rng, type Rng } from './rng'
 
 /** Shared walk cycle constants, so people and their shadows stay in step. */
@@ -409,6 +409,176 @@ export function buildTraffic(routes: Route[], perRoute = 3): Animated {
   mesh.instanceMatrix.needsUpdate = true
   mesh.frustumCulled = false
   mesh.castShadow = false
+  group.add(mesh)
+
+  return {
+    group,
+    update: () => {},
+    dispose: () => {
+      geo.dispose()
+      material.dispose()
+    },
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Flocks                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export interface FlockSite {
+  at: Vector3
+  radius: number
+  count: number
+  seed: number
+  /** Mid-point of the altitude band this flock circles in. */
+  altitude: number
+}
+
+/**
+ * Birds circling above the world.
+ *
+ * These exist for the explorer, not for the scroll. From the ground they are
+ * specks that make the sky stop being an empty gradient; in flight you cross
+ * their altitude band and pass through them, which is the single cheapest way to
+ * give flying a sense of speed — the ground below moves slowly at altitude, and
+ * without something at your own height the motion barely reads.
+ *
+ * Same pattern as the crowd: one InstancedMesh, all motion in the vertex shader
+ * off the shared clock, no per-frame CPU work. Each bird gets a tilted orbit, so
+ * the flock climbs and descends through its band rather than sitting on a
+ * turntable, and banks into its turns.
+ */
+export function buildFlock(sites: FlockSite[]): Animated {
+  const group = new Group()
+  group.name = 'flock'
+
+  const total = sites.reduce((n, s) => n + s.count, 0)
+  if (!total) return { group, update: () => {}, dispose: () => {} }
+
+  const centre = new Float32Array(total * 3) // x, altitude, z
+  const orbit = new Float32Array(total * 3) // radiusA, radiusB, rotation
+  const motion = new Float32Array(total * 4) // speed, phase, climb amplitude, flap rate
+
+  let i = 0
+  for (const site of sites) {
+    const r: Rng = rng(site.seed ^ 0xb1d5)
+    for (let n = 0; n < site.count; n++) {
+      centre[i * 3] = site.at.x + r.range(-1, 1) * site.radius * 0.5
+      centre[i * 3 + 1] = site.altitude + r.range(-14, 22)
+      centre[i * 3 + 2] = site.at.z + r.range(-1, 1) * site.radius * 0.5
+
+      const a = r.range(site.radius * 0.3, site.radius * 0.95)
+      orbit[i * 3] = a
+      orbit[i * 3 + 1] = a * r.range(0.4, 1)
+      orbit[i * 3 + 2] = r.range(0, Math.PI)
+
+      // Angular speed scaled by loop size so everything flies at a similar pace.
+      motion[i * 4] = (r.range(7, 12) / Math.max(10, a)) * (r.chance(0.5) ? 1 : -1)
+      motion[i * 4 + 1] = r.range(0, Math.PI * 2)
+      motion[i * 4 + 2] = r.range(3, 11)
+      motion[i * 4 + 3] = r.range(3.4, 5.6)
+      i++
+    }
+  }
+
+  const geo = birdGeometry()
+  geo.setAttribute('aCentre', new InstancedBufferAttribute(centre, 3))
+  geo.setAttribute('aOrbit', new InstancedBufferAttribute(orbit, 3))
+  geo.setAttribute('aMotion', new InstancedBufferAttribute(motion, 4))
+
+  const material = new MeshStandardMaterial({
+    color: new Color(0x4a5768),
+    roughness: 0.8,
+    metalness: 0,
+    // Wings are single-thickness panels seen from above and below in equal
+    // measure, so backface culling would blink half the flock out on every turn.
+    side: DoubleSide,
+  })
+
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uTime = uTime
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        '#include <common>',
+        /* glsl */ `
+        #include <common>
+        attribute vec3 aCentre;   // x, altitude, z
+        attribute vec3 aOrbit;    // radiusA, radiusB, rotation
+        attribute vec4 aMotion;   // speed, phase, climb, flap
+        uniform float uTime;
+
+        mat2 rot2(float a) {
+          float ca = cos(a), sa = sin(a);
+          return mat2(ca, sa, -sa, ca);
+        }
+
+        // Returns world position; writes heading, bank angle and flap phase.
+        vec3 flyPath(out float heading, out float bank, out float flap) {
+          float t = uTime * aMotion.x + aMotion.y;
+          vec2 local = vec2(cos(t) * aOrbit.x, sin(t) * aOrbit.y);
+
+          float c = cos(aOrbit.z), s = sin(aOrbit.z);
+          mat2 spin = mat2(c, -s, s, c);
+          vec2 world = aCentre.xz + spin * local;
+
+          vec2 tangent = spin * vec2(-sin(t) * aOrbit.x, cos(t) * aOrbit.y) * sign(aMotion.x);
+          heading = atan(tangent.x, tangent.y);
+
+          // Bank into the turn. Sign follows the direction of travel, and the
+          // slow oscillation keeps the whole flock from banking in lockstep.
+          bank = sign(aMotion.x) * (0.34 + 0.12 * sin(t * 0.7));
+          flap = uTime * aMotion.w + aMotion.y;
+
+          float y = aCentre.y + sin(t * 1.3 + aMotion.y) * aMotion.z;
+          return vec3(world.x, y, world.y);
+        }
+        `,
+      )
+      .replace(
+        '#include <begin_vertex>',
+        /* glsl */ `
+        float heading, bank, flap;
+        vec3 airborne = flyPath(heading, bank, flap);
+
+        vec3 transformed = position;
+
+        // Flap: rotate each wing about the body axis, the outer panel harder
+        // than the inner one so the wing bends rather than pivoting rigidly.
+        float span = abs(transformed.x);
+        if (span > ${(BIRD_SPAN * 0.1).toFixed(3)}) {
+          float grip = smoothstep(${(BIRD_SPAN * 0.1).toFixed(3)}, ${BIRD_SPAN.toFixed(3)}, span);
+          float beat = sin(flap) * 0.62 * grip;
+          transformed.y += sin(beat) * span;
+          transformed.x *= cos(beat);
+        }
+
+        // Bank, then face along the path, then place in the sky.
+        transformed.xy = rot2(bank) * transformed.xy;
+        transformed.xz = rot2(heading) * transformed.xz;
+        transformed += airborne;
+        `,
+      )
+      .replace(
+        '#include <beginnormal_vertex>',
+        /* glsl */ `
+        #include <beginnormal_vertex>
+        {
+          float h2, b2, f2;
+          flyPath(h2, b2, f2);
+          objectNormal.xy = rot2(b2) * objectNormal.xy;
+          objectNormal.xz = rot2(h2) * objectNormal.xz;
+        }
+        `,
+      )
+  }
+
+  const mesh = new InstancedMesh(geo, material, total)
+  const identity = new Matrix4()
+  for (let n = 0; n < total; n++) mesh.setMatrixAt(n, identity)
+  mesh.instanceMatrix.needsUpdate = true
+  mesh.frustumCulled = false
+  mesh.castShadow = false
+  mesh.receiveShadow = false
   group.add(mesh)
 
   return {
