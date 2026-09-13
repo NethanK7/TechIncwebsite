@@ -12,7 +12,7 @@ export const COMPANY = {
   legalName: 'Techincglobal Consultancy (Pvt) Ltd',
   motto: "Sri Lanka's #1 Frappe Partner",
   mottoShort: '#1 Frappe Partner',
-  tagline: 'One platform. Every department.',
+  tagline: 'One platform. Your entire enterprise.',
   founded: '2018',
   group: 'SEBSA Group',
   partnerStatus: 'Highly Skilled Certified Bronze Partner',
@@ -125,39 +125,71 @@ export const JOURNEY: Stage[] = [
     key: 'problem',
     index: '01',
     eyebrow: 'Before',
-    title: 'A business running on nothing',
-    body: 'No system underneath. Finance closes from one spreadsheet, the store keeps a book, the site foreman keeps another. The same item carries three names and three quantities, so every figure needs a phone call before anyone dares act on it. Nothing here talks to anything else — and none of it is anybody’s fault.',
-    note: 'DISCONNECTED · UNCOSTED · UNRECONCILED',
+    title: 'A business held together by workarounds',
+    body: 'A spreadsheet for finance. Separate records for stock. Another list on site. Everyone is doing their part, but the information does not always make its way to the people who need it.',
   },
   {
     key: 'departments',
     index: '02',
     eyebrow: 'Your departments',
-    title: 'Six places, six versions of the truth',
-    body: 'Construction on site. Warehousing and distribution. The factory floor. Finance and accounts. Sales and the pipeline. People and payroll. Each one works — each one keeps its own records, in its own format, on its own schedule. The gaps between them are where the margin quietly goes.',
-    note: 'CONSTRUCTION · WAREHOUSING · MANUFACTURING · ACCOUNTS · SALES · HR',
+    title: 'Six departments. Six versions of the truth.',
+    body: 'Finance, sales, inventory, production, projects, HR. Each has its own information and its own way of working. The workarounds start when that information needs to move between them.',
   },
   {
     key: 'core',
     index: '03',
     eyebrow: 'The Frappe core',
-    title: 'One database underneath all of it',
-    body: 'Frappe is one framework and one database. An Item, a Customer, a Warehouse, a Cost Center — each exists exactly once, and every department reads the same row. A Stock Entry writes its Stock Ledger Entry and its GL Entry in the same transaction, so stock and the books physically cannot disagree.',
+    title: 'Bring it together with ERPNext',
+    body: 'ERPNext puts the different parts of your business into one system. The same customers, items, transactions, costs, and business information are available across the functions that need them.',
   },
   {
     key: 'connected',
     index: '04',
     eyebrow: 'Wiring it up',
-    title: 'Every department, into the core',
-    body: 'A Material Request becomes a Purchase Order and a Purchase Receipt that lands stock at landed cost. A Production Plan explodes the BOM into Work Orders and Job Cards. A Lead becomes a Quotation, a Sales Order, a Delivery Note, a Sales Invoice. Timesheets cost hours to the Project. Salary Slips post to the ledger with EPF and ETF handled.',
-    note: 'ONE TRANSACTION · ONE LEDGER · ONE TRUTH',
+    title: 'Let information move with the work',
+    body: 'A sale can move from quotation to order to delivery and invoicing. A purchase can update stock and accounts. Production can connect materials, operations, and costs. The information moves as the work moves.',
   },
   {
     key: 'unified',
     index: '05',
     eyebrow: 'After',
-    title: 'The same company, running',
-    body: 'Nothing is re-keyed and nothing is reconciled, because it was all one system from the first transaction. Month-end becomes a review instead of a reconstruction. You find out a job is losing money while you can still do something about it. That is the whole difference — and it is what we have built more than 30 times.',
+    title: 'One view of the business',
+    body: 'When your teams are working from the same system, there is less information to chase and fewer records to reconcile. You have a clearer view of sales, stock, costs, projects, and finances when you need to make a decision.',
+  },
+]
+
+/* -------------------------------------------------------------------------- */
+/*  The stack — how Frappe, ERPNext, NXTGEN and Techincglobal fit together.     */
+/*  Homepage-only: clears up the terminology before Services and Industries    */
+/*  start using "Frappe" and "ERPNext" as if the difference were obvious.      */
+/* -------------------------------------------------------------------------- */
+
+export interface StackLayer {
+  name: string
+  title: string
+  body: string
+}
+
+export const STACK: StackLayer[] = [
+  {
+    name: 'Techincglobal',
+    title: 'Your ERP implementation partner',
+    body: 'Techincglobal is Sri Lanka’s first and only authorized Frappe Technologies partner. We work with businesses to implement ERPNext, configure it around their processes, develop the functionality they need, and support their teams beyond go-live. Our role is to make sure the platform fits the business, not the other way around.',
+  },
+  {
+    name: 'NXTGEN',
+    title: 'How we deliver your implementation',
+    body: 'NXTGEN is Techincglobal’s Agile implementation methodology. It breaks the implementation into defined stages, from understanding your business and configuring the system to development, testing, training, and deployment. Your teams stay involved throughout, so the solution develops around real business requirements rather than assumptions made at the start of a project.',
+  },
+  {
+    name: 'ERPNext',
+    title: 'The business platform',
+    body: 'ERPNext brings finance, sales, purchasing, inventory, manufacturing, projects, HR, and other core business functions together in one system. It provides the common platform underneath your business processes, so information can move between functions without relying on separate systems, spreadsheets, or manual handoffs.',
+  },
+  {
+    name: 'Frappe',
+    title: 'The technology and company behind ERPNext',
+    body: 'ERPNext is developed by Frappe Technologies and built on Frappe Framework, its open source application framework. The framework provides the technology that allows ERPNext to be configured, extended, and developed to meet specific business requirements. This gives us room to work with the standard ERPNext platform while adapting it where your business needs something more.',
   },
 ]
 
@@ -246,7 +278,7 @@ export const SERVICES: Service[] = [
     name: 'Frappe ERP Implementation',
     navName: 'Frappe ERP Implementation',
     summary:
-      'End-to-end Frappe ERP implementation delivered on the NXTGEN Agile methodology.',
+      'We implement ERPNext around the way your business works, from initial discovery and configuration through testing, training, and go live.',
     body: 'A complete implementation from process discovery to Go-Live Authorization: accounting, inventory, manufacturing, sales, purchasing, HR and projects configured against how your business actually runs. Delivered in a 12-week standard programme, typically 10–16 weeks depending on scope.',
     deliverables: [
       'Process mapping and gap analysis',
@@ -262,7 +294,7 @@ export const SERVICES: Service[] = [
     name: 'Frappe Customization & Development',
     navName: 'Frappe Customization & Development',
     summary:
-      'Custom doctypes, apps, reports and print formats built natively on the Frappe framework.',
+      'When the standard platform does not cover a specific business requirement, we extend ERPNext with custom functionality built around your processes.',
     body: 'When your process is genuinely yours, we build for it rather than around it. Custom apps, doctypes, server scripts, client scripts, dashboards and print formats — written as proper Frappe apps that survive framework upgrades instead of brittle patches that break on the next release.',
     deliverables: [
       'Custom Frappe apps and doctypes',
@@ -277,7 +309,7 @@ export const SERVICES: Service[] = [
     name: 'Business Process Automation',
     navName: 'Process Automation',
     summary:
-      'Remove the manual handoffs, approvals and re-entry that slow your operation down.',
+      'We identify repetitive work and manual handoffs that can be handled within the system, then build workflows and automation that reduce the work involved.',
     body: 'We find the places where a human is copying data between two systems, or waiting on an email to approve something, and we replace them with workflow. Approval chains, notifications, scheduled jobs, document automation and system-to-system triggers.',
     deliverables: [
       'Workflow and approval chain design',
@@ -292,7 +324,7 @@ export const SERVICES: Service[] = [
     name: 'Legacy System Modernization',
     navName: 'Legacy Modernization',
     summary:
-      'Move off unsupported, licence-heavy or end-of-life systems without losing your history.',
+      'We help businesses move away from older systems and fragmented processes, bringing their operations onto a modern ERP platform without losing the information they depend on.',
     body: 'Legacy migrations fail on data, not software. We start with a full data audit, build a reconciled migration path, and run parallel until the numbers match to the cent — so you keep your transactional history and your auditors stay comfortable.',
     deliverables: [
       'Legacy system and data audit',
@@ -307,7 +339,7 @@ export const SERVICES: Service[] = [
     name: 'System Integration',
     navName: 'System Integration',
     summary:
-      'Connect Frappe to the banking, e-commerce, POS, payroll and logistics systems you already run.',
+      'Your business already has systems that work. We connect ERPNext with them, so you can keep what you need while bringing the information together in one place.',
     body: 'ERP is rarely the only system. We build reliable, monitored integrations — REST, webhooks, scheduled sync, file-based where that is all a vendor supports — with proper error handling and retry, so a failed call surfaces as an alert rather than a silent data gap.',
     deliverables: [
       'Integration architecture and API design',
@@ -322,7 +354,7 @@ export const SERVICES: Service[] = [
     name: 'ERP Consulting & Advisory',
     navName: 'ERP Consulting',
     summary:
-      'Independent advice on whether, when and how to change your ERP — before you commit budget.',
+      'Not every ERP decision starts with an implementation. We help businesses assess their requirements, understand what ERPNext can do, and decide how best to approach their digital transformation.',
     body: 'Honest assessments and realistic expectations. We will tell you if your current system is fine, if the problem is process rather than software, or if you are not ready yet. We would rather set the right expectation than win a deal.',
     deliverables: [
       'ERP readiness and fit assessment',
@@ -337,7 +369,7 @@ export const SERVICES: Service[] = [
     name: 'Support & Optimization',
     navName: 'Support & Optimization',
     summary:
-      'Ongoing support, performance tuning and continuous improvement after go-live.',
+      'The work does not stop at go-live. We provide ongoing support and help businesses refine their ERPNext setup as their processes, requirements, and teams evolve.',
     body: 'Our success is measured by yours, and that is measured long after go-live. SLA-backed support, version upgrades, performance tuning, new-module rollouts, and a standing cycle of process improvements as your business changes.',
     deliverables: [
       'SLA-backed support with tracked tickets',
@@ -352,7 +384,7 @@ export const SERVICES: Service[] = [
     name: 'Training & Change Management',
     navName: 'Training & Change Management',
     summary:
-      'Build the internal capability that makes the system stick.',
+      'We train teams on their own processes and data, helping them get comfortable with the new system and use it effectively from day one.',
     body: 'The most common reason an ERP fails is that people go back to the spreadsheet. We train by role on your own data, document your own workflows, and build internal champions who can answer questions without calling us.',
     deliverables: [
       'Role-based training programmes',
@@ -371,6 +403,9 @@ export const SERVICES: Service[] = [
 export interface Industry {
   slug: string
   name: string
+  /** Short one-liner for the homepage teaser grid. */
+  teaser: string
+  /** Longer statement of what the industry needs from an ERP — the lead on /industries and each industry page. */
   summary: string
   body: string
   challenges: string[]
@@ -380,105 +415,97 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: 'manufacturing',
     name: 'Manufacturing',
+    teaser: 'Production planning, shop floor control, and costing in one system.',
     summary:
-      'Shopfloor control, real job costing and production planning on one system.',
+      'Production planning, material availability, shop floor operations, and job costing need to work together.',
     body: 'Our largest sector — more than 20 Sri Lankan manufacturers run on implementations we delivered. Multi-level BOMs, routing and work orders wired directly to inventory and costing, so production reality and financial reality are the same number.',
     challenges: [
-      'Production plans that ignore real material availability',
-      'Job costing calculated after the fact, in spreadsheets',
-      'Work-in-progress invisible until month-end',
-      'Quality and traceability records kept on paper',
+      'Production plans that do not reflect actual material availability',
+      'Job costs calculated after the work is done',
     ],
   },
   {
     slug: 'distribution-logistics',
     name: 'Distribution & Logistics',
+    teaser: 'Manage stock across warehouses, automate reordering, and keep deliveries moving.',
     summary:
-      'Multi-warehouse stock accuracy, reorder automation and delivery control.',
+      'Stock, purchasing, warehouses, orders, and deliveries need to stay aligned across locations.',
     body: 'High SKU counts across multiple locations, with batch and serial traceability, landed-cost tracking and automated reorder points. Our courier and distribution clients move stock, invoicing and finance onto one connected platform instead of three disconnected ones.',
     challenges: [
-      'Stock figures that differ by system and by warehouse',
+      'Stock figures that differ by system or warehouse',
       'Excess and dead stock tying up working capital',
-      'Manual reorder decisions and stockouts',
-      'No visibility of true landed cost per SKU',
     ],
   },
   {
     slug: 'retail-ecommerce',
     name: 'Retail & E-Commerce',
+    teaser: 'Connect your point of sale, online store, inventory, and back office.',
     summary:
-      'POS, online storefront and back office sharing one stock position.',
+      'Point of sale, online sales, inventory, and back office operations need to work from the same stock position.',
     body: 'One inventory truth across counter, warehouse and web. POS integration, marketplace and storefront sync, promotions, loyalty, and margin reporting by channel and by SKU.',
     challenges: [
-      'Overselling because the web store lags the warehouse',
-      'Channel profitability that nobody can actually calculate',
-      'Separate customer records per channel',
-      'Manual daily sales reconciliation',
+      'Overselling when online stock lags behind the warehouse',
+      'Difficulty calculating profitability by sales channel',
     ],
   },
   {
     slug: 'professional-services',
     name: 'Professional Services',
+    teaser: 'Keep projects, timesheets, costs, and profitability together.',
     summary:
-      'Project profitability, timesheets and utilisation you can trust.',
+      'Projects depend on accurate time tracking, resource use, billing, and visibility into profitability.',
     body: 'For firms whose product is time. Project structures, timesheet capture, billing rules, revenue recognition and utilisation reporting — so you find out a job is unprofitable while it is still running.',
     challenges: [
-      'Unbilled and under-billed time leaking margin',
-      'Project profitability known only at completion',
-      'Consultant utilisation guessed rather than measured',
-      'Scope creep with no cost trail',
+      'Unbilled or under-billed time reducing margins',
+      'Project profitability known only after completion',
     ],
   },
   {
     slug: 'construction-real-estate',
     name: 'Construction & Real Estate',
+    teaser: 'Manage project costs, subcontractors, materials, and progress billing.',
     summary:
-      'Project costing, subcontractor control and progress billing.',
+      'Project costs, materials, subcontractors, budgets, and progress billing need to be tracked throughout the project.',
     body: 'Budget versus actual by cost code, subcontractor and retention management, material issue against site, progress billing and variation control — for contractors and developers running multiple concurrent projects.',
     challenges: [
       'Cost overruns discovered after the money is spent',
-      'Material issued to site with no cost-code trail',
-      'Subcontractor certificates and retentions in spreadsheets',
-      'Progress billing that lags actual completion',
+      'Materials issued to sites without a clear cost trail',
     ],
   },
   {
     slug: 'healthcare',
     name: 'Healthcare',
+    teaser: 'Bring patient administration, pharmacy stock, and billing into one system.',
     summary:
-      'Patient administration, pharmacy stock and clinical billing.',
+      'Patient administration, pharmacy stock, services, and billing need to stay connected across operational and financial teams.',
     body: 'Appointment and patient administration, pharmacy and consumables inventory with expiry control, laboratory workflows, insurance and billing — built with the access controls and audit trails this sector requires.',
     challenges: [
       'Pharmacy stock expiry and shrinkage',
-      'Billing leakage between clinical and finance',
-      'Fragmented patient records',
-      'Insurance claim rework and delay',
+      'Billing gaps between clinical operations and finance',
     ],
   },
   {
     slug: 'education',
     name: 'Education',
+    teaser: 'Manage student records, fees, and institutional operations from one platform.',
     summary:
-      'Student lifecycle, fee management and institutional finance.',
+      'Student records, fees, academic activities, and institutional finance span multiple departments and stages.',
     body: 'Admissions, student records, programme and course structures, fee schedules and collections, staff payroll, and the institutional financial reporting your board and regulator expect.',
     challenges: [
       'Fee arrears tracked manually across intakes',
       'Student records split across departments',
-      'Staff payroll disconnected from finance',
-      'Statutory and board reporting assembled by hand',
     ],
   },
   {
     slug: 'trading-import-export',
     name: 'Trading & Import/Export',
+    teaser: 'Manage landed costs, multiple currencies, purchasing, and shipments.',
     summary:
-      'Landed costing, multi-currency and shipment tracking done properly.',
+      'Purchasing, shipments, landed costs, currencies, and sales need to come together to show the real cost of each transaction.',
     body: 'Purchase-to-shipment visibility with full landed-cost build-up — freight, duty, clearing, demurrage — allocated back to SKU, plus multi-currency exposure and letter-of-credit tracking.',
     challenges: [
-      'True landed cost per SKU never calculated',
-      'Currency exposure invisible until it hurts',
-      'Shipment status living in a broker’s inbox',
-      'Duty and clearing costs absorbed into overhead',
+      'True landed cost not calculated at the item level',
+      'Currency exposure becoming visible only after it affects the business',
     ],
   },
 ]
@@ -807,36 +834,40 @@ export interface Faq {
 
 export const FAQ_GENERAL: Faq[] = [
   {
-    q: 'Who is the number one Frappe partner in Sri Lanka?',
-    a: 'TECHINCGLOBAL is Sri Lanka’s #1 Frappe Partner. It was the first authorized Frappe Technologies partner in the country and holds Highly Skilled Certified Bronze Partner status, with more than 30 Frappe ERP implementations delivered since 2018.',
+    q: 'Do we have to replace all our existing systems?',
+    a: 'No. An ERP implementation does not have to mean replacing everything you already use. TECHINCGLOBAL assesses the systems that are working for your business and determines what should stay, what should connect to ERPNext, and what can be brought into the new platform.',
   },
   {
-    q: 'How long does a Frappe ERP implementation take?',
-    a: 'TECHINCGLOBAL delivers a 12-week standard implementation programme, with most projects completing in 10 to 16 weeks depending on scope. The NXTGEN Agile methodology reduces deployment time by up to 40% compared with conventional approaches.',
+    q: 'What happens to the data in our existing systems?',
+    a: 'TECHINCGLOBAL assesses your existing data as part of the implementation and plans how it should be cleaned, mapped, and migrated into the new system. The aim is to bring across the information the business needs without carrying unnecessary or outdated data into the new system.',
   },
   {
-    q: 'What is the NXTGEN methodology?',
-    a: 'NXTGEN is TECHINCGLOBAL’s proprietary Agile ERP implementation methodology with five phases: Design, Segregate, Cyclic Mapping, Training, and Go-Live Authorization. Segregating scope into independently deliverable modules is what removes the risk of a big-bang go-live.',
+    q: 'What if our business processes do not fit the standard setup?',
+    a: 'We start with the standard platform and configure it around your requirements wherever possible. Where a specific business need goes beyond the standard functionality, TECHINCGLOBAL can customize or develop the required functionality rather than asking your teams to work around the system.',
   },
   {
-    q: 'Does Frappe ERP handle Sri Lankan tax and payroll compliance?',
-    a: 'Yes. TECHINCGLOBAL configures Sri Lankan statutory requirements natively, including VAT and local tax reporting, and EPF and ETF handling in payroll. As the country’s authorized Frappe partner, the company maintains all local platform localizations.',
+    q: 'How much involvement is needed from our teams?',
+    a: 'Your teams are involved throughout the implementation. They help us understand how the business works, review the configured processes, test the system, and prepare for go-live. This gives us a clearer understanding of the actual work behind the requirements and helps your teams become familiar with the system before deployment.',
   },
   {
-    q: 'What does Frappe ERP cost compared with licensed ERP software?',
-    a: 'Frappe is open-source with no per-user licence fees, so the cost of ownership is implementation and support rather than perpetual licensing. TECHINCGLOBAL provides total cost of ownership modelling during its ERP Consulting and Advisory engagement so the comparison is made on real numbers.',
+    q: 'Can TECHINCGLOBAL implement the solution in stages?',
+    a: 'Yes. We can plan the implementation around the priorities of the business rather than requiring everything to go live at once. Functions or business areas can be delivered in stages, allowing teams to start using the system while further work continues.',
   },
   {
-    q: 'Which industries does TECHINCGLOBAL serve?',
-    a: 'TECHINCGLOBAL implements Frappe ERP across manufacturing, distribution and logistics, retail and e-commerce, professional services, construction and real estate, healthcare, education, and trading and import/export. Manufacturing is its largest sector, with more than 20 Sri Lankan manufacturers running on its implementations.',
+    q: 'What happens if our requirements change during implementation?',
+    a: 'Requirements can become clearer as teams see the system and work through real processes. We review changes as they arise, assess their impact on scope and delivery, and agree on how they should be handled before the work proceeds.',
   },
   {
-    q: 'Can Frappe ERP integrate with systems we already run?',
-    a: 'Yes. TECHINCGLOBAL builds monitored integrations between Frappe and existing banking, payment gateway, POS, e-commerce, payroll and third-party logistics systems, using REST APIs, webhooks or scheduled synchronisation with proper retry and failure alerting.',
+    q: 'Can TECHINCGLOBAL connect ERPNext to our existing systems?',
+    a: 'Yes. TECHINCGLOBAL can integrate ERPNext with the systems your business already depends on, including banking, payment gateways, POS, e-commerce, payroll, and logistics systems. The integration approach depends on the systems involved and can include APIs, webhooks, or scheduled data synchronization.',
   },
   {
-    q: 'What support is available after go-live?',
-    a: 'TECHINCGLOBAL provides SLA-backed support with tracked tickets, Frappe version upgrades with regression testing, database and performance optimization, phased rollout of additional modules, and quarterly optimization reviews.',
+    q: 'What happens after go-live?',
+    a: 'Go-live is the beginning of using the system, not the end of the relationship. TECHINCGLOBAL provides ongoing support, helps resolve issues, supports upgrades, and works with you as your processes and requirements develop. Additional functionality and modules can also be introduced in stages as the business is ready for them.',
+  },
+  {
+    q: 'How does TECHINCGLOBAL determine what the solution should look like for our business?',
+    a: 'That is something we establish before implementation begins. We work with your teams to understand your processes, requirements, existing systems, and priorities, then determine how ERPNext can be applied to the business and where customization or integration may be needed.',
   },
 ]
 

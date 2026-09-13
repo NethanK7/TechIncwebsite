@@ -35,14 +35,14 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
   <!-- ---------------- Hero: one screen, stage 0 ---------------- -->
   <div class="journey__screen journey__screen--hero">
     <div class="shell hero">
-      <p class="hero__eyebrow eyebrow" data-reveal>{COMPANY.motto}</p>
+      <p class="hero__eyebrow eyebrow" data-reveal>
+        Sri Lanka’s first and only authorized Frappe Technologies partner.
+      </p>
       <h1 class="display hero__title" data-reveal data-speakable>
-        One platform.<br />Every department.
+        One platform.<br />Your entire enterprise.
       </h1>
       <p class="hero__lead" data-reveal>
-        {COMPANY.name} is Sri Lanka's first and only authorized Frappe Technologies
-        partner. We have connected finance, production, stock, sales, people and
-        projects into a single system more than 30 times.
+        TechINCglobal brings finance, sales, inventory, production, projects, and people together on ERPNext, with implementations built around the way your business works.
       </p>
       <div class="hero__actions" data-reveal>
         <a class="btn btn--solid" href="/contact" data-cta="hero:consultation">
@@ -52,6 +52,9 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
           Free readiness assessment
         </a>
       </div>
+      <p class="hero__counter mono" data-reveal>
+        More than 30 implementations and counting.
+      </p>
       <p class="scroll-hint mono" aria-hidden="true">Scroll to follow the build</p>
 
       <!--
@@ -74,7 +77,7 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
 
   <div class="journey__flow">
     <!-- Fixed overlay. The scroll screens below drive which step is active. -->
-    <ol class="steps" data-steps aria-label="How an ERP implementation connects your business">
+    <ol class="steps" data-steps aria-label="From disconnected departments to one connected business">
       {
         JOURNEY.map((stage, i) => (
           <li class="step" data-step={i + 1} data-key={stage.key}>
@@ -95,7 +98,7 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
       JOURNEY.map((stage) => (
         <div class="journey__screen" data-screen={stage.key}>
           <div class="shell journey__static">
-            <p class="eyebrow">{stage.eyebrow}</p>
+            <p class="eyebrow">From disconnected departments to one connected business</p>
             <h2 class="h3">{stage.title}</h2>
             <p class="prose">{stage.body}</p>
           </div>
@@ -250,6 +253,14 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
     justify-content: center;
     gap: var(--s-3);
     margin-top: var(--s-4);
+  }
+
+  .hero__counter {
+    margin-top: var(--s-3);
+    font-size: var(--t-mono);
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .scroll-hint {
