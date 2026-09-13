@@ -1,0 +1,10 @@
+{
+  "name": "techinc-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix website run dev",
+    "start": "npm --prefix website run start",
+    "build": "npm --prefix website run build",
+    "preview": "npm --prefix website run preview"
+  }
+}
