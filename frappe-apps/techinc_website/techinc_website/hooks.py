@@ -1,0 +1,10 @@
+app_name = "techinc_website"
+app_title = "Techinc Website"
+app_publisher = "TECHINCGLOBAL"
+app_description = "Website lead capture and assessment follow-up"
+app_email = "support@techincglobal.com"
+app_license = "mit"
+before_install = "techinc_website.install.ensure_roles"
+after_install = "techinc_website.install.after_install"
+after_migrate = "techinc_website.install.ensure_roles"
+scheduler_events = {"daily": ["techinc_website.retention.clear_old_events"]}

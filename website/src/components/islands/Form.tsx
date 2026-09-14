@@ -55,6 +55,7 @@ export default function Form({
   const [badField, setBadField] = useState<string>('')
   const [reference, setReference] = useState<string>('')
   const mounted = useRef(Date.now())
+  const submission = useRef<{ key: string; data: string } | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
   // Reset the fill-time baseline on mount so a cached page does not report an
@@ -83,6 +84,12 @@ export default function Form({
       if (typeof value === 'string') payload[key] = value
     }
 
+    const signature = JSON.stringify({ ...hidden, ...Object.fromEntries(form.entries()) })
+    if (!submission.current || submission.current.data !== signature) {
+      submission.current = { key: crypto.randomUUID(), data: signature }
+    }
+    payload.submission_id = submission.current.key
+
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -97,7 +104,7 @@ export default function Form({
         ticket?: string | number
       }
 
-      if (!res.ok || !body.ok) {
+      if (!res.ok || !body.ok || !body.reference) {
         setState('error')
         setError(body.error ?? 'Something went wrong. Please try again, or email us directly.')
         setBadField(String(body.field ?? ''))
@@ -109,6 +116,7 @@ export default function Form({
       setState('done')
       track.formSubmit(formName, true)
       formRef.current?.reset()
+      submission.current = null
     } catch {
       setState('error')
       setError('We could not reach our systems. Please try again, or email us directly.')

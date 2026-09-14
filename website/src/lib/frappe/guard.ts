@@ -89,6 +89,7 @@ export function clientIp(request: Request): string {
  * `looksAutomated` detect it downstream, and return a normal-looking success.
  */
 export const guardFields = z.object({
+  submission_id: z.string().uuid('Please refresh the page and try again.'),
   /** Honeypot. Humans never see it, so any value means automation. */
   company_website: z.string().max(200).optional().default(''),
   /** Milliseconds between form render and submit. */
@@ -120,18 +121,9 @@ export const ok = (data: Record<string, unknown> = {}) => json({ ok: true, ...da
 export const fail = (error: string, status = 400, extra: Record<string, unknown> = {}) =>
   json({ ok: false, error, ...extra }, status)
 
-/**
- * Log a failed backend write with enough detail to replay it by hand.
- *
- * A submission that reached us but did not reach Frappe is a lost lead, so this
- * is the one place where verbose server logging is worth it.
- */
-export function logIntakeFailure(kind: string, detail: string | undefined, payload: unknown): void {
-  console.error(
-    `[intake:${kind}] backend write failed — ${detail ?? 'no detail'}\npayload: ${JSON.stringify(
-      payload,
-    )}`,
-  )
+/** Log operational failure details without visitor contact information. */
+export function logIntakeFailure(kind: string, detail: string | undefined, _payload: unknown): void {
+  console.error(`[intake:${kind}] backend write failed — ${detail ?? 'no detail'}`)
 }
 
 /** Coarse device class from the UA string, for analytics only. */

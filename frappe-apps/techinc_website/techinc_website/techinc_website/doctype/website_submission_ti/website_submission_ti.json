@@ -1,0 +1,204 @@
+{
+  "doctype": "DocType",
+  "name": "Website Submission TI",
+  "module": "Techinc Website",
+  "engine": "InnoDB",
+  "field_order": [
+    "kind",
+    "full_name",
+    "email",
+    "phone",
+    "organization",
+    "industry",
+    "employees",
+    "interest",
+    "message",
+    "status",
+    "follow_up_notes",
+    "lead_doctype",
+    "lead",
+    "score",
+    "band",
+    "assessment_version",
+    "answers",
+    "page",
+    "referrer",
+    "visitor_session",
+    "submission_id",
+    "payload_hash"
+  ],
+  "fields": [
+    {
+      "fieldname": "kind",
+      "label": "Type",
+      "fieldtype": "Select",
+      "options": "contact\nconsultation\nassessment",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "full_name",
+      "label": "Name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "email",
+      "label": "Email",
+      "fieldtype": "Data",
+      "options": "Email",
+      "in_standard_filter": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "phone",
+      "label": "Phone",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "organization",
+      "label": "Organisation",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "industry",
+      "label": "Industry",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "employees",
+      "label": "Company size",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "interest",
+      "label": "Service interest",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "message",
+      "label": "Message",
+      "fieldtype": "Long Text",
+      "read_only": 1
+    },
+    {
+      "fieldname": "status",
+      "label": "Follow-up status",
+      "fieldtype": "Select",
+      "options": "New\nIn Progress\nClosed",
+      "default": "New",
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "follow_up_notes",
+      "label": "Follow-up notes",
+      "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "lead_doctype",
+      "label": "Lead type",
+      "fieldtype": "Link",
+      "options": "DocType",
+      "read_only": 1
+    },
+    {
+      "fieldname": "lead",
+      "label": "Lead",
+      "fieldtype": "Dynamic Link",
+      "options": "lead_doctype",
+      "read_only": 1
+    },
+    {
+      "fieldname": "score",
+      "label": "Readiness score",
+      "fieldtype": "Int",
+      "read_only": 1
+    },
+    {
+      "fieldname": "band",
+      "label": "Readiness band",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "assessment_version",
+      "label": "Assessment version",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "answers",
+      "label": "Assessment answers",
+      "fieldtype": "Table",
+      "options": "Website Answer TI",
+      "read_only": 1
+    },
+    {
+      "fieldname": "page",
+      "label": "Page",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "referrer",
+      "label": "Referrer",
+      "fieldtype": "Small Text",
+      "read_only": 1
+    },
+    {
+      "fieldname": "visitor_session",
+      "label": "Visitor session",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "submission_id",
+      "label": "Submission ID",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "payload_hash",
+      "label": "Payload hash",
+      "fieldtype": "Data",
+      "hidden": 1,
+      "read_only": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "report": 1,
+      "export": 1
+    },
+    {
+      "role": "Website Manager TI",
+      "read": 1,
+      "write": 1,
+      "report": 1,
+      "export": 1
+    }
+  ],
+  "issingle": 0,
+  "istable": 0,
+  "track_changes": 1,
+  "title_field": "full_name",
+  "search_fields": "full_name,email,organization",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "autoname": "prompt"
+}

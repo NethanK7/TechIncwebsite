@@ -1,0 +1,22 @@
+[build-system]
+requires = ["flit_core>=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "techinc_website"
+authors = [{name = "TECHINCGLOBAL"}]
+description = "Website lead capture, enquiries and ERP readiness assessments for Frappe"
+requires-python = ">=3.10"
+readme = "README.md"
+license = {file = "license.txt"}
+dynamic = ["version"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Framework :: Frappe",
+]
+
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<17.0.0"

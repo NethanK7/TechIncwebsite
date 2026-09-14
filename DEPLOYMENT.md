@@ -38,7 +38,7 @@ Set all four under **Project → Settings → Environment Variables**, scoped to
 | Variable | What it is |
 |---|---|
 | `FRAPPE_URL` | Base URL of the bench running `techinc_website`, no trailing slash |
-| `FRAPPE_API_KEY` | API key for a user with the **Website Manager TI** role |
+| `FRAPPE_API_KEY` | API key for a user with the **Website Integration TI** role |
 | `FRAPPE_API_SECRET` | Its secret |
 | `WEBSITE_INTAKE_SECRET` | Must match *Website Settings TI → Intake secret* in Frappe |
 
@@ -71,11 +71,11 @@ curl -sI https://your-domain/                 # 200
 curl -s  https://your-domain/llms.txt | head  # the LLM index
 curl -s https://your-domain/api/contact \
   -H 'content-type: application/json' \
-  -d '{"name":"Test","email":"t@example.com","message":"Checking the wiring.","elapsed":9000}'
+  -d '{"name":"Test","email":"t@example.com","message":"Checking the wiring.","elapsed":9000,"submission_id":"4f26b075-903e-4c55-8e29-38e5cd5ecc0e"}'
 ```
 
 The last one should return `{"ok":true,"reference":"WEB-ENQ-…"}` and the enquiry
-should appear in the Frappe console at `/techinc`. If it returns *"backend is not
+should appear in the Frappe console at `/app/techinc-website`. If it returns *"backend is not
 configured"*, the environment variables are missing or the deployment predates
 them.
 
@@ -87,3 +87,14 @@ cp .env.example .env    # fill in the four values
 npm install
 npm run dev
 ```
+
+## Install the backend app
+
+See [Techinc Website setup](frappe-apps/techinc_website/README.md). The app and
+updated website must be deployed together. `/support` redirects to the existing
+support portal; `/api/ticket` is retired (410). Assessments require name, email,
+a submission UUID, and versioned question/option IDs.
+
+The app declares Frappe `>=15.0.0,<17.0.0` and supports Frappe/ERPNext v16 as
+well as v15. Run the app test suite on the target major version before enabling
+intake in production.

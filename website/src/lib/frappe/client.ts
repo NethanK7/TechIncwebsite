@@ -9,7 +9,7 @@
  * Calls target whitelisted methods in the `techinc_website` Frappe app rather
  * than the generic `/api/resource` REST surface. That is deliberate: the app
  * owns the business rules (dedupe a lead by email, attach an assessment to it,
- * open an HD Ticket with the right team) and the website should not be able to
+ * create follow-up tasks) and the website should not be able to
  * write arbitrary doctypes even if this key leaked.
  */
 
@@ -33,15 +33,15 @@ function secret(name: string, fallback = ''): string {
   return fromProcess ?? fromVite ?? fallback
 }
 
-const frappeUrl = () => secret('FRAPPE_URL', 'http://develop.localhost:8000').replace(/\/$/, '')
+const frappeUrl = () => secret('FRAPPE_URL').replace(/\/$/, '')
 const apiKey = () => secret('FRAPPE_API_KEY')
 const apiSecret = () => secret('FRAPPE_API_SECRET')
 
-/** Shared secret the Frappe app checks on guest-allowed intake methods. */
+/** Shared secret checked in addition to API-user authentication. */
 const intakeSecret = () => secret('WEBSITE_INTAKE_SECRET')
 
 /** Evaluated per call, for the same reason the getters exist. */
-export const frappeConfigured = (): boolean => Boolean(apiKey() && apiSecret())
+export const frappeConfigured = (): boolean => Boolean(frappeUrl() && apiKey() && apiSecret() && intakeSecret())
 
 export interface FrappeResult<T = unknown> {
   ok: boolean
@@ -72,7 +72,7 @@ export async function callMethod<T = unknown>(
       ok: false,
       error: 'The backend is not configured yet.',
       detail:
-        'FRAPPE_API_KEY / FRAPPE_API_SECRET missing from the environment. On Vercel these must be set for the Production environment and the project redeployed.',
+        'Frappe URL / API credentials / intake secret missing from the environment. On Vercel these must be set for the Production environment and the project redeployed.',
     }
   }
 
@@ -106,7 +106,7 @@ export async function callMethod<T = unknown>(
       return {
         ok: false,
         error: 'We could not record that just now. Please try again.',
-        detail: `frappe ${res.status} on ${method}: ${text.slice(0, 500)}`,
+        detail: `frappe ${res.status} on ${method}`,
       }
     }
 
@@ -132,6 +132,7 @@ export async function callMethod<T = unknown>(
 const APP = 'techinc_website.api.public'
 
 export interface EnquiryPayload {
+  submission_id: string
   kind: 'contact' | 'consultation'
   name: string
   email: string
@@ -147,29 +148,14 @@ export interface EnquiryPayload {
 }
 
 export const submitEnquiry = (p: EnquiryPayload) =>
-  callMethod<{ enquiry: string; lead?: string }>(`${APP}.submit_enquiry`, p)
-
-export interface TicketPayload {
-  subject: string
-  description: string
-  name: string
-  email: string
-  organization?: string
-  priority: 'Low' | 'Medium' | 'High' | 'Urgent'
-  category?: string
-  page: string
-  session?: string
-}
-
-export const submitTicket = (p: TicketPayload) =>
-  callMethod<{ ticket: string | number; request: string }>(`${APP}.submit_ticket`, p)
+  callMethod<{ enquiry: string; lead: string; stored: boolean }>(`${APP}.submit_enquiry`, p)
 
 export interface AssessmentPayload {
-  answers: { question: string; answer: string; score: number }[]
-  score: number
-  band: string
-  name?: string
-  email?: string
+  submission_id: string
+  assessment_version: string
+  answers: { question_id: string; option_id: string }[]
+  name: string
+  email: string
   phone?: string
   organization?: string
   page: string
@@ -177,7 +163,7 @@ export interface AssessmentPayload {
 }
 
 export const submitAssessment = (p: AssessmentPayload) =>
-  callMethod<{ assessment: string; lead?: string }>(`${APP}.submit_assessment`, p)
+  callMethod<{ assessment: string; lead: string; stored: boolean; score: number; band: string }>(`${APP}.submit_assessment`, p)
 
 export interface AnalyticsPayload {
   type: string

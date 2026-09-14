@@ -1,0 +1,97 @@
+{
+  "doctype": "DocType",
+  "name": "Website Settings TI",
+  "module": "Techinc Website",
+  "engine": "InnoDB",
+  "field_order": [
+    "enabled",
+    "lead_doctype",
+    "intake_secret",
+    "lead_status",
+    "contact_source",
+    "assessment_source",
+    "default_assignee",
+    "follow_up_days",
+    "analytics_enabled",
+    "analytics_retention_days"
+  ],
+  "fields": [
+    {
+      "fieldname": "enabled",
+      "label": "Enable website intake",
+      "fieldtype": "Check",
+      "default": "0"
+    },
+    {
+      "fieldname": "lead_doctype",
+      "label": "Lead system",
+      "fieldtype": "Select",
+      "options": "Lead\nCRM Lead",
+      "default": "Lead",
+      "reqd": 1,
+      "description": "Lead = ERPNext; CRM Lead = Frappe CRM. Install the selected app first."
+    },
+    {
+      "fieldname": "intake_secret",
+      "label": "Intake secret",
+      "fieldtype": "Password",
+      "description": "Generate a random secret of at least 32 characters; set the same WEBSITE_INTAKE_SECRET on the website."
+    },
+    {
+      "fieldname": "lead_status",
+      "label": "New lead status",
+      "fieldtype": "Data",
+      "description": "Required for Frappe CRM: enter an existing CRM Lead Status (for example New). ERPNext defaults to Lead."
+    },
+    {
+      "fieldname": "contact_source",
+      "label": "Contact lead source",
+      "fieldtype": "Data",
+      "description": "Optional existing Lead Source / CRM Lead Source. Exact name."
+    },
+    {
+      "fieldname": "assessment_source",
+      "label": "Assessment lead source",
+      "fieldtype": "Data",
+      "description": "Optional existing Lead Source / CRM Lead Source. Exact name."
+    },
+    {
+      "fieldname": "default_assignee",
+      "label": "Sales follow-up owner",
+      "fieldtype": "Link",
+      "options": "User",
+      "description": "Optional enabled System User with Website Manager TI and access to the selected lead system."
+    },
+    {
+      "fieldname": "follow_up_days",
+      "label": "Follow-up within (calendar days)",
+      "fieldtype": "Int",
+      "default": "1",
+      "non_negative": 1
+    },
+    {
+      "fieldname": "analytics_enabled",
+      "label": "Store first-party analytics",
+      "fieldtype": "Check",
+      "default": "0"
+    },
+    {
+      "fieldname": "analytics_retention_days",
+      "label": "Analytics retention (days)",
+      "fieldtype": "Int",
+      "default": "90",
+      "non_negative": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    }
+  ],
+  "issingle": 1,
+  "istable": 0,
+  "track_changes": 1
+}

@@ -1,84 +1,39 @@
-/**
- * ERP readiness assessment intake.
- *
- * Stores the full answer set and the computed score, and creates a CRM Lead when
- * the visitor left contact details. The score is recomputed server-side from the
- * answers rather than trusted from the client — it becomes a qualification
- * signal in CRM, so it has to be authoritative.
- */
 import type { APIRoute } from 'astro'
 import { z } from 'zod'
 import { submitAssessment } from '@/lib/frappe/client'
-import { bandFor, scoreAnswers } from '@/lib/data/assessment'
-import {
-  clientIp,
-  fail,
-  guardFields,
-  logIntakeFailure,
-  looksAutomated,
-  ok,
-  rateLimit,
-} from '@/lib/frappe/guard'
+import { QUESTIONS } from '@/lib/data/assessment'
+import { clientIp, fail, guardFields, logIntakeFailure, looksAutomated, ok, rateLimit } from '@/lib/frappe/guard'
 
 export const prerender = false
 
 const schema = guardFields.extend({
-  answers: z
-    .array(
-      z.object({
-        question: z.string().trim().max(300),
-        answer: z.string().trim().max(300),
-        score: z.coerce.number().min(0).max(10),
-      }),
-    )
-    .min(1)
-    .max(20),
-  name: z.string().trim().max(120).optional(),
-  email: z.string().trim().email('That email address does not look right.').max(200).optional(),
+  assessment_version: z.literal('1'),
+  answers: z.array(z.object({ question_id: z.string().max(30), option_id: z.string().max(10) }))
+    .length(QUESTIONS.length).refine((answers) =>
+      new Set(answers.map((a) => a.question_id)).size === QUESTIONS.length &&
+      answers.every((a) => QUESTIONS.find((q) => q.id === a.question_id)?.options.some((o) => o.id === a.option_id)),
+      'Please answer every assessment question with a valid option.'),
+  name: z.string().trim().min(2, 'Please give us your name.').max(120),
+  email: z.string().trim().email('Please give us a valid email.').max(140),
   phone: z.string().trim().max(40).optional(),
-  organization: z.string().trim().max(160).optional(),
-  page: z.string().trim().max(300).default('/assessment'),
+  organization: z.string().trim().max(140).optional(),
+  page: z.string().trim().max(140).default('/assessment'),
   session: z.string().trim().max(80).optional(),
 })
 
 export const POST: APIRoute = async ({ request }) => {
-  const ip = clientIp(request)
-  const limit = rateLimit(ip)
-  if (!limit.allowed) {
-    return fail('Too many submissions from this connection. Please try again shortly.', 429, {
-      retryAfter: limit.retryAfter,
-    })
-  }
-
+  const limit = rateLimit(clientIp(request))
+  if (!limit.allowed) return fail('Too many submissions. Please try again shortly.', 429)
   let raw: unknown
-  try {
-    raw = await request.json()
-  } catch {
-    return fail('We could not read that submission.')
-  }
-
+  try { raw = await request.json() } catch { return fail('We could not read that submission.') }
   const parsed = schema.safeParse(raw)
-  if (!parsed.success) {
-    const first = parsed.error.issues[0]
-    return fail(first?.message ?? 'Please check the form and try again.', 422, {
-      field: first?.path?.[0],
-    })
-  }
-
+  if (!parsed.success) return fail(parsed.error.issues[0]?.message ?? 'Please check your details.', 422)
   const { company_website, elapsed, ...data } = parsed.data
   if (looksAutomated({ company_website, elapsed })) return ok({ received: true })
-
-  // Recompute rather than trust: this number qualifies a lead.
-  const score = scoreAnswers(data.answers)
-  const band = bandFor(score)
-
-  const result = await submitAssessment({ ...data, score, band: band.name })
-  if (!result.ok) {
-    logIntakeFailure('assessment', result.detail, { ...data, score, band: band.name, ip })
-    // The visitor has already seen their score client-side, so a backend failure
-    // must not present as a broken assessment — report the score and move on.
-    return ok({ score, band: band.name, stored: false })
+  const result = await submitAssessment(data)
+  if (!result.ok || !result.data?.stored || !result.data?.assessment || !result.data?.lead) {
+    logIntakeFailure('assessment', result.detail, undefined)
+    return fail('Your score is ready, but we could not save your details. Please try again.', 502)
   }
-
-  return ok({ score, band: band.name, stored: true, reference: result.data?.assessment })
+  return ok({ stored: true, reference: result.data.assessment, score: result.data.score, band: result.data.band })
 }

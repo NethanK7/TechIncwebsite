@@ -1,0 +1,52 @@
+{
+  "doctype": "DocType",
+  "name": "Website Answer TI",
+  "module": "Techinc Website",
+  "engine": "InnoDB",
+  "field_order": [
+    "question_id",
+    "option_id",
+    "question",
+    "answer",
+    "score"
+  ],
+  "fields": [
+    {
+      "fieldname": "question_id",
+      "label": "Question ID",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "option_id",
+      "label": "Option ID",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+    {
+      "fieldname": "question",
+      "label": "Question",
+      "fieldtype": "Small Text",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "answer",
+      "label": "Answer",
+      "fieldtype": "Small Text",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "score",
+      "label": "Score",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "read_only": 1
+    }
+  ],
+  "permissions": [],
+  "issingle": 0,
+  "istable": 1,
+  "track_changes": 0
+}

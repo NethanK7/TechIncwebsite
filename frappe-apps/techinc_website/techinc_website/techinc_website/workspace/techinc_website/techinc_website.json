@@ -1,0 +1,44 @@
+{
+  "doctype": "Workspace",
+  "name": "Techinc Website",
+  "label": "Techinc Website",
+  "title": "Techinc Website",
+  "module": "Techinc Website",
+  "icon": "website",
+  "public": 1,
+  "is_hidden": 0,
+  "sequence_id": 30,
+  "roles": [
+    {
+      "role": "Website Manager TI"
+    },
+    {
+      "role": "System Manager"
+    }
+  ],
+  "content": "[{\"id\": \"header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Website enquiries & assessments</span>\", \"col\": 12}}, {\"id\": \"shortcuts\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Submissions\", \"col\": 4}}, {\"id\": \"settings\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Settings\", \"col\": 4}}, {\"id\": \"events\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Analytics\", \"col\": 4}}]",
+  "shortcuts": [
+    {
+      "label": "Submissions",
+      "type": "DocType",
+      "link_to": "Website Submission TI",
+      "doc_view": "List",
+      "color": "Blue"
+    },
+    {
+      "label": "Settings",
+      "type": "DocType",
+      "link_to": "Website Settings TI",
+      "doc_view": "Form",
+      "color": "Grey"
+    },
+    {
+      "label": "Analytics",
+      "type": "DocType",
+      "link_to": "Website Event TI",
+      "doc_view": "List",
+      "color": "Green"
+    }
+  ],
+  "links": []
+}

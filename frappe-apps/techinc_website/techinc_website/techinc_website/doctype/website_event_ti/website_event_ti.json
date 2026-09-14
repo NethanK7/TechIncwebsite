@@ -1,0 +1,78 @@
+{
+  "doctype": "DocType",
+  "name": "Website Event TI",
+  "module": "Techinc Website",
+  "engine": "InnoDB",
+  "field_order": [
+    "event_type",
+    "visitor_session",
+    "path",
+    "referrer",
+    "value",
+    "meta_json",
+    "country",
+    "device"
+  ],
+  "fields": [
+    {
+      "fieldname": "event_type",
+      "label": "Event",
+      "fieldtype": "Data",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "visitor_session",
+      "label": "Visitor session",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "path",
+      "label": "Page",
+      "fieldtype": "Data",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "referrer",
+      "label": "Referrer",
+      "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "value",
+      "label": "Value",
+      "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "meta_json",
+      "label": "Metadata",
+      "fieldtype": "Code",
+      "options": "JSON"
+    },
+    {
+      "fieldname": "country",
+      "label": "Country",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "device",
+      "label": "Device",
+      "fieldtype": "Data"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "delete": 1,
+      "report": 1
+    },
+    {
+      "role": "Website Manager TI",
+      "read": 1,
+      "report": 1
+    }
+  ],
+  "issingle": 0,
+  "istable": 0,
+  "track_changes": 1,
+  "autoname": "hash"
+}

@@ -263,7 +263,7 @@ function contactDoc(): Doc {
       `Phone: ${COMPANY.contact.phone}`,
       `Office: ${COMPANY.contact.address.full}`,
       `Consultation form: ${SITE_URL}/contact`,
-      `Support tickets (existing clients): ${SITE_URL}/support`,
+      `Support tickets (existing clients): https://support.techincglobal.com/`,
       'Hours: Monday to Friday, 08:30–17:30 (+05:30)',
     ]),
     '',

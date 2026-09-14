@@ -1,0 +1,302 @@
+[
+  {
+    "id": "system",
+    "question": "What is your current system situation?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Spreadsheets and manual processes",
+        "score": 9
+      },
+      {
+        "id": "1",
+        "label": "No central system at all",
+        "score": 8
+      },
+      {
+        "id": "2",
+        "label": "Several disconnected systems",
+        "score": 8
+      },
+      {
+        "id": "3",
+        "label": "A legacy ERP at end of life",
+        "score": 7
+      },
+      {
+        "id": "4",
+        "label": "A modern ERP that needs customisation",
+        "score": 4
+      },
+      {
+        "id": "5",
+        "label": "A modern ERP working well",
+        "score": 2
+      }
+    ]
+  },
+  {
+    "id": "pain",
+    "question": "Where does it hurt most today?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Month-end takes too long",
+        "score": 9
+      },
+      {
+        "id": "1",
+        "label": "We do not trust our stock figures",
+        "score": 9
+      },
+      {
+        "id": "2",
+        "label": "Job or product costing is guesswork",
+        "score": 9
+      },
+      {
+        "id": "3",
+        "label": "No visibility across departments",
+        "score": 8
+      },
+      {
+        "id": "4",
+        "label": "Manual data entry and re-entry",
+        "score": 8
+      },
+      {
+        "id": "5",
+        "label": "Compliance and statutory reporting",
+        "score": 7
+      }
+    ]
+  },
+  {
+    "id": "size",
+    "question": "How many people work at your organisation?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Fewer than 20",
+        "score": 4
+      },
+      {
+        "id": "1",
+        "label": "20 to 50",
+        "score": 7
+      },
+      {
+        "id": "2",
+        "label": "51 to 200",
+        "score": 9
+      },
+      {
+        "id": "3",
+        "label": "201 to 500",
+        "score": 8
+      },
+      {
+        "id": "4",
+        "label": "More than 500",
+        "score": 7
+      }
+    ]
+  },
+  {
+    "id": "users",
+    "question": "Roughly how many people would use the system?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Fewer than 10",
+        "score": 5
+      },
+      {
+        "id": "1",
+        "label": "10 to 30",
+        "score": 8
+      },
+      {
+        "id": "2",
+        "label": "31 to 100",
+        "score": 9
+      },
+      {
+        "id": "3",
+        "label": "More than 100",
+        "score": 8
+      }
+    ]
+  },
+  {
+    "id": "modules",
+    "question": "Which areas need to be covered?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Finance and accounting only",
+        "score": 6
+      },
+      {
+        "id": "1",
+        "label": "Finance plus inventory",
+        "score": 8
+      },
+      {
+        "id": "2",
+        "label": "Finance, inventory and manufacturing",
+        "score": 9
+      },
+      {
+        "id": "3",
+        "label": "Finance, inventory, sales and CRM",
+        "score": 9
+      },
+      {
+        "id": "4",
+        "label": "Everything, including HR and payroll",
+        "score": 8
+      }
+    ]
+  },
+  {
+    "id": "data",
+    "question": "How would you describe your current data?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Clean and well structured",
+        "score": 10
+      },
+      {
+        "id": "1",
+        "label": "Mostly fine, some duplication",
+        "score": 8
+      },
+      {
+        "id": "2",
+        "label": "Messy but recoverable",
+        "score": 6
+      },
+      {
+        "id": "3",
+        "label": "Scattered across files and people",
+        "score": 4
+      },
+      {
+        "id": "4",
+        "label": "We genuinely do not know",
+        "score": 3
+      }
+    ]
+  },
+  {
+    "id": "sponsor",
+    "question": "Who is driving this internally?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Owner or managing director",
+        "score": 10
+      },
+      {
+        "id": "1",
+        "label": "A board-level or C-level sponsor",
+        "score": 9
+      },
+      {
+        "id": "2",
+        "label": "A department head",
+        "score": 6
+      },
+      {
+        "id": "3",
+        "label": "IT, without a business sponsor",
+        "score": 4
+      },
+      {
+        "id": "4",
+        "label": "Nobody in particular yet",
+        "score": 2
+      }
+    ]
+  },
+  {
+    "id": "timeline",
+    "question": "When do you want to be live?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Within 3 months",
+        "score": 9
+      },
+      {
+        "id": "1",
+        "label": "3 to 6 months",
+        "score": 10
+      },
+      {
+        "id": "2",
+        "label": "6 to 12 months",
+        "score": 7
+      },
+      {
+        "id": "3",
+        "label": "No fixed timeline",
+        "score": 4
+      }
+    ]
+  },
+  {
+    "id": "budget",
+    "question": "Is there budget allocated?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Approved and allocated",
+        "score": 10
+      },
+      {
+        "id": "1",
+        "label": "Budgeted, pending approval",
+        "score": 8
+      },
+      {
+        "id": "2",
+        "label": "Being scoped now",
+        "score": 6
+      },
+      {
+        "id": "3",
+        "label": "Not yet — we are exploring",
+        "score": 3
+      }
+    ]
+  },
+  {
+    "id": "capacity",
+    "question": "Can your team give time to the project?",
+    "options": [
+      {
+        "id": "0",
+        "label": "Yes — a dedicated internal team",
+        "score": 10
+      },
+      {
+        "id": "1",
+        "label": "Yes — key people part-time",
+        "score": 8
+      },
+      {
+        "id": "2",
+        "label": "Limited, but we can make time",
+        "score": 5
+      },
+      {
+        "id": "3",
+        "label": "Realistically, very little",
+        "score": 2
+      }
+    ]
+  }
+]

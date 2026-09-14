@@ -141,7 +141,7 @@ export function organizationSchema(): object {
         '@type': 'ContactPoint',
         contactType: 'technical support',
         email: COMPANY.contact.email,
-        url: abs('/support'),
+        url: 'https://support.techincglobal.com/',
         areaServed: 'LK',
       },
     ],

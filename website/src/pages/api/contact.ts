@@ -24,14 +24,14 @@ export const prerender = false
 const schema = guardFields.extend({
   kind: z.enum(['contact', 'consultation']).default('contact'),
   name: z.string().trim().min(2, 'Please give us your name.').max(120),
-  email: z.string().trim().email('That email address does not look right.').max(200),
+  email: z.string().trim().email('That email address does not look right.').max(140),
   phone: z.string().trim().max(40).optional(),
-  organization: z.string().trim().max(160).optional(),
+  organization: z.string().trim().max(140).optional(),
   employees: z.string().trim().max(40).optional(),
   industry: z.string().trim().max(80).optional(),
   interest: z.string().trim().max(120).optional(),
   message: z.string().trim().min(10, 'Tell us a little more so we can route this well.').max(4000),
-  page: z.string().trim().max(300).default('/contact'),
+  page: z.string().trim().max(140).default('/contact'),
   referrer: z.string().trim().max(500).optional(),
   session: z.string().trim().max(80).optional(),
 })
@@ -66,7 +66,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (looksAutomated({ company_website, elapsed })) return ok({ received: true })
 
   const result = await submitEnquiry(data)
-  if (!result.ok) {
+  if (!result.ok || !result.data?.stored || !result.data?.enquiry || !result.data?.lead) {
     logIntakeFailure('contact', result.detail, {
       ...data,
       ip,

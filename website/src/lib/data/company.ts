@@ -906,7 +906,7 @@ export const NAV: NavGroup[] = [
     children: [
       { label: 'ERP readiness assessment', href: '/assessment' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Raise a ticket', href: '/support' },
+      { label: 'Raise a ticket', href: 'https://support.techincglobal.com/' },
     ],
   },
 ]

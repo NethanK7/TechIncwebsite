@@ -17,6 +17,8 @@ import type { Lattice } from '@/lib/three/lattice'
  */
 
 interface Answer {
+  question_id: string
+  option_id: string
   question: string
   answer: string
   score: number
@@ -36,6 +38,7 @@ export default function Assessment() {
   const latticeRef = useRef<Lattice | null>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const startedAt = useRef(Date.now())
+  const submission = useRef<{ key: string; data: string } | null>(null)
 
   const answered = answers.filter(Boolean) as Answer[]
   const score = scoreAnswers(answered)
@@ -83,11 +86,11 @@ export default function Assessment() {
   }
 
   const choose = useCallback(
-    (option: { label: string; score: number }) => {
+    (option: { id: string; label: string; score: number }) => {
       if (!current) return
 
       const next = [...answers]
-      next[index] = { question: current.question, answer: option.label, score: option.score }
+      next[index] = { question_id: current.id, option_id: option.id, question: current.question, answer: option.label, score: option.score }
       setAnswers(next)
       latticeRef.current?.setPillar(index, option.score)
 
@@ -121,6 +124,7 @@ export default function Assessment() {
     setIndex(0)
     setSaveNote('')
     setWantsFollowUp(false)
+    submission.current = null
     setPhase('intro')
   }
 
@@ -134,12 +138,19 @@ export default function Assessment() {
 
     const form = new FormData(event.currentTarget)
     const payload: Record<string, unknown> = {
-      answers: answered,
+      answers: answered.map(({ question_id, option_id }) => ({ question_id, option_id })),
+      assessment_version: '1',
       elapsed: Date.now() - startedAt.current,
       page: location.pathname,
       session: track.sessionId(),
     }
     for (const [k, v] of form.entries()) if (typeof v === 'string' && v) payload[k] = v
+
+    const signature = JSON.stringify({ answers: payload.answers, ...Object.fromEntries(form.entries()) })
+    if (!submission.current || submission.current.data !== signature) {
+      submission.current = { key: crypto.randomUUID(), data: signature }
+    }
+    payload.submission_id = submission.current.key
 
     try {
       const res = await fetch('/api/assessment', {
@@ -147,8 +158,8 @@ export default function Assessment() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string }
-      if (!res.ok || !body.ok) {
+      const body = (await res.json().catch(() => ({}))) as { ok?: boolean; stored?: boolean; reference?: string; error?: string }
+      if (!res.ok || !body.ok || !body.stored || !body.reference) {
         setSaveNote(body.error ?? 'We could not send that. Please email us instead.')
         track.formSubmit('assessment', false)
       } else {
@@ -262,19 +273,19 @@ export default function Assessment() {
                 <div className="as__fields">
                   <p>
                     <label htmlFor="as-name">Name</label>
-                    <input id="as-name" name="name" type="text" autoComplete="name" />
+                    <input id="as-name" name="name" type="text" autoComplete="name" required minLength={2} maxLength={120} />
                   </p>
                   <p>
                     <label htmlFor="as-email">Work email</label>
-                    <input id="as-email" name="email" type="email" autoComplete="email" required />
+                    <input id="as-email" name="email" type="email" autoComplete="email" required maxLength={140} />
                   </p>
                   <p>
                     <label htmlFor="as-org">Organisation</label>
-                    <input id="as-org" name="organization" type="text" autoComplete="organization" />
+                    <input id="as-org" name="organization" type="text" autoComplete="organization" maxLength={140} />
                   </p>
                   <p>
                     <label htmlFor="as-phone">Phone</label>
-                    <input id="as-phone" name="phone" type="tel" autoComplete="tel" />
+                    <input id="as-phone" name="phone" type="tel" autoComplete="tel" maxLength={40} />
                   </p>
                 </div>
                 {/* Honeypot */}
@@ -297,10 +308,10 @@ export default function Assessment() {
               </form>
             ) : (
               <div className="as__thanks" role="status">
-                <h3 className="as__thanksTitle">On its way.</h3>
+                <h3 className="as__thanksTitle">Assessment received.</h3>
                 <p className="as__body">
-                  We have your answers and your score. A consultant will send the write-up and a
-                  recommendation within one business day.
+                  We have saved your answers and score. Our team will review your assessment and
+                  contact you with next steps.
                 </p>
                 <div className="as__actions">
                   <a className="btn btn--solid" href="/contact">

@@ -1,0 +1,45 @@
+{
+  "doctype": "DocType",
+  "name": "Website Lead Identity TI",
+  "module": "Techinc Website",
+  "engine": "InnoDB",
+  "field_order": [
+    "email",
+    "lead_doctype",
+    "lead"
+  ],
+  "fields": [
+    {
+      "fieldname": "email",
+      "label": "Email",
+      "fieldtype": "Data",
+      "options": "Email",
+      "read_only": 1
+    },
+    {
+      "fieldname": "lead_doctype",
+      "label": "Lead type",
+      "fieldtype": "Link",
+      "options": "DocType",
+      "read_only": 1
+    },
+    {
+      "fieldname": "lead",
+      "label": "Lead",
+      "fieldtype": "Dynamic Link",
+      "options": "lead_doctype",
+      "read_only": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "delete": 1
+    }
+  ],
+  "issingle": 0,
+  "istable": 0,
+  "track_changes": 1,
+  "autoname": "prompt"
+}
