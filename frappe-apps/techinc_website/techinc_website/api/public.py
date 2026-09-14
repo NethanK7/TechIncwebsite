@@ -145,6 +145,7 @@ def _save(data, settings):
         return _response(existing, data['kind'])
     lead = _lead(data, settings, dt, status)
     for field in ('kind', 'email', 'phone', 'organization', 'industry', 'employees', 'interest', 'message',
+                  'subject', 'description', 'priority', 'category', 'helpdesk_ticket',
                   'page', 'referrer', 'score', 'band', 'assessment_version'):
         doc.set(field, data.get(field))
     doc.full_name = data['name']
@@ -175,6 +176,25 @@ def _save(data, settings):
     return _response(doc, data['kind'])
 
 
+def _helpdesk_ticket(data, lead):
+    """Create an HD Ticket when Helpdesk is installed, preserving the CRM link."""
+    if not frappe.db.exists('DocType', 'HD Ticket'):
+        frappe.throw('Helpdesk is not installed on this Frappe site.')
+    meta = frappe.get_meta('HD Ticket')
+    values = {'doctype': 'HD Ticket'}
+    candidates = {
+        'subject': data['subject'], 'description': data['description'],
+        'raised_by': data['email'], 'contact': data['email'],
+        'priority': data['priority'], 'status': 'Open',
+        'customer': data.get('organization'), 'lead': lead,
+        'category': data.get('category'),
+    }
+    values.update({key: value for key, value in candidates.items()
+                   if value and meta.has_field(key)})
+    ticket = frappe.get_doc(values).insert(ignore_permissions=True)
+    return ticket.name
+
+
 def _response(doc, kind):
     result = {'stored': True, 'lead': doc.lead, 'assessment' if kind == 'assessment' else 'enquiry': doc.name}
     if kind == 'assessment':
@@ -195,6 +215,25 @@ def submit_enquiry(website_secret=None, **data):
 def submit_assessment(website_secret=None, **data):
     settings = _authorize(website_secret)
     return _save(_validated(data, 'assessment'), settings)
+
+
+@frappe.whitelist(methods=['POST'])
+def submit_ticket(website_secret=None, **data):
+    settings = _authorize(website_secret)
+    clean = _validated(data, 'ticket')
+    clean['subject'] = text(data.get('subject'), 'subject', 200, True)
+    clean['description'] = text(data.get('description'), 'description', 8000, True)
+    clean['priority'] = text(data.get('priority') or 'Medium', 'priority', 10, True)
+    if clean['priority'] not in ('Low', 'Medium', 'High', 'Urgent'):
+        frappe.throw('Invalid ticket priority.')
+    clean['category'] = text(data.get('category'), 'category', 80)
+    dt, status = check_configuration(settings)
+    lead = _lead(clean, settings, dt, status)
+    ticket = _helpdesk_ticket(clean, lead)
+    clean['helpdesk_ticket'] = ticket
+    result = _save(clean, settings)
+    result['ticket'] = ticket
+    return result
 
 
 @frappe.whitelist(methods=['POST'])

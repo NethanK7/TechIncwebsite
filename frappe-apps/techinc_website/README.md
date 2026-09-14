@@ -89,9 +89,10 @@ Redeploy after setting them. The browser calls `/api/contact` and
 prefix these variables with `PUBLIC_`. No browser-to-Frappe CORS setting is
 needed. Serve the website with its Vercel server functions, not as a static ZIP.
 
-All Support links now open `https://support.techincglobal.com/`. Old `/support`
-links redirect there. The retired `/api/ticket` returns HTTP 410 with the portal
-URL; this app deliberately does not create Helpdesk tickets.
+Support tickets submitted through the website create an `HD Ticket` when the
+Frappe Helpdesk app is installed. The ticket is linked to the website submission
+and the CRM lead/contact. The external client portal remains available from the
+Support page for clients who use it instead.
 
 ## Check the connection
 
@@ -159,6 +160,9 @@ Frappe `message` envelope. Authorization is `token API_KEY:API_SECRET`; pass
   ten `answers: [{question_id: "system", option_id: "0"}, ...]`; optional phone,
   organisation, page and session. Returns stored flag, assessment reference,
   lead, authoritative score and band. Browser scores are ignored.
+- `submit_ticket`: UUID, name, email, subject, description, priority and
+  optional organisation/category. Creates an `HD Ticket` plus linked website
+  submission and lead. Helpdesk must be installed.
 - `record_event`: optional analytics endpoint; accepts event type, session,
   path, optional referrer/value/meta/country/device. Disabled by default.
 

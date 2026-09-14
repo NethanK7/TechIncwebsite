@@ -90,14 +90,47 @@
       "read_only": 1
     },
     {
-      "fieldname": "status",
+    "fieldname": "status",
       "label": "Follow-up status",
       "fieldtype": "Select",
       "options": "New\nIn Progress\nClosed",
-      "default": "New",
-      "in_list_view": 1,
-      "in_standard_filter": 1
-    },
+    "default": "New",
+    "in_list_view": 1,
+    "in_standard_filter": 1
+   },
+   {
+    "fieldname": "subject",
+    "label": "Subject",
+    "fieldtype": "Data",
+    "in_list_view": 1,
+    "read_only": 1
+   },
+   {
+    "fieldname": "description",
+    "label": "Description",
+    "fieldtype": "Long Text",
+    "read_only": 1
+   },
+   {
+    "fieldname": "priority",
+    "label": "Priority",
+    "fieldtype": "Select",
+    "options": "Low\nMedium\nHigh\nUrgent",
+    "read_only": 1
+   },
+   {
+    "fieldname": "category",
+    "label": "Category",
+    "fieldtype": "Data",
+    "read_only": 1
+   },
+   {
+    "fieldname": "helpdesk_ticket",
+    "label": "Helpdesk Ticket",
+    "fieldtype": "Data",
+    "in_list_view": 1,
+    "read_only": 1
+   },
     {
       "fieldname": "follow_up_notes",
       "label": "Follow-up notes",

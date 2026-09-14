@@ -150,6 +150,22 @@ export interface EnquiryPayload {
 export const submitEnquiry = (p: EnquiryPayload) =>
   callMethod<{ enquiry: string; lead: string; stored: boolean }>(`${APP}.submit_enquiry`, p)
 
+export interface TicketPayload {
+  submission_id: string
+  name: string
+  email: string
+  organization?: string
+  subject: string
+  description: string
+  priority: 'Low' | 'Medium' | 'High' | 'Urgent'
+  category?: string
+  page: string
+  session?: string
+}
+
+export const submitTicket = (p: TicketPayload) =>
+  callMethod<{ ticket: string; enquiry: string; lead: string; stored: boolean }>(`${APP}.submit_ticket`, p)
+
 export interface AssessmentPayload {
   submission_id: string
   assessment_version: string

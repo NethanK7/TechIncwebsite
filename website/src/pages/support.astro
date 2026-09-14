@@ -1,4 +1,29 @@
 ---
-export const prerender = false
-return Astro.redirect('https://support.techincglobal.com/', 308)
+import Page from '@/layouts/Page.astro'
+import Form from '@/components/islands/Form.tsx'
+import { COMPANY } from '@/lib/data/company'
+import '@/styles/forms.css'
+const fields = [
+  { name: 'name', label: 'Your name', required: true, autoComplete: 'name' },
+  { name: 'email', label: 'Work email', type: 'email' as const, required: true, autoComplete: 'email' },
+  { name: 'organization', label: 'Organisation', autoComplete: 'organization' },
+  { name: 'priority', label: 'Priority', type: 'select' as const, options: ['Low', 'Medium', 'High', 'Urgent'], required: true },
+  { name: 'category', label: 'Area', type: 'select' as const, wide: true, options: ['Accounting & finance', 'Inventory & warehouse', 'Manufacturing', 'Sales & CRM', 'HR & payroll', 'Projects', 'Integrations', 'Performance', 'Access & permissions', 'Something else'] },
+  { name: 'subject', label: 'Subject', required: true, wide: true, placeholder: 'One line — what is broken' },
+  { name: 'description', label: 'What happened?', type: 'textarea' as const, required: true, placeholder: 'What you were doing, what you expected, and what happened instead.' },
+]
 ---
+<Page title="Raise a Support Ticket" heading="Raise a support ticket." eyebrow="Support" intro="Every ticket is created in our Frappe Helpdesk and linked to your contact and CRM lead." description="Raise a tracked Frappe Helpdesk ticket with TECHINCGLOBAL." path="/support" breadcrumb="Support" cta={false}>
+  <section class="section"><div class="shell support"><div>
+    <h2 class="h3">Tell us what is happening</h2>
+    <p class="dim support__lead">Document numbers and the exact error text help us resolve this faster.</p>
+    <Form client:load endpoint="/api/ticket" formName="ticket" fields={fields} submitLabel="Open ticket" successTitle="Ticket opened." successBody="Your ticket is now in our Frappe Helpdesk queue and linked to your contact and lead." />
+    <p class="dim"><a href="https://support.techincglobal.com/">Open the client support portal instead</a></p>
+  </div><aside class="support__aside"><div class="block"><p class="eyebrow">Production down?</p><p class="block__text">Call us for immediate escalation.</p><a class="btn btn--solid" href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a></div></aside></div></section>
+</Page>
+<style>
+  .support { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:clamp(var(--s-8),5vw,var(--s-20)); align-items:start; }
+  .support__lead { margin:var(--s-4) 0 var(--s-8); max-width:50ch; } .support__aside { display:grid; gap:var(--s-5); }
+  .block { display:grid; gap:var(--s-4); justify-items:start; padding:clamp(var(--s-5),3vw,var(--s-7)); background:var(--paper-pure); border:1px solid var(--hair); border-radius:1rem; box-shadow:var(--lift-1); }
+  .block__text { font-size:var(--t-sm); color:var(--ink-dim); } @media (max-width:900px) { .support { grid-template-columns:1fr; } }
+</style>
