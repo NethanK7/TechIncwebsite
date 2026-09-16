@@ -10,8 +10,8 @@
 export const COMPANY = {
   name: 'TECHINCGLOBAL',
   legalName: 'Techincglobal Consultancy (Pvt) Ltd',
-  motto: "Sri Lanka's #1 Frappe Partner",
-  mottoShort: '#1 Frappe Partner',
+  motto: "Sri Lanka's #1 Frappe Partner for Enterprise and Mid Market Solutions",
+  mottoShort: '#1 Frappe Partner for Enterprise and Mid Market Solutions',
   tagline: 'One platform. Your entire enterprise.',
   founded: '2018',
   group: 'SEBSA Group',

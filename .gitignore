@@ -2,3 +2,5 @@
 .vercel/
 node_modules/
 *.log
+*.zip
+website-deploy/

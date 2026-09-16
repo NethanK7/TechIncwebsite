@@ -51,7 +51,11 @@ export default function Assessment() {
     let cancelled = false
     const mount = stageRef.current
     if (!mount) return
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
+    const lowPower = connection?.saveData || connection?.effectiveType === 'slow-2g' || connection?.effectiveType === '2g'
+    const cores = navigator.hardwareConcurrency ?? 4
+    const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || lowPower || cores <= 2 || (memory !== undefined && memory <= 2)) return
 
     import('@/lib/three/lattice')
       .then(({ startLattice }) => {
