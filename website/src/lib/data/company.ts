@@ -8,14 +8,14 @@
  */
 
 export const COMPANY = {
-  name: 'TECHINCGLOBAL',
+  name: 'Techincglobal',
   legalName: 'Techincglobal Consultancy (Pvt) Ltd',
-  motto: "Sri Lanka's #1 Frappe Partner for Enterprise and Mid Market Solutions",
-  mottoShort: '#1 Frappe Partner for Enterprise and Mid Market Solutions',
+  motto: 'Sri Lanka’s Frappe partner for enterprise solutions',
+  mottoShort: 'Sri Lanka’s Frappe partner',
   tagline: 'One platform. Your entire enterprise.',
   founded: '2018',
   group: 'SEBSA Group',
-  partnerStatus: 'Highly Skilled Certified Bronze Partner',
+  partnerStatus: 'Certified Bronze Partner',
   partnerOf: 'Frappe Technologies',
   domain: 'techincglobal.com',
   url: 'https://techincglobal.com',
@@ -25,9 +25,9 @@ export const COMPANY = {
    * form generative engines lift verbatim when citing a source.
    */
   positioning:
-    "TECHINCGLOBAL is Sri Lanka's #1 Frappe Partner — the first and only authorized Frappe Technologies partner in the country, holding Highly Skilled Certified Bronze Partner status.",
+    'Techincglobal is Sri Lanka’s first and only authorized Frappe Technologies partner. We work with businesses to implement ERPNext, configure it around their processes, develop the functionality they need, and support their teams beyond go-live.',
   summary:
-    "TECHINCGLOBAL is Sri Lanka's leading Frappe ERP implementation specialist. Founded in 2018 and part of the SEBSA Group, the company has delivered 30+ implementations using its proprietary NXTGEN Agile methodology, which cuts ERP deployment time by up to 40%.",
+    'Techincglobal brings finance, sales, inventory, production, projects, and people together on ERPNext, with implementations built around the way your business works. The first and only authorized Frappe Technologies partner in Sri Lanka, with 30+ ERP implementations delivered using our NXTGEN Agile methodology.',
 
   contact: {
     email: 'info@techincglobal.com',
@@ -40,7 +40,6 @@ export const COMPANY = {
       country: 'Sri Lanka',
       countryCode: 'LK',
       full: 'No. 289/7 D, Lake Road, Malabe, Sri Lanka',
-      // Malabe, Sri Lanka
       lat: 6.9061,
       lng: 79.9556,
     },
@@ -67,27 +66,27 @@ export interface Stat {
 export const STATS: Stat[] = [
   {
     value: '30+',
-    label: 'Implementations delivered',
+    label: 'ERP implementations delivered',
     sentence:
-      'TECHINCGLOBAL has delivered more than 30 Frappe ERP implementations since 2018.',
+      'Techincglobal has delivered more than 30 Frappe ERP implementations since 2018.',
   },
   {
     value: '40%',
-    label: 'Faster delivery',
+    label: 'Faster deployment with NXTGEN',
     sentence:
-      "TECHINCGLOBAL's NXTGEN Agile methodology reduces ERP deployment time by up to 40% compared with conventional implementation approaches.",
+      "Techincglobal's NXTGEN Agile methodology reduces ERP deployment time by up to 40% compared with conventional implementation approaches.",
   },
   {
-    value: '100%',
-    label: 'Client satisfaction',
+    value: '😊',
+    label: 'Happy customers',
     sentence:
-      'TECHINCGLOBAL maintains a 100% client satisfaction rate across its ERP implementation engagements.',
+      'We are proud of the long term relationships we have built with the businesses we serve.',
   },
   {
     value: '15+',
-    label: 'Years of expertise',
+    label: 'Years of combined team experience',
     sentence:
-      'The TECHINCGLOBAL team brings more than 15 years of combined enterprise ERP experience.',
+      'The Techincglobal team brings more than 15 years of combined enterprise ERP experience.',
   },
 ]
 
@@ -108,17 +107,6 @@ export interface Stage {
 
 /**
  * The pinned scroll journey.
- *
- * The arc is deliberately a story, not a feature list: a business that has
- * fallen apart, then each department shown as its own place, then all of them
- * wired into one core.
- *
- * Every stage names the real ERPNext doctypes an implementation creates, because
- * "a Purchase Receipt writes the Stock Ledger Entry and the GL Entry in one
- * transaction" is a claim a buyer can check, and "unified visibility" is not.
- *
- * Order and `key` values must match KEYFRAMES in lib/three/layout.ts exactly —
- * minus the leading `origin` keyframe, which is the hero.
  */
 export const JOURNEY: Stage[] = [
   {
@@ -160,8 +148,6 @@ export const JOURNEY: Stage[] = [
 
 /* -------------------------------------------------------------------------- */
 /*  The stack — how Frappe, ERPNext, NXTGEN and Techincglobal fit together.     */
-/*  Homepage-only: clears up the terminology before Services and Industries    */
-/*  start using "Frappe" and "ERPNext" as if the difference were obvious.      */
 /* -------------------------------------------------------------------------- */
 
 export interface StackLayer {
@@ -179,7 +165,7 @@ export const STACK: StackLayer[] = [
   {
     name: 'NXTGEN',
     title: 'How we deliver your implementation',
-    body: 'NXTGEN is Techincglobal’s Agile implementation methodology. It breaks the implementation into defined stages, from understanding your business and configuring the system to development, testing, training, and deployment. Your teams stay involved throughout, so the solution develops around real business requirements rather than assumptions made at the start of a project.',
+    body: 'NXTGEN is TechINCglobal’s Agile implementation methodology. It breaks the implementation into defined stages, from understanding your business and configuring the system to development, testing, training, and deployment. Your teams stay involved throughout, so the solution develops around real business requirements rather than assumptions made at the start of a project.',
   },
   {
     name: 'ERPNext',
@@ -207,27 +193,27 @@ export const NXTGEN_PHASES: Phase[] = [
   {
     n: '01',
     name: 'Design',
-    body: 'We map your processes as they actually run — not as the org chart says they do — and design the target state against Frappe’s native capabilities before a single configuration is made.',
+    body: 'We map your processes as they actually work and define the target state around Frappe’s native capabilities before configuration begins.',
   },
   {
     n: '02',
     name: 'Segregate',
-    body: 'Scope is split into independently deliverable modules, each with its own acceptance criteria. Nothing waits on everything else, which is what removes the risk from a big-bang go-live.',
+    body: 'We divide the scope into independently deliverable modules, each with its own acceptance criteria. This means one module does not have to wait for every other part of the implementation to be completed.',
   },
   {
     n: '03',
-    name: 'Cyclic Mapping',
-    body: 'Short configure-review-refine cycles with your process owners in the room. You see the working system early and often, so requirements are corrected in weeks rather than discovered after go-live.',
+    name: 'Cyclic mapping',
+    body: 'We work through short configure, review, and refine cycles with your process owners. You see the working system early, giving your teams the opportunity to correct requirements while there is still time to make changes.',
   },
   {
     n: '04',
     name: 'Training',
-    body: 'Role-based training on your own data and your own workflows. We build internal capability deliberately, because adoption — not deployment — is what determines whether an ERP succeeds.',
+    body: 'We provide role-based training using your own data and workflows. The aim is not simply to show users how the system works, but to help your team build the knowledge needed to use it in their day to day work.',
   },
   {
     n: '05',
-    name: 'Go-Live Authorization',
-    body: 'A formal readiness gate. Data migration verified, parallel runs reconciled, sign-off from every process owner. We do not go live on a date; we go live when the gate is genuinely clear.',
+    name: 'Go live authorization',
+    body: 'Before go-live, we use a formal readiness gate. Data migration is verified, parallel runs are reconciled, and process owners provide sign-off. The system goes live when the required checks are complete, rather than simply because a target date has arrived.',
   },
 ]
 
@@ -263,138 +249,16 @@ export const TIMELINE: { weeks: string; name: string; body: string }[] = [
 /*  Services                                                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface Service {
-  slug: string
-  name: string
-  navName: string
-  summary: string
+import { SERVICES_CONTENT, type ServiceDetail } from './services-content'
+
+export interface Service extends ServiceDetail {
   body: string
-  deliverables: string[]
 }
 
-export const SERVICES: Service[] = [
-  {
-    slug: 'erpnext-implementation',
-    name: 'Frappe ERP Implementation',
-    navName: 'Frappe ERP Implementation',
-    summary:
-      'We implement ERPNext around the way your business works, from initial discovery and configuration through testing, training, and go live.',
-    body: 'A complete implementation from process discovery to Go-Live Authorization: accounting, inventory, manufacturing, sales, purchasing, HR and projects configured against how your business actually runs. Delivered in a 12-week standard programme, typically 10–16 weeks depending on scope.',
-    deliverables: [
-      'Process mapping and gap analysis',
-      'Full module configuration and workflow design',
-      'Master data structuring and migration',
-      'Role-based permissions and approval hierarchies',
-      'UAT, parallel running and user training',
-      'Go-Live Authorization and hypercare',
-    ],
-  },
-  {
-    slug: 'frappe-customization-development',
-    name: 'Frappe Customization & Development',
-    navName: 'Frappe Customization & Development',
-    summary:
-      'When the standard platform does not cover a specific business requirement, we extend ERPNext with custom functionality built around your processes.',
-    body: 'When your process is genuinely yours, we build for it rather than around it. Custom apps, doctypes, server scripts, client scripts, dashboards and print formats — written as proper Frappe apps that survive framework upgrades instead of brittle patches that break on the next release.',
-    deliverables: [
-      'Custom Frappe apps and doctypes',
-      'Server and client script automation',
-      'Custom reports, dashboards and print formats',
-      'REST and webhook integrations',
-      'Upgrade-safe code with version control',
-    ],
-  },
-  {
-    slug: 'business-process-automation',
-    name: 'Business Process Automation',
-    navName: 'Process Automation',
-    summary:
-      'We identify repetitive work and manual handoffs that can be handled within the system, then build workflows and automation that reduce the work involved.',
-    body: 'We find the places where a human is copying data between two systems, or waiting on an email to approve something, and we replace them with workflow. Approval chains, notifications, scheduled jobs, document automation and system-to-system triggers.',
-    deliverables: [
-      'Workflow and approval chain design',
-      'Automated notifications and escalations',
-      'Scheduled and event-driven jobs',
-      'Document generation and distribution',
-      'Exception reporting',
-    ],
-  },
-  {
-    slug: 'legacy-system-modernization',
-    name: 'Legacy System Modernization',
-    navName: 'Legacy Modernization',
-    summary:
-      'We help businesses move away from older systems and fragmented processes, bringing their operations onto a modern ERP platform without losing the information they depend on.',
-    body: 'Legacy migrations fail on data, not software. We start with a full data audit, build a reconciled migration path, and run parallel until the numbers match to the cent — so you keep your transactional history and your auditors stay comfortable.',
-    deliverables: [
-      'Legacy system and data audit',
-      'Migration strategy and reconciliation plan',
-      'Historical data transformation and load',
-      'Parallel running and variance resolution',
-      'Decommissioning plan',
-    ],
-  },
-  {
-    slug: 'system-integration',
-    name: 'System Integration',
-    navName: 'System Integration',
-    summary:
-      'Your business already has systems that work. We connect ERPNext with them, so you can keep what you need while bringing the information together in one place.',
-    body: 'ERP is rarely the only system. We build reliable, monitored integrations — REST, webhooks, scheduled sync, file-based where that is all a vendor supports — with proper error handling and retry, so a failed call surfaces as an alert rather than a silent data gap.',
-    deliverables: [
-      'Integration architecture and API design',
-      'Bank, payment gateway and POS connections',
-      'E-commerce and marketplace sync',
-      'Third-party logistics and courier integration',
-      'Monitoring, retry and failure alerting',
-    ],
-  },
-  {
-    slug: 'erp-consulting-advisory',
-    name: 'ERP Consulting & Advisory',
-    navName: 'ERP Consulting',
-    summary:
-      'Not every ERP decision starts with an implementation. We help businesses assess their requirements, understand what ERPNext can do, and decide how best to approach their digital transformation.',
-    body: 'Honest assessments and realistic expectations. We will tell you if your current system is fine, if the problem is process rather than software, or if you are not ready yet. We would rather set the right expectation than win a deal.',
-    deliverables: [
-      'ERP readiness and fit assessment',
-      'Requirements definition and scoping',
-      'Total cost of ownership modelling',
-      'Vendor and platform evaluation',
-      'Implementation roadmap and business case',
-    ],
-  },
-  {
-    slug: 'support-optimization',
-    name: 'Support & Optimization',
-    navName: 'Support & Optimization',
-    summary:
-      'The work does not stop at go-live. We provide ongoing support and help businesses refine their ERPNext setup as their processes, requirements, and teams evolve.',
-    body: 'Our success is measured by yours, and that is measured long after go-live. SLA-backed support, version upgrades, performance tuning, new-module rollouts, and a standing cycle of process improvements as your business changes.',
-    deliverables: [
-      'SLA-backed support with tracked tickets',
-      'Frappe version upgrades and regression testing',
-      'Database and performance optimization',
-      'Phased rollout of additional modules',
-      'Quarterly optimization reviews',
-    ],
-  },
-  {
-    slug: 'training-change-management',
-    name: 'Training & Change Management',
-    navName: 'Training & Change Management',
-    summary:
-      'We train teams on their own processes and data, helping them get comfortable with the new system and use it effectively from day one.',
-    body: 'The most common reason an ERP fails is that people go back to the spreadsheet. We train by role on your own data, document your own workflows, and build internal champions who can answer questions without calling us.',
-    deliverables: [
-      'Role-based training programmes',
-      'Client-specific documentation and SOPs',
-      'Internal champion and super-user development',
-      'Change communication planning',
-      'Post-go-live adoption tracking',
-    ],
-  },
-]
+export const SERVICES: Service[] = SERVICES_CONTENT.map((s) => ({
+  ...s,
+  body: s.overview,
+}))
 
 /* -------------------------------------------------------------------------- */
 /*  Industries                                                                 */
@@ -418,7 +282,7 @@ export const INDUSTRIES: Industry[] = [
     teaser: 'Production planning, shop floor control, and costing in one system.',
     summary:
       'Production planning, material availability, shop floor operations, and job costing need to work together.',
-    body: 'Our largest sector — more than 20 Sri Lankan manufacturers run on implementations we delivered. Multi-level BOMs, routing and work orders wired directly to inventory and costing, so production reality and financial reality are the same number.',
+    body: 'More than 20 Sri Lankan manufacturers run on ERP implementations delivered by Techincglobal. We configure ERPNext to connect multi-level bills of materials (BOMs), routings, work orders, inventory, and costing, so production teams and finance are working from the same information.\n\nThe solution can be shaped around the way your factory actually operates, including the processes used to plan production, issue materials, track work, and understand the cost of what is being produced.',
     challenges: [
       'Production plans that do not reflect actual material availability',
       'Job costs calculated after the work is done',
@@ -426,11 +290,11 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     slug: 'distribution-logistics',
-    name: 'Distribution & Logistics',
+    name: 'Distribution & logistics',
     teaser: 'Manage stock across warehouses, automate reordering, and keep deliveries moving.',
     summary:
       'Stock, purchasing, warehouses, orders, and deliveries need to stay aligned across locations.',
-    body: 'High SKU counts across multiple locations, with batch and serial traceability, landed-cost tracking and automated reorder points. Our courier and distribution clients move stock, invoicing and finance onto one connected platform instead of three disconnected ones.',
+    body: 'Distribution businesses often manage large numbers of Stock Keeping Units (SKU)s across multiple warehouses and locations. We configure ERPNext to support batch and serial traceability, landed-cost tracking, automated reorder points, and the movement of stock from purchasing through to delivery.\n\nFor courier and distribution businesses, this can bring stock, invoicing, and finance together instead of leaving them across separate systems.',
     challenges: [
       'Stock figures that differ by system or warehouse',
       'Excess and dead stock tying up working capital',
@@ -438,11 +302,11 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     slug: 'retail-ecommerce',
-    name: 'Retail & E-Commerce',
-    teaser: 'Connect your point of sale, online store, inventory, and back office.',
+    name: 'Retail & e-commerce',
+    teaser: 'Connect your point of sale (POS), online store, inventory, and back office.',
     summary:
-      'Point of sale, online sales, inventory, and back office operations need to work from the same stock position.',
-    body: 'One inventory truth across counter, warehouse and web. POS integration, marketplace and storefront sync, promotions, loyalty, and margin reporting by channel and by SKU.',
+      'Point of sale (POS), online sales, inventory, and back office operations need to work from the same stock position.',
+    body: 'We bring counter, warehouse, and online inventory together so teams can work from the same stock position. ERPNext can be integrated with POS systems, marketplaces, and online storefronts, while also supporting promotions, loyalty programmes, and margin reporting by sales channel and Stock Keeping Unit (SKU).\n\nThe aim is to give the business a clearer view of what has been sold, what is available, and what each sales channel is contributing.',
     challenges: [
       'Overselling when online stock lags behind the warehouse',
       'Difficulty calculating profitability by sales channel',
@@ -450,11 +314,11 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     slug: 'professional-services',
-    name: 'Professional Services',
+    name: 'Professional services',
     teaser: 'Keep projects, timesheets, costs, and profitability together.',
     summary:
       'Projects depend on accurate time tracking, resource use, billing, and visibility into profitability.',
-    body: 'For firms whose product is time. Project structures, timesheet capture, billing rules, revenue recognition and utilisation reporting — so you find out a job is unprofitable while it is still running.',
+    body: 'Techincglobal configures ERPNext around the way professional services teams manage their projects. This can include project structures, timesheet capture, billing rules, revenue recognition, and utilization reporting.\n\nThe objective is to give project teams visibility into costs, billable time, and profitability while work is still underway, rather than finding out after the project has finished.',
     challenges: [
       'Unbilled or under-billed time reducing margins',
       'Project profitability known only after completion',
@@ -462,11 +326,11 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     slug: 'construction-real-estate',
-    name: 'Construction & Real Estate',
+    name: 'Construction & real estate',
     teaser: 'Manage project costs, subcontractors, materials, and progress billing.',
     summary:
       'Project costs, materials, subcontractors, budgets, and progress billing need to be tracked throughout the project.',
-    body: 'Budget versus actual by cost code, subcontractor and retention management, material issue against site, progress billing and variation control — for contractors and developers running multiple concurrent projects.',
+    body: 'Techincglobal configures ERPNext to give project teams a view of budget and actual costs by project, cost code, and subcontractor. Depending on the requirements, the solution can also cover material issues to sites, retention, progress billing, and variation control.\n\nThis gives contractors and developers a connected view of project costs as work progresses, rather than having to piece the information together from separate records.',
     challenges: [
       'Cost overruns discovered after the money is spent',
       'Materials issued to sites without a clear cost trail',
@@ -478,7 +342,7 @@ export const INDUSTRIES: Industry[] = [
     teaser: 'Bring patient administration, pharmacy stock, and billing into one system.',
     summary:
       'Patient administration, pharmacy stock, services, and billing need to stay connected across operational and financial teams.',
-    body: 'Appointment and patient administration, pharmacy and consumables inventory with expiry control, laboratory workflows, insurance and billing — built with the access controls and audit trails this sector requires.',
+    body: 'Techincglobal can configure ERPNext around the administrative and operational processes of healthcare organizations. This can include appointments and patient administration, pharmacy and consumables inventory, expiry control, laboratory workflows, insurance, and billing.\n\nAccess controls and audit trails can also be incorporated into the solution where required, helping organizations manage sensitive information and maintain appropriate records of system activity.',
     challenges: [
       'Pharmacy stock expiry and shrinkage',
       'Billing gaps between clinical operations and finance',
@@ -490,7 +354,7 @@ export const INDUSTRIES: Industry[] = [
     teaser: 'Manage student records, fees, and institutional operations from one platform.',
     summary:
       'Student records, fees, academic activities, and institutional finance span multiple departments and stages.',
-    body: 'Admissions, student records, programme and course structures, fee schedules and collections, staff payroll, and the institutional financial reporting your board and regulator expect.',
+    body: 'Techincglobal can configure ERPNext to connect admissions, student records, programmes and courses, fee schedules and collections, staff payroll, and institutional financial reporting.\n\nBringing these functions together helps different teams work from the information they need while keeping student operations connected to the financial side of the institution.',
     challenges: [
       'Fee arrears tracked manually across intakes',
       'Student records split across departments',
@@ -498,11 +362,11 @@ export const INDUSTRIES: Industry[] = [
   },
   {
     slug: 'trading-import-export',
-    name: 'Trading & Import/Export',
+    name: 'Trading & import/export',
     teaser: 'Manage landed costs, multiple currencies, purchasing, and shipments.',
     summary:
       'Purchasing, shipments, landed costs, currencies, and sales need to come together to show the real cost of each transaction.',
-    body: 'Purchase-to-shipment visibility with full landed-cost build-up — freight, duty, clearing, demurrage — allocated back to SKU, plus multi-currency exposure and letter-of-credit tracking.',
+    body: 'Techincglobal configures ERPNext to connect purchasing with shipment and landed-cost information. Landed costs such as freight, duty, clearing, and demurrage can be allocated back to the relevant items, giving businesses a clearer view of the actual cost of imported goods.\n\nThe solution can also support multi-currency transactions and letter-of-credit tracking, depending on the business requirements.',
     challenges: [
       'True landed cost not calculated at the item level',
       'Currency exposure becoming visible only after it affects the business',
@@ -515,14 +379,15 @@ export const INDUSTRIES: Industry[] = [
 /* -------------------------------------------------------------------------- */
 
 export const STORY = {
-  eyebrow: 'Our story',
-  title: 'Transforming businesses with expertise',
+  eyebrow: 'About Techincglobal',
+  title: 'A technology partner built around your business',
   intro:
-    'Founded in 2018 with a clear mission: make enterprise ERP technology accessible, implementable, and genuinely transformative for Sri Lankan businesses.',
+    'Techincglobal is a Sri Lankan ERP implementation and technology company that helps businesses bring their operations onto one connected platform. We combine ERPNext, Frappe technology, our NXTGEN implementation methodology, and local business knowledge to build solutions around how each business actually works.',
   paragraphs: [
-    'TECHINCGLOBAL was established to bridge the gap between complex enterprise software and accessible, implementable solutions for Sri Lankan businesses. From our earliest days delivering licence-free software, we recognised that open-source ERP — done right — could level the playing field for local companies.',
-    'Our partnership with Frappe Technologies marked a pivotal milestone. As the first authorized Frappe partner in Sri Lanka, we combined Frappe ERP technology with our proprietary NXTGEN Agile implementation methodology — creating an approach that consistently delivers faster, more predictable go-lives.',
-    'Today, as part of the SEBSA Group, we stand as Sri Lanka’s leading ERP implementation specialists, having successfully transformed businesses across manufacturing, distribution, retail, professional services, and more.',
+    'Founded in 2018, Techincglobal works with businesses across Sri Lanka to implement and extend ERPNext for their operational and financial requirements.',
+    'Our work goes beyond configuring an ERP system. We work with business teams to understand their processes, determine how ERPNext can support them, and identify where configuration, customization, development, or integration is needed. We then take the solution through implementation, testing, training, deployment, and ongoing support.',
+    'Techincglobal is an authorized Frappe Technologies partner and the only official Frappe partner in Sri Lanka. ERPNext is the business platform we implement, while Frappe Framework provides the open source technology on which ERPNext is built. Our NXTGEN methodology provides the structured approach we use to take an implementation from business requirements through to deployment.',
+    'As part of the SEBSA Group, Techincglobal also draws on wider technology and business capabilities while maintaining a local focus on the needs of Sri Lankan businesses.',
   ],
 }
 
@@ -536,74 +401,81 @@ export const MILESTONES: Milestone[] = [
   {
     year: '2018',
     name: 'Company foundation',
-    body: 'Established Techincglobal Consultancy as a digital transformation company providing advisory services to enterprise customers across Sri Lanka.',
+    body: 'Techincglobal was established as a digital transformation company providing advisory services to enterprise customers across Sri Lanka.',
   },
   {
     year: '2019',
-    name: 'Delivering licence-free software',
-    body: 'Developed our first Rapid Application Development platform with the ability to deliver licence-free enterprise software.',
+    name: 'Licence-free software',
+    body: 'Techincglobal developed its first rapid application development platform, with the ability to deliver licence-free enterprise software.',
   },
   {
     year: '2020',
-    name: 'The birth of NXTGEN',
-    body: 'Started our Frappe journey and began building the NXTGEN Agile implementation methodology through hands-on delivery experience.',
+    name: 'NXTGEN implementation methodology',
+    body: 'Techincglobal began its Frappe journey and developed the NXTGEN Agile implementation methodology through hands-on delivery experience.',
   },
   {
     year: '2021',
-    name: 'Cloud journey begins',
-    body: 'Established key cloud infrastructure partnerships, marking our expansion into cloud-hosted ERP delivery.',
+    name: 'Cloud journey',
+    body: 'Techincglobal established key cloud infrastructure partnerships, expanding its ability to deliver cloud hosted ERP solutions.',
   },
   {
     year: '2022',
-    name: 'Joins SEBSA Group',
-    body: 'Became an integral part of the SEBSA Group, expanding our global ERP delivery footprint and shared capabilities.',
+    name: 'Joined the SEBSA Group',
+    body: 'Techincglobal became an integral part of the SEBSA Group, expanding its global ERP delivery footprint and shared capabilities.',
   },
   {
     year: '2023',
-    name: 'Authorized Frappe Partner — Sri Lanka',
-    body: 'TECHINCGLOBAL became the first authorized Frappe Technologies partner in Sri Lanka — a landmark milestone of national recognition.',
+    name: 'Authorized Frappe partner in Sri Lanka',
+    body: 'Techincglobal became the first authorized Frappe Technologies partner in Sri Lanka.',
   },
   {
     year: '2024',
-    name: 'Exponential growth',
-    body: 'Surpassed 20 manufacturing sector customers, solidifying our position as the trusted ERP provider for Sri Lankan industry.',
+    name: 'Growing manufacturing expertise',
+    body: 'Techincglobal passed the milestone of serving more than 20 customers in the manufacturing sector, strengthening its experience in industrial ERP implementations.',
   },
   {
     year: '2025',
     name: 'Certified Bronze Partner',
-    body: 'Achieved Highly Skilled Certified Bronze Partner status with Frappe Technologies — our highest certification milestone.',
+    body: 'Techincglobal became a Certified Bronze Partner with Frappe Technologies, recognizing its growing expertise in the Frappe technology ecosystem.',
   },
 ]
 
 export interface Value {
   name: string
+  tagline?: string
   body: string
 }
 
 export const VALUES: Value[] = [
   {
+    name: 'Integrity',
+    tagline: 'ERP should be honest.',
+    body: "Our founder's view was simple: bring honesty into ERP. Too often, businesses pay for more software than they need and still struggle to get the value they were promised. We believe customers deserve a solution that makes sense for their business, at a fair cost, with clear expectations from the start.",
+  },
+  {
     name: 'Excellence',
-    body: 'We hold ourselves to the highest standard in every engagement — from code quality to client communication.',
+    tagline: 'Do the job properly.',
+    body: 'We care about getting the details right, whether we are configuring a workflow, writing code, solving a problem, or sitting with a customer to understand what is really needed. Good enough is rarely good enough when people are going to depend on the system every day.',
   },
   {
     name: 'Customer success',
-    body: 'Our success is measured by yours. We are invested in your outcomes long after go-live.',
-  },
-  {
-    name: 'Innovation',
-    body: 'We continuously refine our methodology and tooling to stay ahead — so you don’t have to.',
-  },
-  {
-    name: 'Integrity',
-    body: 'Honest assessments and realistic expectations — always. We would rather set the right expectation than win a deal.',
+    tagline: 'Your success is our success.',
+    body: 'Our responsibility does not end when the system goes live. We care about whether your teams can use it, whether it works as intended, and whether it continues to support the business as it changes.',
   },
   {
     name: 'Collaboration',
-    body: 'We work alongside your team as true partners, building internal capability that lasts beyond the engagement.',
+    tagline: 'Work with people, not around them.',
+    body: 'The people who use the system know their business better than anyone else. We listen to them, work through problems with them, and involve them in the decisions that shape the solution. We work alongside your team, not around it.',
+  },
+  {
+    name: 'Innovation',
+    tagline: 'Keep making things better.',
+    body: 'Technology keeps changing, but we do not adopt something new simply because it is new. We look at what can genuinely improve the way a business works, then find practical ways to put it to use.',
   },
   {
     name: 'Continuous learning',
-    body: 'The ERP landscape evolves rapidly. We invest consistently in certifications, community, and learning.',
+    tagline: 'Keep learning.',
+    body: 'Every implementation teaches us something. We learn from our customers, our projects, our mistakes, and the technology itself. That experience feeds back into how we work and what we deliver next.',
   },
 ]
 
@@ -686,13 +558,13 @@ export const TEAM: TeamMember[] = [
 export const PARTNERSHIPS = [
   {
     name: 'Frappe Technologies',
-    status: 'Highly Skilled Certified Bronze Partner',
-    body: 'TECHINCGLOBAL is the first authorized Frappe Technologies partner in Sri Lanka. Our Highly Skilled Certified Bronze Partner status reflects certified expertise across Frappe ERP implementation, Frappe development, and platform support.',
+    status: 'Authorized Frappe partner in Sri Lanka',
+    body: 'Techincglobal is the only official Frappe partner in Sri Lanka. Our Certified Bronze Partner status reflects our growing expertise in implementing and extending Frappe technologies, including ERPNext and Frappe Framework. Our partnership also gives us access to Frappe’s partner ecosystem, technical resources, and ongoing product and platform knowledge.',
   },
   {
     name: 'SEBSA Group',
-    status: 'Group company',
-    body: 'As an integral part of the SEBSA Group, TECHINCGLOBAL benefits from an expanded global ERP delivery network, shared knowledge frameworks, and the credibility of a well-established enterprise technology group.',
+    status: 'Part of a wider technology group',
+    body: 'Techincglobal is part of the SEBSA Group, giving us access to shared knowledge, capabilities, and a wider technology network. The relationship adds depth to what we can offer while allowing Techincglobal to remain focused on delivering solutions for our customers and the businesses we work with.',
   },
 ]
 
@@ -835,22 +707,22 @@ export interface Faq {
 export const FAQ_GENERAL: Faq[] = [
   {
     q: 'Do we have to replace all our existing systems?',
-    a: 'No. An ERP implementation does not have to mean replacing everything you already use. TECHINCGLOBAL assesses the systems that are working for your business and determines what should stay, what should connect to ERPNext, and what can be brought into the new platform.',
+    a: 'No. An ERP implementation does not have to mean replacing everything you already use. Techincglobal assesses the systems that are working for your business and determines what should stay, what should connect to ERPNext, and what can be brought into the new platform.',
   },
   {
     q: 'What happens to the data in our existing systems?',
-    a: 'TECHINCGLOBAL assesses your existing data as part of the implementation and plans how it should be cleaned, mapped, and migrated into the new system. The aim is to bring across the information the business needs without carrying unnecessary or outdated data into the new system.',
+    a: 'Techincglobal assesses your existing data as part of the implementation and plans how it should be cleaned, mapped, and migrated into the new system. The aim is to bring across the information the business needs without carrying unnecessary or outdated data into the new system.',
   },
   {
     q: 'What if our business processes do not fit the standard setup?',
-    a: 'We start with the standard platform and configure it around your requirements wherever possible. Where a specific business need goes beyond the standard functionality, TECHINCGLOBAL can customize or develop the required functionality rather than asking your teams to work around the system.',
+    a: 'We start with the standard platform and configure it around your requirements wherever possible. Where a specific business need goes beyond the standard functionality, Techincglobal can customize or develop the required functionality rather than asking your teams to work around the system.',
   },
   {
     q: 'How much involvement is needed from our teams?',
     a: 'Your teams are involved throughout the implementation. They help us understand how the business works, review the configured processes, test the system, and prepare for go-live. This gives us a clearer understanding of the actual work behind the requirements and helps your teams become familiar with the system before deployment.',
   },
   {
-    q: 'Can TECHINCGLOBAL implement the solution in stages?',
+    q: 'Can Techincglobal implement the solution in stages?',
     a: 'Yes. We can plan the implementation around the priorities of the business rather than requiring everything to go live at once. Functions or business areas can be delivered in stages, allowing teams to start using the system while further work continues.',
   },
   {
@@ -858,15 +730,15 @@ export const FAQ_GENERAL: Faq[] = [
     a: 'Requirements can become clearer as teams see the system and work through real processes. We review changes as they arise, assess their impact on scope and delivery, and agree on how they should be handled before the work proceeds.',
   },
   {
-    q: 'Can TECHINCGLOBAL connect ERPNext to our existing systems?',
-    a: 'Yes. TECHINCGLOBAL can integrate ERPNext with the systems your business already depends on, including banking, payment gateways, POS, e-commerce, payroll, and logistics systems. The integration approach depends on the systems involved and can include APIs, webhooks, or scheduled data synchronization.',
+    q: 'Can Techincglobal connect ERPNext to our existing systems?',
+    a: 'Yes. Techincglobal can integrate ERPNext with the systems your business already depends on, including banking, payment gateways, POS, e-commerce, payroll, and logistics systems. The integration approach depends on the systems involved and can include APIs, webhooks, or scheduled data synchronization.',
   },
   {
     q: 'What happens after go-live?',
-    a: 'Go-live is the beginning of using the system, not the end of the relationship. TECHINCGLOBAL provides ongoing support, helps resolve issues, supports upgrades, and works with you as your processes and requirements develop. Additional functionality and modules can also be introduced in stages as the business is ready for them.',
+    a: 'Go-live is the beginning of using the system, not the end of the relationship. Techincglobal provides ongoing support, helps resolve issues, supports upgrades, and works with you as your processes and requirements develop. Additional functionality and modules can also be introduced in stages as the business is ready for them.',
   },
   {
-    q: 'How does TECHINCGLOBAL determine what the solution should look like for our business?',
+    q: 'How does Techincglobal determine what the solution should look like for our business?',
     a: 'That is something we establish before implementation begins. We work with your teams to understand your processes, requirements, existing systems, and priorities, then determine how ERPNext can be applied to the business and where customization or integration may be needed.',
   },
 ]
@@ -905,8 +777,8 @@ export const NAV: NavGroup[] = [
     label: 'Resources',
     children: [
       { label: 'ERP readiness assessment', href: '/assessment' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Raise a ticket', href: 'https://support.techincglobal.com/' },
+      { label: 'ERP articles', href: '/blog' },
+      { label: 'Customer support', href: '/support' },
     ],
   },
 ]

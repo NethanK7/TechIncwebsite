@@ -41,13 +41,13 @@ const schema = [
 ---
 
 <Page
-  title="Free ERP Readiness Assessment"
+  title="ERP Readiness Assessment — Techincglobal"
   heading="How ready are you, really?"
-  eyebrow="Free tool"
-  intro={`${QUESTIONS.length} questions, about five minutes, and an honest score. No email needed to see your result — and we will tell you if the answer is “not yet”.`}
-  description="A free 10-question ERP readiness assessment from TECHINCGLOBAL, Sri Lanka's #1 Frappe Partner. Get a score, the reasoning, and what to do next."
+  eyebrow="A free ERP readiness assessment"
+  intro="Ten questions. About five minutes. An honest assessment of where your business stands today. You do not need to give us your email to see your result. We’ll show you your score, explain what it means, and suggest what we think you should do next. If the answer is not yet, we’ll tell you that too."
+  description="A free 10-question ERP readiness assessment from Techincglobal, Sri Lanka's official Frappe partner. Get your score, the reasoning, and what to do next."
   path="/assessment"
-  breadcrumb="Assessment"
+  breadcrumb="ERP Readiness Assessment"
   schema={schema}
   faq={faq}
   ctaSource="assessment"
@@ -58,9 +58,7 @@ const schema = [
     </div>
   </section>
 
-  <!-- The question set in static HTML. The island replaces it interactively, but
-       having the real questions crawlable is what makes this page rank for the
-       long-tail queries people actually type. -->
+  <!-- The question set in static HTML. -->
   <section class="section section--tight questions">
     <div class="shell">
       <h2 class="h3" data-reveal>What the assessment asks</h2>
@@ -77,11 +75,65 @@ const schema = [
           ))
         }
       </ol>
+
+      <div class="after-assessment" data-reveal>
+        <h2 class="h3">What happens after you finish?</h2>
+        <p class="prose after-assessment__body">
+          You get your readiness score immediately, along with an explanation of what is influencing it.
+        </p>
+        <p class="prose after-assessment__body">
+          The assessment is not designed to tell everyone they are ready for ERP. Sometimes the right next step is to prepare your data, clarify your processes, get the right people involved, or simply wait until the business is ready.
+        </p>
+        <p class="prose after-assessment__body">
+          If you are ready to move forward, we can talk through what an implementation could look like for your business.
+        </p>
+        <div class="after-assessment__action">
+          <a class="btn btn--solid" href="/contact">Talk to us about your result</a>
+        </div>
+      </div>
     </div>
   </section>
 </Page>
 
 <style>
+  .readiness-prep {
+    padding: clamp(var(--s-6), 4vw, var(--s-10));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1.25rem;
+    box-shadow: var(--lift-1);
+    max-width: 52rem;
+  }
+
+  .readiness-prep__lead {
+    margin-top: var(--s-3);
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .readiness-bullets {
+    display: grid;
+    gap: var(--s-2);
+    margin-top: var(--s-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  .readiness-bullets li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+  }
+
+  .readiness-bullets li::before {
+    content: '•';
+    color: var(--ink-faint);
+    font-size: 1.25em;
+  }
+
   .questions { border-top: 1px solid var(--hair); }
   .qlist { margin-top: var(--s-8); border-top: 1px solid var(--hair); }
   .qlist li {
@@ -89,5 +141,25 @@ const schema = [
     padding: var(--s-5) 0; border-bottom: 1px solid var(--hair);
   }
   .qlist__n { color: var(--ink-faint); padding-top: 0.35em; }
-  .qlist__hint { margin-top: var(--s-2); font-size: var(--t-sm); color: var(--ink-dim); max-width: 60ch; }
+  .qlist__hint { margin-top: var(--s-2); font-size: var(--t-sm); color: var(--ink-dim); max-width: 60ch; line-height: 1.5; }
+
+  .after-assessment {
+    margin-top: clamp(var(--s-12), 6vw, var(--s-20));
+    padding: clamp(var(--s-6), 4vw, var(--s-10));
+    background: linear-gradient(150deg, var(--paper-pure), var(--sky-100));
+    border: 1px solid var(--hair-strong);
+    border-radius: 1.25rem;
+    max-width: 52rem;
+  }
+
+  .after-assessment__body {
+    margin-top: var(--s-3);
+    font-size: var(--t-body);
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .after-assessment__action {
+    margin-top: var(--s-6);
+  }
 </style>

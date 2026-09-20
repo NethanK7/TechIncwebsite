@@ -16,14 +16,37 @@ const faq = [
     a: 'Go-Live Authorization is a formal readiness gate at the end of a NXTGEN implementation. Data migration must be verified, parallel runs reconciled, and every process owner signed off. TECHINCGLOBAL does not go live on a date — it goes live when the gate is genuinely clear.',
   },
 ]
+
+const proofStats = [
+  {
+    value: '30+',
+    label: 'Implementations delivered',
+    sentence: 'Techincglobal has delivered more than 30 Frappe ERP implementations since 2018.',
+  },
+  {
+    value: '40%',
+    label: 'Faster delivery',
+    sentence: 'NXTGEN can reduce ERP deployment time by up to 40% compared with conventional implementation approaches.',
+  },
+  {
+    value: '★★★★★',
+    label: 'Lasting customer relationships',
+    sentence: 'Techincglobal continues to work with customers beyond the initial ERP implementation, providing ongoing support, improvements, and additional development as their businesses evolve.',
+  },
+  {
+    value: '15+',
+    label: 'Years of expertise',
+    sentence: 'The Techincglobal team brings more than 15 years of combined enterprise ERP experience.',
+  },
+]
 ---
 
 <Page
-  title="The NXTGEN Methodology"
-  heading="Five phases, then a gate."
-  eyebrow="How we deliver"
-  intro="NXTGEN is our own Agile implementation methodology. It segregates scope into independently deliverable modules with their own acceptance gates — which is what cuts deployment time by up to 40% and removes big-bang go-live risk."
-  description="NXTGEN is TECHINCGLOBAL's proprietary Agile ERP methodology: Design, Segregate, Cyclic Mapping, Training, Go-Live Authorization. Up to 40% faster delivery."
+  title="Our Methodology — Techincglobal"
+  heading="Our methodology"
+  eyebrow="HOW WE DELIVER"
+  intro="Techincglobal uses its NXTGEN Agile methodology to deliver Frappe ERP implementations in structured stages. Instead of treating the implementation as one large project that has to go live all at once, NXTGEN breaks the work into manageable modules, with each stage reviewed and accepted as the project progresses."
+  description="Techincglobal uses its NXTGEN Agile methodology to deliver Frappe ERP implementations in structured stages. 10 to 16 week delivery."
   path="/methodology"
   breadcrumb="Methodology"
   faq={faq}
@@ -32,13 +55,22 @@ const faq = [
   <!-- Phases -->
   <section class="section">
     <div class="shell">
+      <header class="section__head" data-reveal style="margin-bottom: var(--s-8);">
+        <div>
+          <h2 class="h2">Five phases, then a gate</h2>
+          <p class="lead" style="margin-top: var(--s-3); max-width: 54ch; color: var(--ink-dim);">
+            NXTGEN is Techincglobal’s Agile implementation methodology. It divides the implementation scope into independently deliverable modules, each with its own acceptance criteria. This allows work to progress in manageable stages while reducing the risks associated with a single big bang go live.
+          </p>
+        </div>
+      </header>
+
       <ol class="phases" data-reveal-group>
         {
           NXTGEN_PHASES.map((p) => (
             <li class="phase" data-reveal>
               <span class="phase__n mono">{p.n}</span>
               <div>
-                <h2 class="h3">{p.name}</h2>
+                <h3 class="h3">{p.name}</h3>
                 <p class="phase__body">{p.body}</p>
               </div>
             </li>
@@ -82,7 +114,7 @@ const faq = [
     <div class="shell">
       <ul class="proof" data-reveal-group>
         {
-          STATS.map((s) => (
+          proofStats.map((s) => (
             <li data-reveal>
               <span class="proof__v num">{s.value}</span>
               <span class="proof__l">{s.label}</span>

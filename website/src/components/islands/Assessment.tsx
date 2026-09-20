@@ -201,13 +201,17 @@ export default function Assessment() {
               How ready are you for an ERP implementation?
             </h2>
             <p className="as__hint">
-              Ten questions, about five minutes. You get a score, the reasoning behind it, and
-              what we would actually do next — including if that is “wait”.
+              Before you start changing systems, it helps to understand whether the business is ready for the change. This assessment looks at the things that actually affect an ERP implementation: your current systems, the problems you are trying to solve, the people who will use the system, the state of your data, your priorities, your timeline, and the time your team can commit to the project.
+            </p>
+            <p className="as__hint" style={{ marginTop: '0.75rem' }}>
+              Your result is based on your <strong>readiness to benefit from an ERP implementation now</strong>, not on how much software you already have.
             </p>
             <ul className="as__promises">
               <li>No email required to see your score</li>
-              <li>Scored on readiness to benefit now, not on how much software you own</li>
-              <li>We will tell you if the answer is not yet</li>
+              <li>About five minutes to complete</li>
+              <li>A score with the reasoning behind it</li>
+              <li>Practical guidance on what to consider next</li>
+              <li>An honest <strong>not yet</strong> if the timing is not right</li>
             </ul>
             <button className="btn btn--solid" type="button" onClick={begin}>
               Start the assessment

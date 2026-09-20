@@ -46,7 +46,7 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
       </p>
       <div class="hero__actions" data-reveal>
         <a class="btn btn--solid" href="/contact" data-cta="hero:consultation">
-          Book a consultation
+          Talk to us
         </a>
         <a class="btn btn--line" href="/assessment" data-cta="hero:assessment">
           Free readiness assessment
@@ -77,19 +77,22 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
 
   <div class="journey__flow">
     <!-- Fixed overlay. The scroll screens below drive which step is active. -->
-    <ol class="steps" data-steps aria-label="From disconnected departments to one connected business">
-      {
-        JOURNEY.map((stage, i) => (
-          <li class="step" data-step={i + 1} data-key={stage.key}>
-            <span class="step__n mono">{stage.index}</span>
-            <div class="step__body">
-              <h2 class="step__title">{stage.title}</h2>
-              <p class="step__text">{stage.body}</p>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
+    <div class="steps" data-steps>
+      <p class="steps__eyebrow eyebrow">From disconnected departments to one connected business</p>
+      <ol class="steps__list" aria-label="From disconnected departments to one connected business">
+        {
+          JOURNEY.map((stage, i) => (
+            <li class="step" data-step={i + 1} data-key={stage.key}>
+              <span class="step__n mono">{stage.index}</span>
+              <div class="step__body">
+                <h2 class="step__title">{stage.title}</h2>
+                <p class="step__text">{stage.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
 
     <!-- Scroll length. One screen per stage; the copy above is the visible
          layer, and these carry a screen-reader-only heading so the document
@@ -348,6 +351,18 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
 
   .steps.is-live {
     opacity: 1;
+  }
+
+  .steps__eyebrow {
+    margin-bottom: var(--s-5);
+    color: var(--ink-2);
+    font-size: var(--t-mono);
+  }
+
+  .steps__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   /* Every step is laid out, but only the active one and its immediate

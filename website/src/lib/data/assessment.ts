@@ -34,43 +34,43 @@ export interface Question {
 const PRESENTATION = [
   {
     short: 'System status',
-    hint: 'This tells us whether the work is an implementation or a migration.',
+    hint: 'We start with what you already have. This helps us understand whether you are looking at a new implementation, replacing an existing system, or bringing several systems and processes together.',
   },
   {
-    short: 'Biggest pain',
-    hint: 'The sharpest pain usually sets the first module we deliver.',
+    short: 'Biggest challenges',
+    hint: 'ERP should solve real business problems. Understanding where the biggest difficulties are helps identify which processes or business areas should take priority.',
   },
   {
-    short: 'Headcount',
-    hint: 'Scope and training effort scale with headcount, not revenue.',
+    short: 'Organization size',
+    hint: 'The size of your organization helps us understand the scale of the implementation, including the number of teams, processes, and people who may need to be involved.',
   },
   {
     short: 'System users',
-    hint: 'This is the number that drives licence cost on other platforms — and does not on Frappe.',
+    hint: 'The number of users is an important part of planning an ERP implementation. With Frappe, you are not paying traditional per-user ERP license fees, but the number and type of users still matter when planning the solution, training, and support.',
   },
   {
-    short: 'Scope',
-    hint: 'Breadth is fine — NXTGEN segregates it into independently gated modules.',
+    short: 'Business areas',
+    hint: 'You may need finance, sales, purchasing, inventory, manufacturing, projects, HR, or several of them. That does not mean everything has to go live at once. NXTGEN allows the implementation to be planned and delivered in defined modules.',
   },
   {
-    short: 'Data quality',
-    hint: 'Legacy migrations fail on data, not software. Honest answers here save weeks.',
+    short: 'Current data',
+    hint: 'Data can make or break a migration. The condition, completeness, and consistency of your existing data affect how much preparation is needed before it can be brought into the new system.',
   },
   {
-    short: 'Sponsorship',
-    hint: 'The single strongest predictor of a successful implementation.',
+    short: 'Project ownership',
+    hint: 'ERP implementation needs someone inside the business who can help move decisions forward, coordinate the right people, and keep the project connected to business priorities.',
   },
   {
-    short: 'Timeline',
-    hint: 'Our standard programme is 12 weeks; most projects land in 10 to 16.',
+    short: 'Target timeline',
+    hint: "Your target date helps determine the scope and delivery approach. Techincglobal's NXTGEN methodology supports staged implementation, so the right timeline depends on what you need to deliver and how much your team can take on at each stage.",
   },
   {
-    short: 'Budget',
-    hint: 'Frappe has no licence fees, so this is implementation and support only.',
+    short: 'Budget allocation',
+    hint: 'An ERP implementation still requires investment even when there are no traditional software license fees. Your budget needs to account for implementation, customization, integration, training, and ongoing support where required.',
   },
   {
-    short: 'Capacity',
-    hint: 'Cyclic Mapping needs your process owners in the room. This is non-negotiable.',
+    short: 'Team commitment',
+    hint: 'Your people are an important part of the implementation. They need to help us understand existing processes, review the solution, test it, and prepare for go-live. The more involved the right people are, the better the solution can reflect how the business actually works.',
   },
 ]
 

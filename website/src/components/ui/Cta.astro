@@ -9,8 +9,8 @@ interface Props {
 }
 
 const {
-  title = 'Ready to run on one platform?',
-  body = `Talk to Sri Lanka's #1 Frappe Partner. We will tell you honestly whether an ERP change is the right move — and if it is not, we will say so.`,
+  title = 'Thinking about ERP?',
+  body = 'Tell us where your business is today and what you want to change. We’ll help you understand whether ERPNext is the right fit, what the implementation could involve, and how Techincglobal can help.',
   source = 'page',
 } = Astro.props
 ---
@@ -22,7 +22,7 @@ const {
       <p class="lead cta__body">{body}</p>
       <div class="cta__actions">
         <a class="btn btn--solid" href="/contact" data-cta={`${source}:consultation`}>
-          Book a consultation
+          Talk to us
         </a>
         <a class="btn btn--soft" href="/assessment" data-cta={`${source}:assessment`}>
           Free readiness assessment
@@ -40,8 +40,8 @@ const {
         <a class="link" href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a>
       </li>
       <li>
-        <span class="eyebrow">Existing client</span>
-        <a class="link" href="https://support.techincglobal.com/" data-cta={`${source}:ticket`}>Raise a support ticket</a>
+        <span class="eyebrow">Customer support</span>
+        <a class="link" href="/support" data-cta={`${source}:ticket`}>Raise a support ticket</a>
       </li>
       <li>
         <span class="eyebrow">Office</span>

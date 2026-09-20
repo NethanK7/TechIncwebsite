@@ -3,6 +3,7 @@ import Page from '@/layouts/Page.astro'
 import Form from '@/components/islands/Form.tsx'
 import { COMPANY } from '@/lib/data/company'
 import '@/styles/forms.css'
+
 const fields = [
   { name: 'name', label: 'Your name', required: true, autoComplete: 'name' },
   { name: 'email', label: 'Work email', type: 'email' as const, required: true, autoComplete: 'email' },
@@ -13,17 +14,160 @@ const fields = [
   { name: 'description', label: 'What happened?', type: 'textarea' as const, required: true, placeholder: 'What you were doing, what you expected, and what happened instead.' },
 ]
 ---
-<Page title="Raise a Support Ticket" heading="Raise a support ticket." eyebrow="Support" intro="Every ticket is created in our Frappe Helpdesk and linked to your contact and CRM lead." description="Raise a tracked Frappe Helpdesk ticket with TECHINCGLOBAL." path="/support" breadcrumb="Support" cta={false}>
-  <section class="section"><div class="shell support"><div>
-    <h2 class="h3">Tell us what is happening</h2>
-    <p class="dim support__lead">Document numbers and the exact error text help us resolve this faster.</p>
-    <Form client:load endpoint="/api/ticket" formName="ticket" fields={fields} submitLabel="Open ticket" successTitle="Ticket opened." successBody="Your ticket is now in our Frappe Helpdesk queue and linked to your contact and lead." />
-    <p class="dim"><a href="https://support.techincglobal.com/">Open the client support portal instead</a></p>
-  </div><aside class="support__aside"><div class="block"><p class="eyebrow">Production down?</p><p class="block__text">Call us for immediate escalation.</p><a class="btn btn--solid" href={`tel:${COMPANY.contact.phoneHref}`}>{COMPANY.contact.phone}</a></div></aside></div></section>
+
+<Page
+  title="Customer Support — Techincglobal"
+  heading="Techincglobal is here when you need help."
+  eyebrow="Customer Support"
+  intro="If you are an existing customer and need help with your ERPNext system, raise a support ticket here and we will get it to the right person. Every ticket is tracked in our helpdesk against the agreed SLA, so your request does not get lost in an inbox."
+  description="Techincglobal customer support. Raise a tracked ERPNext support ticket against your SLA."
+  path="/support"
+  breadcrumb="Customer Support"
+  cta={false}
+>
+  <section class="section">
+    <div class="shell support">
+      <div class="support__main">
+        <h2 class="h3">Tell us what is happening</h2>
+        <p class="dim support__lead">
+          Give us as much useful detail as you can. The document number, the steps that led to the problem, and the exact error message can often help us diagnose the issue without having to come back to you for more information.
+        </p>
+
+        <Form
+          client:load
+          endpoint="/api/ticket"
+          formName="ticket"
+          fields={fields}
+          submitLabel="Open ticket"
+          successTitle="Ticket opened."
+          successBody="Your ticket is now in our helpdesk queue and linked to your contact and account."
+        />
+
+        <p class="dim support__portal-link">
+          <a class="link" href="https://support.techincglobal.com/">Open the client support portal instead →</a>
+        </p>
+      </div>
+
+      <aside class="support__aside">
+        <div class="block block--urgent">
+          <p class="eyebrow">Production down?</p>
+          <p class="block__text">
+            Do not wait for the form. Call us and we will get the right people on it immediately.
+          </p>
+          <a class="btn btn--solid" href={`tel:${COMPANY.contact.phoneHref}`}>
+            {COMPANY.contact.phone}
+          </a>
+        </div>
+
+        <div class="block">
+          <p class="eyebrow">WHAT HAPPENS NEXT</p>
+          <ol class="next-steps">
+            <li>
+              <strong>Your ticket is created.</strong> You receive a reference number so you can track the request.
+            </li>
+            <li>
+              <strong>The right person picks it up.</strong> We route the ticket to the consultant familiar with your system and implementation.
+            </li>
+            <li>
+              <strong>You hear from us within the SLA.</strong> We provide an initial response within the agreed SLA window.
+            </li>
+            <li>
+              <strong>We work towards resolution.</strong> Once the issue is resolved, we also let you know what happened and, where useful, what can be done to prevent it from happening again.
+            </li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </section>
 </Page>
+
 <style>
-  .support { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:clamp(var(--s-8),5vw,var(--s-20)); align-items:start; }
-  .support__lead { margin:var(--s-4) 0 var(--s-8); max-width:50ch; } .support__aside { display:grid; gap:var(--s-5); }
-  .block { display:grid; gap:var(--s-4); justify-items:start; padding:clamp(var(--s-5),3vw,var(--s-7)); background:var(--paper-pure); border:1px solid var(--hair); border-radius:1rem; box-shadow:var(--lift-1); }
-  .block__text { font-size:var(--t-sm); color:var(--ink-dim); } @media (max-width:900px) { .support { grid-template-columns:1fr; } }
+  .support {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(var(--s-8), 5vw, var(--s-16));
+    align-items: start;
+  }
+
+  .support__lead {
+    margin: var(--s-3) 0 var(--s-8);
+    max-width: 54ch;
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    color: var(--ink-dim);
+  }
+
+  .support__portal-link {
+    margin-top: var(--s-6);
+    font-size: var(--t-sm);
+  }
+
+  .support__aside {
+    display: grid;
+    gap: var(--s-6);
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-6));
+  }
+
+  .block {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+    padding: clamp(var(--s-6), 3vw, var(--s-8));
+    background: var(--paper-pure);
+    border: 1px solid var(--hair);
+    border-radius: 1rem;
+    box-shadow: var(--lift-1);
+  }
+
+  .block--urgent {
+    border-color: var(--n-400);
+    background: linear-gradient(155deg, var(--paper-pure), var(--sky-100));
+  }
+
+  .block__text {
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  .next-steps {
+    display: grid;
+    gap: var(--s-4);
+    padding: 0;
+    list-style: none;
+    counter-reset: next-step;
+  }
+
+  .next-steps li {
+    counter-increment: next-step;
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: var(--s-3);
+    font-size: var(--t-sm);
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  .next-steps li::before {
+    content: counter(next-step) '.';
+    font-family: var(--font-mono);
+    color: var(--ink-faint);
+    font-weight: 600;
+  }
+
+  .next-steps strong {
+    color: var(--ink);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  @media (max-width: 900px) {
+    .support {
+      grid-template-columns: 1fr;
+    }
+    .support__aside {
+      position: static;
+    }
+  }
 </style>

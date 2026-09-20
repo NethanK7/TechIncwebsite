@@ -31,11 +31,11 @@ const faq = [
 ---
 
 <Page
-  title={`Frappe ERP for ${industry.name}`}
+  title={`Frappe ERP for ${industry.name} — Techincglobal`}
   heading={`Frappe ERP for ${industry.name}`}
   eyebrow="Industry"
   intro={industry.summary}
-  description={`${industry.summary} Implemented by TECHINCGLOBAL — Sri Lanka's #1 Frappe Partner.`}
+  description={`${industry.summary} Implemented by Techincglobal — Sri Lanka's official Frappe partner.`}
   path={`/industries/${industry.slug}`}
   breadcrumb={industry.name}
   parents={[{ label: 'Industries', href: '/industries' }]}
@@ -46,9 +46,11 @@ const faq = [
     <div class="shell split">
       <div data-reveal>
         <h2 class="h3">How we approach it</h2>
-        <p class="prose lead-body">{industry.body}</p>
+        {industry.body.split('\n\n').map((p) => (
+          <p class="prose lead-body">{p}</p>
+        ))}
 
-        <h3 class="h4 sub">What we usually find</h3>
+        <h3 class="h4 sub">Familiar challenges</h3>
         <ul class="problems">
           {industry.challenges.map((c) => <li>{c}</li>)}
         </ul>
