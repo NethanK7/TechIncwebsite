@@ -102,11 +102,34 @@ export async function callMethod<T = unknown>(
       body = { raw: text }
     }
 
+function extractFrappeError(body: unknown): string | undefined {
+  if (!body || typeof body !== 'object') return undefined
+  const b = body as Record<string, unknown>
+  if (typeof b._server_messages === 'string') {
+    try {
+      const parsed = JSON.parse(b._server_messages)
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const item = typeof parsed[0] === 'string' ? JSON.parse(parsed[0]) : parsed[0]
+        if (item?.message) return String(item.message)
+      }
+    } catch {
+      /* ignore parse errors */
+    }
+  }
+  if (typeof b.exception === 'string') {
+    const parts = b.exception.split(': ')
+    return parts[parts.length - 1]
+  }
+  if (typeof b.message === 'string') return b.message
+  return undefined
+}
+
     if (!res.ok) {
+      const frappeMsg = extractFrappeError(body)
       return {
         ok: false,
-        error: 'We could not record that just now. Please try again.',
-        detail: `frappe ${res.status} on ${method}`,
+        error: frappeMsg || 'We could not record that just now. Please try again.',
+        detail: `frappe ${res.status} on ${method}${frappeMsg ? `: ${frappeMsg}` : ''}`,
       }
     }
 

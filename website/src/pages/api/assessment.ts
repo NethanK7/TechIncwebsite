@@ -15,7 +15,7 @@ const schema = guardFields.extend({
       'Please answer every assessment question with a valid option.'),
   name: z.string().trim().min(2, 'Please give us your name.').max(120),
   email: z.string().trim().email('Please give us a valid email.').max(140),
-  phone: z.string().trim().max(40).optional(),
+  phone: z.string().trim().max(40).optional().transform((v) => v || undefined),
   organization: z.string().trim().max(140).optional(),
   page: z.string().trim().max(140).default('/assessment'),
   session: z.string().trim().max(80).optional(),
@@ -33,7 +33,7 @@ export const POST: APIRoute = async ({ request }) => {
   const result = await submitAssessment(data)
   if (!result.ok || !result.data?.stored || !result.data?.assessment || !result.data?.lead) {
     logIntakeFailure('assessment', result.detail, undefined)
-    return fail('Your score is ready, but we could not save your details. Please try again.', 502)
+    return fail(result.error || 'Your score is ready, but we could not save your details. Please try again.', 502)
   }
   return ok({ stored: true, reference: result.data.assessment, score: result.data.score, band: result.data.band })
 }

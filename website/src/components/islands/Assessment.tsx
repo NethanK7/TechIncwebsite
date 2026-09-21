@@ -293,7 +293,16 @@ export default function Assessment() {
                   </p>
                   <p>
                     <label htmlFor="as-phone">Phone</label>
-                    <input id="as-phone" name="phone" type="tel" autoComplete="tel" maxLength={40} />
+                    <input
+                      id="as-phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      maxLength={40}
+                      pattern="[+]?[0-9\s\-()]{7,25}"
+                      title="Please enter a valid phone number (e.g. +94 77 123 4567) or leave blank"
+                      placeholder="e.g. +94 77 123 4567 (optional)"
+                    />
                   </p>
                 </div>
                 {/* Honeypot */}
