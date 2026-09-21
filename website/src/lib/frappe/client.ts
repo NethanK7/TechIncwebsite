@@ -33,12 +33,14 @@ function secret(name: string, fallback = ''): string {
   return fromProcess ?? fromVite ?? fallback
 }
 
-const frappeUrl = () => secret('FRAPPE_URL').replace(/\/$/, '')
-const apiKey = () => secret('FRAPPE_API_KEY')
-const apiSecret = () => secret('FRAPPE_API_SECRET')
+const clean = (val: string) => val.trim().replace(/^["']|["']$/g, '')
+
+const frappeUrl = () => secret('FRAPPE_URL').trim().replace(/\/+$/, '')
+const apiKey = () => clean(secret('FRAPPE_API_KEY'))
+const apiSecret = () => clean(secret('FRAPPE_API_SECRET'))
 
 /** Shared secret checked in addition to API-user authentication. */
-const intakeSecret = () => secret('WEBSITE_INTAKE_SECRET')
+const intakeSecret = () => clean(secret('WEBSITE_INTAKE_SECRET'))
 
 /** Evaluated per call, for the same reason the getters exist. */
 export const frappeConfigured = (): boolean => Boolean(frappeUrl() && apiKey() && apiSecret() && intakeSecret())
