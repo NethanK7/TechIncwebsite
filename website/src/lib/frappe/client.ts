@@ -189,7 +189,10 @@ export interface TicketPayload {
 }
 
 export const submitTicket = (p: TicketPayload) =>
-  callMethod<{ ticket: string; enquiry: string; lead: string; stored: boolean }>(`${APP}.submit_ticket`, p)
+  callMethod<{ ticket: string; enquiry: string; lead: string; stored: boolean }>(`${APP}.submit_ticket`, {
+    ...p,
+    message: p.description,
+  })
 
 export interface AssessmentPayload {
   submission_id: string

@@ -25,7 +25,7 @@ const schema = guardFields.extend({
   kind: z.enum(['contact', 'consultation']).default('contact'),
   name: z.string().trim().min(2, 'Please give us your name.').max(120),
   email: z.string().trim().email('That email address does not look right.').max(140),
-  phone: z.string().trim().max(40).optional(),
+  phone: z.string().trim().max(40).optional().transform((v) => v || undefined),
   organization: z.string().trim().max(140).optional(),
   employees: z.string().trim().max(40).optional(),
   industry: z.string().trim().max(80).optional(),

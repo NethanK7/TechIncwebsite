@@ -9,7 +9,7 @@ const fields = [
   { name: 'name', label: 'Your name', required: true, autoComplete: 'name' },
   { name: 'email', label: 'Work email', type: 'email' as const, required: true, autoComplete: 'email' },
   { name: 'organization', label: 'Organisation', autoComplete: 'organization' },
-  { name: 'phone', label: 'Phone', type: 'tel' as const, autoComplete: 'tel' },
+  { name: 'phone', label: 'Phone', type: 'tel' as const, autoComplete: 'tel', placeholder: 'e.g. +94 77 123 4567 (optional)' },
   {
     name: 'industry', label: 'Industry', type: 'select' as const,
     options: [...INDUSTRIES.map((i) => i.name), 'Other'],
