@@ -74,7 +74,7 @@ const identity = () =>
 function homeDoc(): Doc {
   const body = [
     identity(),
-    h(2, 'What TECHINCGLOBAL does'),
+    h(2, 'What Techincglobal does'),
     p(COMPANY.summary),
     '',
     h(2, 'Key facts'),
@@ -132,7 +132,7 @@ function methodologyDoc(): Doc {
     identity(),
     h(2, 'The NXTGEN methodology'),
     p(
-      'NXTGEN is TECHINCGLOBAL’s proprietary Agile ERP implementation methodology. It has five phases, and segregating scope into independently deliverable modules is what removes big-bang go-live risk.',
+      'NXTGEN is Techincglobal’s proprietary Agile ERP implementation methodology. It has five phases, and segregating scope into independently deliverable modules is what removes big-bang go-live risk.',
     ),
     '',
     NXTGEN_PHASES.map((x) => `${x.n}. **${x.name}.** ${x.body}`).join('\n\n'),

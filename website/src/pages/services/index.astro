@@ -6,10 +6,10 @@ import { serviceSchema } from '@/lib/seo'
 
 <Page
   title="Services — Techincglobal"
-  heading="Putting ERPNext to work"
-  eyebrow="Services"
-  intro="ERPNext can cover a lot of ground. We help businesses put it to work across their operations, from the initial implementation through to customization, integration, training, and ongoing support."
-  description="ERPNext implementations, customization, process automation, legacy modernization, integration, advisory, support, and training by Techincglobal."
+  heading="Services"
+  eyebrow="SERVICES"
+  intro="Techincglobal helps businesses get more from ERPNext, from implementation and customization to integration, automation, training, and ongoing support. Whether you are starting with ERPNext, modernizing an existing system, or looking to improve how your current implementation works, we can help you take the next step."
+  description="Techincglobal helps businesses get more from ERPNext, from implementation and customization to integration, automation, training, and ongoing support."
   path="/services"
   breadcrumb="Services"
   schema={SERVICES.map(serviceSchema)}
@@ -25,7 +25,7 @@ import { serviceSchema } from '@/lib/seo'
               <a class="card" href={`/services/${s.slug}`}>
                 <span class="card__n mono">{String(i + 1).padStart(2, '0')}</span>
                 <h2 class="h3 card__title">{s.name}</h2>
-                <p class="card__summary">{s.summary}</p>
+                <p class="card__summary">{s.cardSummary ?? s.summary}</p>
                 <ul class="card__list">
                   {s.deliverables.slice(0, 3).map((d) => (
                     <li>{d}</li>
@@ -36,6 +36,21 @@ import { serviceSchema } from '@/lib/seo'
             </li>
           ))
         }
+        <li data-reveal>
+          <a class="card card--custom" href="/contact" data-cta="services:custom-solutions">
+            <span class="card__n mono">09</span>
+            <h2 class="h3 card__title">Tailored Frappe solutions</h2>
+            <p class="card__summary">
+              Have unique requirements or workflows not listed above? Techincglobal designs and builds bespoke enterprise solutions on Frappe and ERPNext.
+            </p>
+            <ul class="card__list">
+              <li>Bespoke business workflows</li>
+              <li>Custom application architecture</li>
+              <li>Direct consultant advisory</li>
+            </ul>
+            <span class="card__go mono">Talk to our consultants →</span>
+          </a>
+        </li>
       </ul>
     </div>
   </section>
@@ -64,6 +79,14 @@ import { serviceSchema } from '@/lib/seo'
 
   .card:hover {
     background: var(--n-100);
+  }
+
+  .card--custom {
+    background: linear-gradient(165deg, var(--paper-pure) 0%, rgb(240 245 252) 100%);
+  }
+
+  .card--custom:hover {
+    background: linear-gradient(165deg, var(--paper-pure) 0%, rgb(232 240 250) 100%);
   }
 
   .card__n {

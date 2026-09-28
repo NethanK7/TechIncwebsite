@@ -13,16 +13,16 @@ import { personSchema } from '@/lib/seo'
 
 const faq = [
   {
-    q: 'When was TECHINCGLOBAL founded?',
-    a: 'TECHINCGLOBAL was founded in 2018 as a digital transformation consultancy in Sri Lanka. It became the first authorized Frappe Technologies partner in the country in 2023 and achieved Highly Skilled Certified Bronze Partner status in 2025.',
+    q: 'When was Techincglobal founded?',
+    a: 'Techincglobal was founded in 2018 as a digital transformation consultancy in Sri Lanka. It became the first authorized Frappe Technologies partner in the country in 2023 and achieved Highly Skilled Certified Bronze Partner status in 2025.',
   },
   {
-    q: 'Is TECHINCGLOBAL part of a larger group?',
-    a: 'Yes. TECHINCGLOBAL joined the SEBSA Group in 2022, which gives it an expanded global ERP delivery network, shared knowledge frameworks, and the backing of an established enterprise technology group.',
+    q: 'Is Techincglobal part of a larger group?',
+    a: 'Yes. Techincglobal joined the SEBSA Group in 2022, which gives it an expanded global ERP delivery network, shared knowledge frameworks, and the backing of an established enterprise technology group.',
   },
   {
-    q: 'Who leads TECHINCGLOBAL?',
-    a: 'TECHINCGLOBAL is chaired by Herschel Gunawardena, with Sean Fernando as Director of Solutions and Lahiru Pathirana as Head of Technical Solutions. The consulting team covers manufacturing and supply chain, finance and payroll, and techno-functional delivery.',
+    q: 'Who leads Techincglobal?',
+    a: 'Techincglobal is chaired by Herschel Gunawardena, with Sean Fernando as Director of Solutions and Lahiru Pathirana as Head of Technical Solutions. The consulting team covers manufacturing and supply chain, finance and payroll, and techno-functional delivery.',
   },
 ]
 
@@ -63,7 +63,7 @@ const aboutStats = [
           aboutStats.map((s) => (
             <li data-reveal>
               <div class="story__stat-head">
-                <span class="story__v num">{s.value}</span>
+                <span class:list={['story__v', 'num', { 'story__v--emoji': s.value === '😊' }]}>{s.value}</span>
                 <span class="story__l">{s.label}</span>
               </div>
               {s.note && <p class="story__note">{s.note}</p>}
@@ -278,6 +278,11 @@ const aboutStats = [
   .story__v {
     font-size: var(--t-h3);
     font-weight: 700;
+  }
+
+  .story__v--emoji {
+    filter: grayscale(100%);
+    opacity: 0.85;
   }
 
   .story__l {

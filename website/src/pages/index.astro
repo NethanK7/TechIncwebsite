@@ -67,7 +67,7 @@ const features = [
             </h2>
           </div>
           <p class="lead stack-head__lead">
-            Techincglobal brings ERPNext into the way your business actually operates, configuring the platform around your processes and extending it where your requirements go beyond the standard setup.
+            Techincglobal brings ERPNext, an enterprise resource planning (ERP) platform, into the way your business actually operates, configuring the platform around your processes and extending it where your requirements go beyond the standard setup.
           </p>
         </header>
 
@@ -89,7 +89,7 @@ const features = [
         <div class="stack-together" data-reveal>
           <p class="eyebrow stack-together__eyebrow">How it comes together</p>
           <p class="lead stack-together__lead">
-            Frappe provides the technology. ERPNext provides the business platform. NXTGEN provides the implementation approach. TechINCglobal brings it all together for your business.
+            Frappe provides the technology. ERPNext provides the business platform. NXTGEN provides the implementation approach. Techincglobal brings it all together for your business.
           </p>
           <p class="stack-together__sub">
             That combination gives you a proven ERP platform, a structured way to implement it, and a partner who understands both the technology and the realities of running a business in Sri Lanka.
@@ -460,12 +460,18 @@ const features = [
 
   .cases {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(23rem, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1px;
     background: var(--hair);
     border: 1px solid var(--hair);
     border-radius: 1rem;
     overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .cases {
+      grid-template-columns: 1fr;
+    }
   }
 
   .case {

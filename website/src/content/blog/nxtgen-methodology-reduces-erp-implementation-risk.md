@@ -55,7 +55,7 @@ We don't go live on a date. We go live when the gate is genuinely clear. Saying 
 
 ## What it adds up to
 
-Deployment time down by up to 40% against conventional approaches, on a 12-week standard programme, with 100% client satisfaction across the portfolio so far.
+Deployment time down by up to 40% against conventional approaches, on a 12-week standard programme, with long-term customer relationships across the portfolio.
 
 The speed is a side effect, not the aim. Segregated scope with real gates is just a more efficient way to work than one monolithic push toward an immovable date.
 

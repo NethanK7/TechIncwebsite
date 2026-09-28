@@ -9,7 +9,7 @@ faq:
   - q: "How do I know if our ERP needs replacing?"
     a: "The clearest signs are: the vendor no longer supports your version, reports get exported to spreadsheets before anyone actually uses them, integrations are manual file transfers, and nobody will authorise an upgrade because of the customisation risk."
   - q: "Is it safer to upgrade a legacy ERP or replace it?"
-    a: "It depends on whether the platform still fits. TECHINCGLOBAL's ERP Consulting and Advisory engagement models both paths on real numbers, and will recommend staying on the current system when that's genuinely the better option."
+    a: "It depends on whether the platform still fits. Techincglobal's ERP Consulting and Advisory engagement models both paths on real numbers, and will recommend staying on the current system when that's genuinely the better option."
 ---
 A lot of ageing systems get blamed for problems that are actually process problems. So before we talk a client into replacing anything, we look for signals that are structural rather than cosmetic. Here are the seven that come up again and again.
 

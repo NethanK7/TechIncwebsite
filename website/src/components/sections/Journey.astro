@@ -36,13 +36,13 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
   <div class="journey__screen journey__screen--hero">
     <div class="shell hero">
       <p class="hero__eyebrow eyebrow" data-reveal>
-        Sri Lanka’s first and only authorized Frappe Technologies partner.
+        Sri Lanka’s first and only authorized Frappe Technologies partner
       </p>
       <h1 class="display hero__title" data-reveal data-speakable>
         One platform.<br />Your entire enterprise.
       </h1>
       <p class="hero__lead" data-reveal>
-        TechINCglobal brings finance, sales, inventory, production, projects, and people together on ERPNext, with implementations built around the way your business works.
+        Techincglobal brings finance, sales, inventory, production, projects, and people together on ERPNext, with implementations built around the way your business works.
       </p>
       <div class="hero__actions" data-reveal>
         <a class="btn btn--solid" href="/contact" data-cta="hero:consultation">
@@ -126,7 +126,9 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
       {
         STATS.map((s) => (
           <li data-reveal>
-            <span class="statband__v num">{s.value}</span>
+            <span class:list={['statband__v', 'num', { 'statband__v--emoji': s.value === '😊' }]}>
+              {s.value}
+            </span>
             <span class="statband__l">{s.label}</span>
           </li>
         ))
@@ -526,6 +528,11 @@ import { JOURNEY, COMPANY, STATS } from '@/lib/data/company'
     font-size: var(--t-h3);
     font-weight: 700;
     letter-spacing: -0.04em;
+  }
+
+  .statband__v--emoji {
+    filter: grayscale(100%);
+    opacity: 0.85;
   }
 
   .statband__l {

@@ -8,6 +8,7 @@ export interface ServiceDetail {
   name: string
   navName: string
   summary: string
+  cardSummary?: string
   overview: string
   involves: {
     lead: string
@@ -37,7 +38,9 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     name: 'Frappe ERP implementation',
     navName: 'Frappe ERP implementation',
     summary:
-      'We implement ERPNext around the way your business works, from initial discovery and configuration through testing, training, and go live.',
+      'We implement ERPNext around the way your business works, from initial discovery and configuration through testing, training, and go-live.',
+    cardSummary:
+      'Techincglobal implements ERPNext around your business processes, from configuration and workflows to data migration, testing, training, and go-live.',
     overview:
       'Techincglobal implements ERPNext around the way your business works. We start by understanding your processes, priorities, existing systems, and data, then configure the platform to support the work your teams actually do.\n\nWhere the standard platform does not meet a specific requirement, we can customize, develop, or integrate the solution rather than asking your teams to work around the system.',
     involves: {
@@ -75,7 +78,7 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
       },
       {
         title: 'Test with your teams',
-        body: 'Your users are involved in user acceptance testing and, where appropriate, parallel running. This gives your teams the opportunity to test real processes and data before go live and gives us the opportunity to address issues before deployment.',
+        body: 'Your users are involved in user acceptance testing and, where appropriate, parallel running. This gives your teams the opportunity to test real processes and data before go-live and gives us the opportunity to address issues before deployment.',
       },
       {
         title: 'Prepare your people',
@@ -83,7 +86,7 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
       },
       {
         title: 'Deploy and support the transition',
-        body: 'Once the solution and users are ready, we move through go live and provide the support needed during the transition. We continue to work with you after deployment as the system settles into day-to-day use.',
+        body: 'Once the solution and users are ready, we move through go-live and provide the support needed during the transition. We continue to work with you after deployment as the system settles into day-to-day use.',
       },
     ],
     deliverables: [
@@ -112,7 +115,7 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
       eyebrow: 'WHY US',
       title: 'Why Techincglobal?',
       lead:
-        'Techincglobal combines ERPNext implementation expertise with local knowledge of how Sri Lankan businesses operate. As the only official Frappe partner in Sri Lanka and a Certified Bronze Partner, we understand both the platform and the practical realities of putting it to work.',
+        'Techincglobal is Sri Lanka’s first and only official Frappe partner and a Certified Bronze Partner. We bring direct knowledge of ERPNext and the Frappe platform, together with an understanding of how Sri Lankan businesses operate.',
       stats: [
         { label: 'DELIVERY', value: '12-week standard programme' },
         { label: 'METHODOLOGY', value: 'NXTGEN Agile, up to 40% faster' },
@@ -143,10 +146,10 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
       },
       {
         q: 'How involved does our team need to be?',
-        a: "Your team's involvement is essential. Process owners and key users help us understand how the business works, review the configured solution, test it, and prepare for go live. Their involvement helps ensure that the system reflects the actual business rather than assumptions made during the project.",
+        a: "Your team's involvement is essential. Process owners and key users help us understand how the business works, review the configured solution, test it, and prepare for go-live. Their involvement helps ensure that the system reflects the actual business rather than assumptions made during the project.",
       },
       {
-        q: 'What happens after go live?',
+        q: 'What happens after go-live?',
         a: 'Techincglobal continues to support the system after deployment. We help resolve issues, support your teams, and make further changes as your business requirements develop.',
       },
     ],
@@ -159,6 +162,8 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     navName: 'Frappe customization and development',
     summary:
       'When the standard platform does not cover a specific business requirement, we extend ERPNext with custom functionality built around your processes.',
+    cardSummary:
+      'Techincglobal extends the standard platform with custom applications, workflows, reports, and functionality for requirements specific to your business.',
     overview:
       'Techincglobal extends ERPNext when your business needs functionality that is not covered by the standard platform. We first look at what can be handled through configuration, then develop custom functionality where a specific requirement calls for something more.\n\nOur customizations are built using Frappe Framework and designed to remain maintainable as your ERPNext system evolves.',
     involves: {
@@ -254,6 +259,8 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     navName: 'Business process automation',
     summary:
       'We identify repetitive work and manual handoffs that can be handled within the system, then build workflows and automation that reduce the work involved.',
+    cardSummary:
+      'Automate repetitive tasks, approvals, and manual handoffs with workflows and system-driven processes designed around how your business operates.',
     overview:
       'Techincglobal helps businesses reduce repetitive manual work by automating the steps that can be handled by the system. We look at how information moves through your processes, identify where people are spending time on routine tasks or manual handoffs, and build workflows and automation around those points.\n\nThe aim is not to automate for the sake of it. We automate the parts of a process where the system can do the work reliably, while keeping people involved where their judgment or approval is needed.',
     involves: {
@@ -351,6 +358,8 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     navName: 'Legacy system modernization',
     summary:
       'We help businesses move away from older systems and fragmented processes, bringing their operations onto a modern ERP platform without losing the information they depend on.',
+    cardSummary:
+      'Techincglobal helps businesses move from older systems and fragmented processes to a modern ERP environment while preserving the information they depend on.',
     overview:
       'Techincglobal helps businesses move away from older systems and fragmented processes by bringing their operations onto a modern ERP platform while preserving the information they need.\n\nWe assess the existing systems and data, plan the migration around the needs of the business, and manage the transition so your teams can move to the new system without losing the history they depend on.',
     involves: {
@@ -444,7 +453,9 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     name: 'System integration',
     navName: 'System integration',
     summary:
-      'Your business already has systems that work. We connect ERPNext with them, so you can keep what you need while bringing the information together in one place.',
+      'Connect the systems your business already relies on, so information can move between applications and processes without unnecessary manual work.',
+    cardSummary:
+      'Connect your existing business systems with ERPNext, allowing information to move between applications without unnecessary manual work.',
     overview:
       'Your business already has systems that work. Techincglobal connects ERPNext with them, so you can keep the systems you need while bringing the information together across your business.\n\nWe design and build integrations around the systems involved, whether they exchange information through APIs, webhooks, scheduled synchronization, or file-based transfers.',
     involves: {
@@ -545,6 +556,8 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     navName: 'ERP consulting and advisory',
     summary:
       'Not every ERP decision starts with an implementation. We help businesses assess their requirements, understand what ERPNext can do, and decide how best to approach their digital transformation.',
+    cardSummary:
+      'Techincglobal helps you assess your ERP requirements, understand your options, and define a practical approach to implementation or digital transformation.',
     overview:
       'Not every ERP decision starts with an implementation. Techincglobal helps businesses understand what they need, assess whether ERPNext is a good fit, and decide what the right next step looks like.\n\nSometimes that means preparing for an ERP implementation. Sometimes it means changing a process, improving an existing system, or waiting until the business is ready. We help you understand the difference before you commit to a major system change.',
     involves: {
@@ -638,6 +651,8 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     navName: 'Support and optimization',
     summary:
       'The work does not stop at go-live. We provide ongoing support and help businesses refine their ERPNext setup as their processes, requirements, and teams evolve.',
+    cardSummary:
+      'Keep your ERP environment working effectively with ongoing support, improvements, and adjustments as your business requirements change.',
     overview:
       'The work does not stop at go-live. Techincglobal provides ongoing support for your ERPNext system and helps you keep it working as your business, processes, and teams change.\n\nFrom resolving day-to-day issues and managing version upgrades to improving performance and introducing additional modules, we continue working with you after implementation.',
     involves: {
@@ -734,6 +749,8 @@ export const SERVICES_CONTENT: ServiceDetail[] = [
     navName: 'Training and change management',
     summary:
       'We train teams on their own processes and data, helping them get comfortable with the new system and use it effectively from day one.',
+    cardSummary:
+      'Techincglobal prepares your teams for the transition through role-based training, process guidance, and support as they begin working with the new system.',
     overview:
       'Techincglobal trains your teams on the processes they will actually use in ERPNext, using your own workflows and data wherever possible. We help people understand how their work fits into the new system, build the knowledge they need before go-live, and continue supporting adoption after deployment.\n\nTraining is not something we leave until the end of the implementation. We involve the people who will use the system throughout the project so they have an opportunity to understand, test, and become familiar with the new way of working.',
     involves: {

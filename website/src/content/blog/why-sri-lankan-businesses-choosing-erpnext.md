@@ -9,7 +9,7 @@ faq:
   - q: "Why are Sri Lankan companies moving to Frappe ERP?"
     a: "Three main reasons: there are no per-user licence fees, the platform can be localised natively for Sri Lankan VAT, EPF and ETF requirements, and it's genuinely extensible because the framework and the application are the same codebase."
   - q: "Is Frappe ERP suitable for mid-sized Sri Lankan manufacturers?"
-    a: "Yes. Frappe ERP handles multi-level BOMs, routing, work orders, capacity planning and job costing, and TECHINCGLOBAL has delivered implementations to more than 20 Sri Lankan manufacturers."
+    a: "Yes. Frappe ERP handles multi-level BOMs, routing, work orders, capacity planning and job costing, and Techincglobal has delivered implementations to more than 20 Sri Lankan manufacturers."
 ---
 We get asked some version of the same question on almost every first call: why Frappe, and not one of the bigger names everyone's heard of? The honest answer isn't a single feature. It's three things that compound.
 

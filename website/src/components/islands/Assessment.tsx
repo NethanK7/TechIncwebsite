@@ -211,7 +211,7 @@ export default function Assessment() {
               <li>About five minutes to complete</li>
               <li>A score with the reasoning behind it</li>
               <li>Practical guidance on what to consider next</li>
-              <li>An honest <strong>not yet</strong> if the timing is not right</li>
+              <li>An honest assessment if the timing is not right yet</li>
             </ul>
             <button className="btn btn--solid" type="button" onClick={begin}>
               Start the assessment

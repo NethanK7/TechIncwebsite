@@ -85,14 +85,18 @@
 }
 
 .as__promises li {
-  display: grid;
-  grid-template-columns: 1.25rem 1fr;
+  position: relative;
+  padding-left: 1.5rem;
   font-size: var(--t-sm);
   color: var(--ink-2);
+  line-height: 1.5;
 }
 
 .as__promises li::before {
   content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
   color: var(--ink);
 }
 

@@ -40,7 +40,7 @@ const authorOf = (slug?: string) => TEAM.find((m) => m.slug === slug)
                   <h2 class="h3 post__title">{post.data.title}</h2>
                   <p class="post__desc">{post.data.description}</p>
                   <span class="mono post__read">
-                    {authorOf(post.data.author)?.name ?? 'TECHINCGLOBAL'} · {post.data.readingMinutes} min read →
+                    {authorOf(post.data.author)?.name ?? 'Techincglobal'} · {post.data.readingMinutes} min read →
                   </span>
                 </div>
               </a>

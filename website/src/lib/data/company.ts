@@ -120,8 +120,8 @@ export const JOURNEY: Stage[] = [
     key: 'departments',
     index: '02',
     eyebrow: 'Your departments',
-    title: 'Six departments. Six versions of the truth.',
-    body: 'Finance, sales, inventory, production, projects, HR. Each has its own information and its own way of working. The workarounds start when that information needs to move between them.',
+    title: 'Different departments. Different versions of the truth.',
+    body: 'Finance, sales, inventory, production, projects, HR, and more. Each has its own information and its own way of working. The real trouble starts when that information needs to move between them.',
   },
   {
     key: 'core',
@@ -165,7 +165,7 @@ export const STACK: StackLayer[] = [
   {
     name: 'NXTGEN',
     title: 'How we deliver your implementation',
-    body: 'NXTGEN is TechINCglobal’s Agile implementation methodology. It breaks the implementation into defined stages, from understanding your business and configuring the system to development, testing, training, and deployment. Your teams stay involved throughout, so the solution develops around real business requirements rather than assumptions made at the start of a project.',
+    body: 'NXTGEN is Techincglobal’s Agile implementation methodology. It breaks the implementation into defined stages, from understanding your business and configuring the system to development, testing, training, and deployment. Your teams stay involved throughout, so the solution develops around real business requirements rather than assumptions made at the start of a project.',
   },
   {
     name: 'ERPNext',
@@ -212,7 +212,7 @@ export const NXTGEN_PHASES: Phase[] = [
   },
   {
     n: '05',
-    name: 'Go live authorization',
+    name: 'Go-live authorization',
     body: 'Before go-live, we use a formal readiness gate. Data migration is verified, parallel runs are reconciled, and process owners provide sign-off. The system goes live when the required checks are complete, rather than simply because a target date has arrived.',
   },
 ]
@@ -281,7 +281,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Manufacturing',
     teaser: 'Production planning, shop floor control, and costing in one system.',
     summary:
-      'Production planning, material availability, shop floor operations, and job costing need to work together.',
+      'Production planning, material availability, shop floor operations, and job costing need to work together. Techincglobal helps manufacturers bring these processes into one connected ERPNext environment.',
     body: 'More than 20 Sri Lankan manufacturers run on ERP implementations delivered by Techincglobal. We configure ERPNext to connect multi-level bills of materials (BOMs), routings, work orders, inventory, and costing, so production teams and finance are working from the same information.\n\nThe solution can be shaped around the way your factory actually operates, including the processes used to plan production, issue materials, track work, and understand the cost of what is being produced.',
     challenges: [
       'Production plans that do not reflect actual material availability',
@@ -293,7 +293,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Distribution & logistics',
     teaser: 'Manage stock across warehouses, automate reordering, and keep deliveries moving.',
     summary:
-      'Stock, purchasing, warehouses, orders, and deliveries need to stay aligned across locations.',
+      'Stock, purchasing, warehouses, orders, and deliveries need to stay aligned across locations. Techincglobal helps distribution and logistics businesses bring these processes together in ERPNext.',
     body: 'Distribution businesses often manage large numbers of Stock Keeping Units (SKU)s across multiple warehouses and locations. We configure ERPNext to support batch and serial traceability, landed-cost tracking, automated reorder points, and the movement of stock from purchasing through to delivery.\n\nFor courier and distribution businesses, this can bring stock, invoicing, and finance together instead of leaving them across separate systems.',
     challenges: [
       'Stock figures that differ by system or warehouse',
@@ -305,7 +305,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Retail & e-commerce',
     teaser: 'Connect your point of sale (POS), online store, inventory, and back office.',
     summary:
-      'Point of sale (POS), online sales, inventory, and back office operations need to work from the same stock position.',
+      'Point of sale (POS), online sales, inventory, and back office operations need to work from the same stock position. Techincglobal helps retailers and e-commerce businesses connect these processes through ERPNext.',
     body: 'We bring counter, warehouse, and online inventory together so teams can work from the same stock position. ERPNext can be integrated with POS systems, marketplaces, and online storefronts, while also supporting promotions, loyalty programmes, and margin reporting by sales channel and Stock Keeping Unit (SKU).\n\nThe aim is to give the business a clearer view of what has been sold, what is available, and what each sales channel is contributing.',
     challenges: [
       'Overselling when online stock lags behind the warehouse',
@@ -317,7 +317,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Professional services',
     teaser: 'Keep projects, timesheets, costs, and profitability together.',
     summary:
-      'Projects depend on accurate time tracking, resource use, billing, and visibility into profitability.',
+      'For professional services businesses, time and people are the product. Projects depend on accurate time tracking, resource use, billing, and visibility into profitability.',
     body: 'Techincglobal configures ERPNext around the way professional services teams manage their projects. This can include project structures, timesheet capture, billing rules, revenue recognition, and utilization reporting.\n\nThe objective is to give project teams visibility into costs, billable time, and profitability while work is still underway, rather than finding out after the project has finished.',
     challenges: [
       'Unbilled or under-billed time reducing margins',
@@ -329,7 +329,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Construction & real estate',
     teaser: 'Manage project costs, subcontractors, materials, and progress billing.',
     summary:
-      'Project costs, materials, subcontractors, budgets, and progress billing need to be tracked throughout the project.',
+      'Construction and real estate businesses need to track project costs, materials, subcontractors, budgets, and progress billing throughout the life of a project.',
     body: 'Techincglobal configures ERPNext to give project teams a view of budget and actual costs by project, cost code, and subcontractor. Depending on the requirements, the solution can also cover material issues to sites, retention, progress billing, and variation control.\n\nThis gives contractors and developers a connected view of project costs as work progresses, rather than having to piece the information together from separate records.',
     challenges: [
       'Cost overruns discovered after the money is spent',
@@ -341,7 +341,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Healthcare',
     teaser: 'Bring patient administration, pharmacy stock, and billing into one system.',
     summary:
-      'Patient administration, pharmacy stock, services, and billing need to stay connected across operational and financial teams.',
+      'Healthcare organizations need patient administration, pharmacy stock, services, and billing to stay connected across operational and financial teams.',
     body: 'Techincglobal can configure ERPNext around the administrative and operational processes of healthcare organizations. This can include appointments and patient administration, pharmacy and consumables inventory, expiry control, laboratory workflows, insurance, and billing.\n\nAccess controls and audit trails can also be incorporated into the solution where required, helping organizations manage sensitive information and maintain appropriate records of system activity.',
     challenges: [
       'Pharmacy stock expiry and shrinkage',
@@ -353,7 +353,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Education',
     teaser: 'Manage student records, fees, and institutional operations from one platform.',
     summary:
-      'Student records, fees, academic activities, and institutional finance span multiple departments and stages.',
+      'Education organizations manage student records, fees, academic activities, staff, and institutional finance across multiple departments and stages.',
     body: 'Techincglobal can configure ERPNext to connect admissions, student records, programmes and courses, fee schedules and collections, staff payroll, and institutional financial reporting.\n\nBringing these functions together helps different teams work from the information they need while keeping student operations connected to the financial side of the institution.',
     challenges: [
       'Fee arrears tracked manually across intakes',
@@ -365,7 +365,7 @@ export const INDUSTRIES: Industry[] = [
     name: 'Trading & import/export',
     teaser: 'Manage landed costs, multiple currencies, purchasing, and shipments.',
     summary:
-      'Purchasing, shipments, landed costs, currencies, and sales need to come together to show the real cost of each transaction.',
+      'Trading and import/export businesses need purchasing, shipments, landed costs, currencies, and sales to come together to show the real cost of each transaction.',
     body: 'Techincglobal configures ERPNext to connect purchasing with shipment and landed-cost information. Landed costs such as freight, duty, clearing, and demurrage can be allocated back to the relevant items, giving businesses a clearer view of the actual cost of imported goods.\n\nThe solution can also support multi-currency transactions and letter-of-credit tracking, depending on the business requirements.',
     challenges: [
       'True landed cost not calculated at the item level',
@@ -382,7 +382,7 @@ export const STORY = {
   eyebrow: 'About Techincglobal',
   title: 'A technology partner built around your business',
   intro:
-    'Techincglobal is a Sri Lankan ERP implementation and technology company that helps businesses bring their operations onto one connected platform. We combine ERPNext, Frappe technology, our NXTGEN implementation methodology, and local business knowledge to build solutions around how each business actually works.',
+    'Techincglobal is a Sri Lankan Enterprise Resource Planning (ERP) implementation and technology company that helps businesses bring their operations onto one connected platform. We combine ERPNext, Frappe technology, our NXTGEN implementation methodology, and local business knowledge to build solutions around how each business actually works.',
   paragraphs: [
     'Founded in 2018, Techincglobal works with businesses across Sri Lanka to implement and extend ERPNext for their operational and financial requirements.',
     'Our work goes beyond configuring an ERP system. We work with business teams to understand their processes, determine how ERPNext can support them, and identify where configuration, customization, development, or integration is needed. We then take the solution through implementation, testing, training, deployment, and ongoing support.',
@@ -550,7 +550,7 @@ export const TEAM: TeamMember[] = [
     slug: 'nethan-kombalavitana',
     name: 'Nethan Kombalavitana',
     role: 'Developer — AI Enterprise Solutions',
-    bio: 'Designs the interfaces our clients actually use day to day, with a focus on enterprise UX that holds up under real operational load, not just a demo.',
+    bio: 'Designs the interfaces our clients actually use day-to-day, with a focus on enterprise UX that holds up under real operational load, not just a demo.',
     initials: 'NK',
   },
 ]
@@ -706,8 +706,12 @@ export interface Faq {
 
 export const FAQ_GENERAL: Faq[] = [
   {
+    q: 'How can Techincglobal help our enterprise?',
+    a: 'Techincglobal helps businesses bring finance, sales, inventory, production, projects, and people together with ERPNext, an enterprise resource planning (ERP) platform. We configure and extend the platform around the way your business works, rather than expecting your business to fit a standard setup.',
+  },
+  {
     q: 'Do we have to replace all our existing systems?',
-    a: 'No. An ERP implementation does not have to mean replacing everything you already use. Techincglobal assesses the systems that are working for your business and determines what should stay, what should connect to ERPNext, and what can be brought into the new platform.',
+    a: 'Not necessarily. Techincglobal can connect ERPNext with systems you already use, so you can keep the systems that still serve a purpose while bringing the information and processes that matter together. We assess your existing setup and determine what should be retained, replaced, or integrated.',
   },
   {
     q: 'What happens to the data in our existing systems?',
