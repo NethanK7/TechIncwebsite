@@ -63,16 +63,24 @@ const fields = [
           <p class="eyebrow">WHAT HAPPENS NEXT</p>
           <ol class="next-steps">
             <li>
-              <strong>Your ticket is created.</strong> You receive a reference number so you can track the request.
+              <div>
+                <strong>Your ticket is created.</strong> You receive a reference number so you can track the request.
+              </div>
             </li>
             <li>
-              <strong>The right person picks it up.</strong> We route the ticket to the consultant familiar with your system and implementation.
+              <div>
+                <strong>The right person picks it up.</strong> We route the ticket to the consultant familiar with your system and implementation.
+              </div>
             </li>
             <li>
-              <strong>You hear from us within the SLA.</strong> We provide an initial response within the agreed SLA window.
+              <div>
+                <strong>You hear from us within the SLA.</strong> We provide an initial response within the agreed SLA window.
+              </div>
             </li>
             <li>
-              <strong>We work towards resolution.</strong> Once the issue is resolved, we also let you know what happened and, where useful, what can be done to prevent it from happening again.
+              <div>
+                <strong>We work towards resolution.</strong> Once the issue is resolved, we also let you know what happened and, where useful, what can be done to prevent it from happening again.
+              </div>
             </li>
           </ol>
         </div>
@@ -143,8 +151,9 @@ const fields = [
   .next-steps li {
     counter-increment: next-step;
     display: grid;
-    grid-template-columns: 1.75rem minmax(0, 1fr);
-    gap: var(--s-3);
+    grid-template-columns: 1.75rem 1fr;
+    column-gap: var(--s-3);
+    align-items: baseline;
     font-size: var(--t-sm);
     color: var(--ink-2);
     line-height: 1.5;
@@ -157,10 +166,14 @@ const fields = [
     font-weight: 600;
   }
 
+  .next-steps li > div {
+    display: block;
+  }
+
   .next-steps strong {
     color: var(--ink);
-    display: block;
-    margin-bottom: 0.15rem;
+    display: inline;
+    margin-right: 0.35rem;
   }
 
   @media (max-width: 900px) {
