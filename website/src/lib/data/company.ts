@@ -551,6 +551,7 @@ export const TEAM: TeamMember[] = [
     role: 'Developer — AI Enterprise Solutions',
     bio: 'Builds AI-driven capability into Frappe implementations — from document extraction to forecasting — grounded in what the platform can actually support in production.',
     initials: 'TW',
+    image: '/team/thineth-weerasinghe.jpg',
   },
   {
     slug: 'nethan-kombalavitana',
