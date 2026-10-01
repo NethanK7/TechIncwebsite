@@ -76,8 +76,9 @@ const articleSchema = {
               src={author.image}
               alt={author.name}
               class="byline__avatar"
-              width="18"
-              height="18"
+              style={author.imagePosition ? `--pos: ${author.imagePosition}` : undefined}
+              width="22"
+              height="22"
             />
           )}
           <span>{author.name}</span>
@@ -155,11 +156,11 @@ const articleSchema = {
   }
 
   .byline__avatar {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.35rem;
+    height: 1.35rem;
     border-radius: 999px;
     object-fit: cover;
-    object-position: center 20%;
+    object-position: var(--pos, center 40%);
     border: 1px solid var(--hair);
   }
 

@@ -164,6 +164,7 @@ const devTeam = TEAM.filter(
                       src={m.image}
                       alt={m.name}
                       class="member__img"
+                      style={m.imagePosition ? `--pos: ${m.imagePosition}` : undefined}
                       loading="lazy"
                       width="300"
                       height="375"
@@ -193,6 +194,7 @@ const devTeam = TEAM.filter(
                       src={m.image}
                       alt={m.name}
                       class="member__img"
+                      style={m.imagePosition ? `--pos: ${m.imagePosition}` : undefined}
                       loading="lazy"
                       width="300"
                       height="375"
@@ -444,9 +446,13 @@ const devTeam = TEAM.filter(
     aspect-ratio: 4 / 5;
     background: linear-gradient(160deg, var(--sky-100), var(--sky-300));
     border: 1px solid var(--hair);
-    border-radius: 0.875rem;
+    border-radius: 1rem;
     margin-bottom: var(--s-4);
     overflow: hidden;
+    box-shadow: 0 4px 16px -6px rgb(11 13 24 / 0.06);
+    transition:
+      border-color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
   }
 
   .member__plate:has(.member__img) {
@@ -457,13 +463,20 @@ const devTeam = TEAM.filter(
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 20%;
+    object-position: var(--pos, center 40%);
+    transform-origin: var(--pos, center 40%);
+    transform: scale(1.36);
     display: block;
     transition: transform var(--dur) var(--ease-out);
   }
 
   .member__link:hover .member__img {
-    transform: scale(1.03);
+    transform: scale(1.42);
+  }
+
+  .member__link:hover .member__plate {
+    border-color: var(--n-400);
+    box-shadow: 0 16px 36px -12px rgb(11 13 24 / 0.12);
   }
 
   .member__plate span {

@@ -488,6 +488,7 @@ export interface TeamMember {
   /** Monogram plate initials — replaced by a photo when one is supplied. */
   initials: string
   image?: string
+  imagePosition?: string
 }
 
 export const TEAM: TeamMember[] = [
@@ -505,6 +506,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Leading solutions architecture and delivery with a focus on measurable business value from every Frappe ERP engagement.',
     initials: 'SF',
     image: '/team/sean-fernando.jpg',
+    imagePosition: 'center 33%',
   },
   {
     slug: 'lahiru-pathirana',
@@ -513,6 +515,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Specialist in technical architecture, Frappe development, and complex ERP integration strategies.',
     initials: 'LP',
     image: '/team/lahiru-pathirana.jpg',
+    imagePosition: 'center 40%',
   },
   {
     slug: 'jeby-krishoan',
@@ -521,6 +524,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Expert in manufacturing and logistics workflows, ensuring Frappe ERP aligns perfectly with production and procurement realities.',
     initials: 'JK',
     image: '/team/jeby-krishoan.jpg',
+    imagePosition: 'center 39%',
   },
   {
     slug: 'ashen-bandara',
@@ -529,6 +533,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Specialist in supply chain logistics, inventory optimization, and HR operations, aligning Frappe ERP with day-to-day organizational workflows.',
     initials: 'AB',
     image: '/team/ashen-bandara.jpg',
+    imagePosition: 'center 45%',
   },
   {
     slug: 'niluka-dilrukshi',
@@ -537,6 +542,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Finance process expert ensuring accurate, efficient financial operations and statutory compliance through Frappe ERP.',
     initials: 'ND',
     image: '/team/niluka-dilrukshi.jpg',
+    imagePosition: 'center 45%',
   },
   {
     slug: 'lakvindu-siriwardena',
@@ -545,6 +551,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Bridges technical and functional perspectives to deliver seamless, high-quality ERP implementations.',
     initials: 'LS',
     image: '/team/lakvindu-siriwardena.jpg',
+    imagePosition: 'center 45%',
   },
   {
     slug: 'shakthi-rodrigo',
@@ -553,6 +560,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Delivers end-to-end ERP solutions combining deep technical expertise with domain knowledge across industries.',
     initials: 'SR',
     image: '/team/shakthi-rodrigo.jpg',
+    imagePosition: 'center 45%',
   },
   {
     slug: 'thineth-weerasinghe',
@@ -561,6 +569,7 @@ export const TEAM: TeamMember[] = [
     bio: 'Builds AI-driven capability into Frappe implementations — from document extraction to forecasting — grounded in what the platform can actually support in production.',
     initials: 'TW',
     image: '/team/thineth-weerasinghe.jpg',
+    imagePosition: 'center 39%',
   },
   {
     slug: 'nethan-kombalavitana',
