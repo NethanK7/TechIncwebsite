@@ -519,6 +519,7 @@ export const TEAM: TeamMember[] = [
     role: 'Functional Consultant — Manufacturing & Supply Chain',
     bio: 'Expert in manufacturing and logistics workflows, ensuring Frappe ERP aligns perfectly with production and procurement realities.',
     initials: 'JK',
+    image: '/team/jeby-krishoan.jpg',
   },
   {
     slug: 'niluka-dilrukshi',
