@@ -504,6 +504,7 @@ export const TEAM: TeamMember[] = [
     role: 'Director — Solutions',
     bio: 'Leading solutions architecture and delivery with a focus on measurable business value from every Frappe ERP engagement.',
     initials: 'SF',
+    image: '/team/sean-fernando.jpg',
   },
   {
     slug: 'lahiru-pathirana',
