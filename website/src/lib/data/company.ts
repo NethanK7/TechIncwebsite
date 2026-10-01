@@ -489,6 +489,7 @@ export interface TeamMember {
   initials: string
   image?: string
   imagePosition?: string
+  imageScale?: number
 }
 
 export const TEAM: TeamMember[] = [
@@ -506,7 +507,8 @@ export const TEAM: TeamMember[] = [
     bio: 'Leading solutions architecture and delivery with a focus on measurable business value from every Frappe ERP engagement.',
     initials: 'SF',
     image: '/team/sean-fernando.jpg',
-    imagePosition: 'center 33%',
+    imagePosition: 'center 34%',
+    imageScale: 1.58,
   },
   {
     slug: 'lahiru-pathirana',

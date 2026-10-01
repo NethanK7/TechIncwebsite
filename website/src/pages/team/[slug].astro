@@ -41,7 +41,12 @@ const fmt = (d: Date) =>
           src={member.image}
           alt={member.name}
           class="plate__img"
-          style={member.imagePosition ? `--pos: ${member.imagePosition}` : undefined}
+          style={[
+            member.imagePosition ? `--pos: ${member.imagePosition}` : '',
+            member.imageScale ? `--scale: ${member.imageScale}` : '',
+          ]
+            .filter(Boolean)
+            .join('; ') || undefined}
           width="136"
           height="136"
         />
@@ -120,7 +125,7 @@ const fmt = (d: Date) =>
     object-fit: cover;
     object-position: var(--pos, center 40%);
     transform-origin: var(--pos, center 40%);
-    transform: scale(1.36);
+    transform: scale(var(--scale, 1.36));
     display: block;
   }
 

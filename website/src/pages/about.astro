@@ -164,7 +164,12 @@ const devTeam = TEAM.filter(
                       src={m.image}
                       alt={m.name}
                       class="member__img"
-                      style={m.imagePosition ? `--pos: ${m.imagePosition}` : undefined}
+                      style={[
+                        m.imagePosition ? `--pos: ${m.imagePosition}` : '',
+                        m.imageScale ? `--scale: ${m.imageScale}` : '',
+                      ]
+                        .filter(Boolean)
+                        .join('; ') || undefined}
                       loading="lazy"
                       width="300"
                       height="375"
@@ -194,7 +199,12 @@ const devTeam = TEAM.filter(
                       src={m.image}
                       alt={m.name}
                       class="member__img"
-                      style={m.imagePosition ? `--pos: ${m.imagePosition}` : undefined}
+                      style={[
+                        m.imagePosition ? `--pos: ${m.imagePosition}` : '',
+                        m.imageScale ? `--scale: ${m.imageScale}` : '',
+                      ]
+                        .filter(Boolean)
+                        .join('; ') || undefined}
                       loading="lazy"
                       width="300"
                       height="375"
@@ -465,13 +475,13 @@ const devTeam = TEAM.filter(
     object-fit: cover;
     object-position: var(--pos, center 40%);
     transform-origin: var(--pos, center 40%);
-    transform: scale(1.36);
+    transform: scale(var(--scale, 1.36));
     display: block;
     transition: transform var(--dur) var(--ease-out);
   }
 
   .member__link:hover .member__img {
-    transform: scale(1.42);
+    transform: scale(calc(var(--scale, 1.36) * 1.045));
   }
 
   .member__link:hover .member__plate {
