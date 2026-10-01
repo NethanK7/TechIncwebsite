@@ -67,7 +67,7 @@ import { NAV, COMPANY } from '@/lib/data/company'
     </button>
   </div>
 
-  <div class="mobile-nav" id="mobile-nav" hidden>
+  <div class="mobile-nav" id="mobile-nav" data-lenis-prevent hidden>
     <nav aria-label="Mobile">
       {
         NAV.map((group) => (
@@ -119,6 +119,7 @@ import { NAV, COMPANY } from '@/lib/data/company'
   .site-header.is-stuck {
     background: rgb(245 246 248 / 0.82);
     backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
     border-bottom-color: var(--hair);
   }
 
@@ -181,6 +182,7 @@ import { NAV, COMPANY } from '@/lib/data/company'
     padding: var(--s-3);
     background: rgb(255 255 255 / 0.96);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--hair);
     border-radius: 0.875rem;
     box-shadow: 0 18px 50px -20px rgb(11 13 24 / 0.18);
@@ -261,46 +263,117 @@ import { NAV, COMPANY } from '@/lib/data/company'
     transform: translateX(-50%) translateY(-3.5px) rotate(-45deg);
   }
 
-  /* ---- Mobile panel ---- */
+  /* ---- Mobile panel & Open state ---- */
+
+  .site-header.is-menu-open,
+  .site-header:has(.site-header__burger[aria-expanded='true']) {
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border-bottom: none !important;
+  }
+
+  .site-header.is-menu-open .site-header__inner,
+  .site-header:has(.site-header__burger[aria-expanded='true']) .site-header__inner {
+    flex-shrink: 0;
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid var(--hair);
+  }
 
   .mobile-nav {
     position: fixed;
     inset: var(--header-h) 0 0;
     z-index: calc(var(--z-header) - 1);
-    background: rgb(255 255 255 / 0.98);
-    backdrop-filter: blur(20px);
+    background: #ffffff;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: var(--s-6) var(--gutter) var(--s-16);
-    display: grid;
-    gap: var(--s-8);
-    align-content: start;
+  }
+
+  .site-header.is-menu-open .mobile-nav,
+  .site-header:has(.site-header__burger[aria-expanded='true']) .mobile-nav {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    background: #ffffff;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block !important;
+    padding: var(--s-6) var(--gutter) var(--s-16);
   }
 
   .mobile-nav[hidden] {
-    display: none;
+    display: none !important;
+  }
+
+  .mobile-nav nav {
+    display: grid;
+    gap: var(--s-8);
+    max-width: var(--max);
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .mobile-nav__group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-nav__group .eyebrow {
+    font-size: var(--t-mono);
+    color: var(--ink-faint);
+    margin-bottom: var(--s-2);
   }
 
   .mobile-nav__group ul {
-    margin-top: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .mobile-nav__group li a {
     display: block;
-    padding: 0.7em 0;
+    padding: 0.75rem 0;
     border-bottom: 1px solid var(--hair);
-    color: var(--ink-2);
+    color: var(--ink);
     font-size: var(--t-sm);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .mobile-nav__group li a:hover,
+  .mobile-nav__group li a:active {
+    color: var(--brand);
   }
 
   .mobile-nav__cta {
     display: grid;
     gap: var(--s-3);
+    padding-top: var(--s-2);
+  }
+
+  @media (min-width: 1081px) {
+    .mobile-nav {
+      display: none !important;
+    }
   }
 
   @media (max-width: 1080px) {
     .site-nav,
     .site-header__actions {
-      display: none;
+      display: none !important;
     }
     .site-header__inner {
       grid-template-columns: auto 1fr;
@@ -315,6 +388,8 @@ import { NAV, COMPANY } from '@/lib/data/company'
 </style>
 
 <script>
+  import { stopScroll, startScroll } from '@/lib/scroll'
+
   function initHeaderUi() {
     const header = document.querySelector<HTMLElement>('.site-header')
     const burger = document.querySelector<HTMLButtonElement>('.site-header__burger')
@@ -325,8 +400,15 @@ import { NAV, COMPANY } from '@/lib/data/company'
     const setOpen = (open: boolean) => {
       burger.setAttribute('aria-expanded', String(open))
       burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+      header.classList.toggle('is-menu-open', open)
       panel.hidden = !open
-      document.documentElement.style.overflow = open ? 'hidden' : ''
+      if (open) {
+        stopScroll()
+        document.body.style.overflow = 'hidden'
+      } else {
+        startScroll()
+        document.body.style.overflow = ''
+      }
     }
 
     burger.addEventListener('click', () =>
@@ -340,6 +422,9 @@ import { NAV, COMPANY } from '@/lib/data/company'
     })
     matchMedia('(min-width: 1081px)').addEventListener('change', (e) => {
       if (e.matches) setOpen(false)
+    })
+    document.addEventListener('astro:after-swap', () => {
+      setOpen(false)
     })
   }
 
