@@ -543,6 +543,7 @@ export const TEAM: TeamMember[] = [
     role: 'Techno-Functional Consultant',
     bio: 'Delivers end-to-end ERP solutions combining deep technical expertise with domain knowledge across industries.',
     initials: 'SR',
+    image: '/team/shakthi-rodrigo.jpg',
   },
   {
     slug: 'thineth-weerasinghe',
