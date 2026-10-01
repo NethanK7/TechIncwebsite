@@ -37,6 +37,13 @@ const aboutStats = [
     note: 'We are proud of the long term relationships we have built with the businesses we serve.',
   },
 ]
+
+const mainTeam = TEAM.filter(
+  (m) => m.slug !== 'thineth-weerasinghe' && m.slug !== 'nethan-kombalavitana',
+)
+const devTeam = TEAM.filter(
+  (m) => m.slug === 'thineth-weerasinghe' || m.slug === 'nethan-kombalavitana',
+)
 ---
 
 <Page
@@ -148,7 +155,36 @@ const aboutStats = [
 
       <ul class="team" data-reveal-group>
         {
-          TEAM.map((m) => (
+          mainTeam.map((m) => (
+            <li class="member" data-reveal>
+              <a class="member__link" href={`/team/${m.slug}`}>
+                <div class="member__plate" aria-hidden="true">
+                  {m.image ? (
+                    <img
+                      src={m.image}
+                      alt={m.name}
+                      class="member__img"
+                      loading="lazy"
+                      width="300"
+                      height="375"
+                    />
+                  ) : (
+                    <span>{m.initials}</span>
+                  )}
+                </div>
+                <h3 class="h4 member__name">{m.name}</h3>
+                <p class="member__role mono">{m.role}</p>
+                <p class="member__bio">{m.bio}</p>
+                <span class="mono member__go">View profile & posts →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="team team--centered" data-reveal-group>
+        {
+          devTeam.map((m) => (
             <li class="member" data-reveal>
               <a class="member__link" href={`/team/${m.slug}`}>
                 <div class="member__plate" aria-hidden="true">
@@ -351,6 +387,31 @@ const aboutStats = [
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: clamp(var(--s-6), 3vw, var(--s-10));
+  }
+
+  .team--centered {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: clamp(var(--s-6), 3vw, var(--s-10));
+    margin-top: clamp(var(--s-6), 3vw, var(--s-10));
+  }
+
+  .team--centered .member {
+    flex: 1 1 15rem;
+    max-width: 22rem;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .team:not(.team--centered) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .team--centered .member {
+      width: calc((100% - (clamp(var(--s-6), 3vw, var(--s-10)) * 3)) / 4);
+      flex: 0 0 calc((100% - (clamp(var(--s-6), 3vw, var(--s-10)) * 3)) / 4);
+      max-width: calc((100% - (clamp(var(--s-6), 3vw, var(--s-10)) * 3)) / 4);
+    }
   }
 
   .member__link {

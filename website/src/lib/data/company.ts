@@ -523,6 +523,14 @@ export const TEAM: TeamMember[] = [
     image: '/team/jeby-krishoan.jpg',
   },
   {
+    slug: 'ashen-bandara',
+    name: 'Ashen Bandara',
+    role: 'Functional Consultant — Supply Chain & HR',
+    bio: 'Specialist in supply chain logistics, inventory optimization, and HR operations, aligning Frappe ERP with day-to-day organizational workflows.',
+    initials: 'AB',
+    image: '/team/ashen-bandara.jpg',
+  },
+  {
     slug: 'niluka-dilrukshi',
     name: 'Niluka Dilrukshi',
     role: 'Functional Consultant — Finance & Payroll',
