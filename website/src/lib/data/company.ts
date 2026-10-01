@@ -487,6 +487,7 @@ export interface TeamMember {
   bio: string
   /** Monogram plate initials — replaced by a photo when one is supplied. */
   initials: string
+  image?: string
 }
 
 export const TEAM: TeamMember[] = [
@@ -531,6 +532,7 @@ export const TEAM: TeamMember[] = [
     role: 'Techno-Functional Consultant',
     bio: 'Bridges technical and functional perspectives to deliver seamless, high-quality ERP implementations.',
     initials: 'LS',
+    image: '/team/lakvindu-siriwardena.jpg',
   },
   {
     slug: 'shakthi-rodrigo',

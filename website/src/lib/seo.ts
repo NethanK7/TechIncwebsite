@@ -229,12 +229,18 @@ export function serviceSchema(s: {
   }
 }
 
-export function personSchema(p: { name: string; role: string; bio: string }): object {
+export function personSchema(p: {
+  name: string
+  role: string
+  bio: string
+  image?: string
+}): object {
   return {
     '@type': 'Person',
     name: p.name,
     jobTitle: p.role,
     description: p.bio,
+    ...(p.image ? { image: abs(p.image) } : {}),
     worksFor: { '@id': ORG_ID },
   }
 }

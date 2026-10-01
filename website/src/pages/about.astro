@@ -152,7 +152,18 @@ const aboutStats = [
             <li class="member" data-reveal>
               <a class="member__link" href={`/team/${m.slug}`}>
                 <div class="member__plate" aria-hidden="true">
-                  <span>{m.initials}</span>
+                  {m.image ? (
+                    <img
+                      src={m.image}
+                      alt={m.name}
+                      class="member__img"
+                      loading="lazy"
+                      width="300"
+                      height="375"
+                    />
+                  ) : (
+                    <span>{m.initials}</span>
+                  )}
                 </div>
                 <h3 class="h4 member__name">{m.name}</h3>
                 <p class="member__role mono">{m.role}</p>
@@ -374,6 +385,24 @@ const aboutStats = [
     border: 1px solid var(--hair);
     border-radius: 0.875rem;
     margin-bottom: var(--s-4);
+    overflow: hidden;
+  }
+
+  .member__plate:has(.member__img) {
+    background: #f8fafc;
+  }
+
+  .member__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    transition: transform var(--dur) var(--ease-out);
+  }
+
+  .member__link:hover .member__img {
+    transform: scale(1.03);
   }
 
   .member__plate span {

@@ -32,10 +32,21 @@ const fmt = (d: Date) =>
   parents={[{ label: 'About', href: '/about' }]}
   schema={[personSchema(member)]}
   ctaSource={`team:${member.slug}`}
+  image={member.image}
 >
   <div slot="head-extra">
     <div class="plate" aria-hidden="true">
-      <span>{member.initials}</span>
+      {member.image ? (
+        <img
+          src={member.image}
+          alt={member.name}
+          class="plate__img"
+          width="80"
+          height="80"
+        />
+      ) : (
+        <span>{member.initials}</span>
+      )}
     </div>
   </div>
 
@@ -93,6 +104,20 @@ const fmt = (d: Date) =>
     font-family: var(--font-mono);
     font-size: var(--t-h4);
     letter-spacing: 0.02em;
+    overflow: hidden;
+    border: 1px solid var(--hair);
+  }
+
+  .plate:has(.plate__img) {
+    background: none;
+  }
+
+  .plate__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
   }
 
   .posts__head {

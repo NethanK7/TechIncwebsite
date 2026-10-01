@@ -12,9 +12,9 @@
 }
 .legal h2:first-child { margin-top: 0; }
 .legal p, .legal ul { margin-top: var(--s-4); }
-.legal ul { display: grid; gap: var(--s-3); }
-.legal li { display: grid; grid-template-columns: 1.5rem 1fr; }
-.legal li::before { content: '—'; color: var(--n-400); }
+.legal ul { display: grid; gap: var(--s-3); padding: 0; list-style: none; }
+.legal li { position: relative; padding-left: 1.5rem; }
+.legal li::before { content: '—'; position: absolute; left: 0; color: var(--n-400); }
 .legal strong { color: var(--ink); font-weight: 600; }
 .legal a {
   color: var(--ink);
