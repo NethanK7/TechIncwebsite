@@ -536,6 +536,7 @@ export const TEAM: TeamMember[] = [
     role: 'Functional Consultant — Finance & Payroll',
     bio: 'Finance process expert ensuring accurate, efficient financial operations and statutory compliance through Frappe ERP.',
     initials: 'ND',
+    image: '/team/niluka-dilrukshi.jpg',
   },
   {
     slug: 'lakvindu-siriwardena',
