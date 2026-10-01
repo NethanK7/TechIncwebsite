@@ -511,6 +511,7 @@ export const TEAM: TeamMember[] = [
     role: 'Head of Technical Solutions',
     bio: 'Specialist in technical architecture, Frappe development, and complex ERP integration strategies.',
     initials: 'LP',
+    image: '/team/lahiru-pathirana.jpg',
   },
   {
     slug: 'jeby-krishoan',
