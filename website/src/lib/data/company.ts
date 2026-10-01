@@ -562,7 +562,8 @@ export const TEAM: TeamMember[] = [
     bio: 'Delivers end-to-end ERP solutions combining deep technical expertise with domain knowledge across industries.',
     initials: 'SR',
     image: '/team/shakthi-rodrigo.jpg',
-    imagePosition: 'center 45%',
+    imagePosition: 'center 47%',
+    imageScale: 1.68,
   },
   {
     slug: 'thineth-weerasinghe',
@@ -572,6 +573,7 @@ export const TEAM: TeamMember[] = [
     initials: 'TW',
     image: '/team/thineth-weerasinghe.jpg',
     imagePosition: 'center 39%',
+    imageScale: 1.52,
   },
   {
     slug: 'nethan-kombalavitana',
