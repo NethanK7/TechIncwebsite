@@ -499,6 +499,9 @@ export const TEAM: TeamMember[] = [
     role: 'Chairman',
     bio: 'Strategic leadership driving innovation and enterprise transformation across Sri Lanka and the wider South Asian region.',
     initials: 'HG',
+    image: '/team/herschel-gunawardena.jpg',
+    imagePosition: 'center 38%',
+    imageScale: 1.32,
   },
   {
     slug: 'sean-fernando',
